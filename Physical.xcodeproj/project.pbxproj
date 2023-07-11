@@ -7,18 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		003662002A56374E009FCEA8 /* VinylsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003661FF2A56374E009FCEA8 /* VinylsApp.swift */; };
-		003662022A56374E009FCEA8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003662012A56374E009FCEA8 /* ContentView.swift */; };
+		0027ECD92A5B98E3001090E4 /* MediaDetailsEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0027ECD82A5B98E3001090E4 /* MediaDetailsEntryView.swift */; };
+		0027ECDB2A5B99C2001090E4 /* DataEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0027ECDA2A5B99C2001090E4 /* DataEntry.swift */; };
+		003662002A56374E009FCEA8 /* PhysicalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003661FF2A56374E009FCEA8 /* PhysicalApp.swift */; };
+		003662022A56374E009FCEA8 /* MediaCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003662012A56374E009FCEA8 /* MediaCollectionView.swift */; };
 		003662042A563754009FCEA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662032A563754009FCEA8 /* Assets.xcassets */; };
 		003662072A563754009FCEA8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662062A563754009FCEA8 /* Preview Assets.xcassets */; };
+		0088FEC72A5A09BC00FEAF8B /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0088FEC62A5A09BC00FEAF8B /* Media.swift */; };
+		0088FECC2A5A0E7300FEAF8B /* PreviewSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0088FECB2A5A0E7300FEAF8B /* PreviewSampleData.swift */; };
+		0088FECE2A5A11D100FEAF8B /* SampleCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0088FECD2A5A11D100FEAF8B /* SampleCollection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		003661FC2A56374E009FCEA8 /* Vinyls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vinyls.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		003661FF2A56374E009FCEA8 /* VinylsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylsApp.swift; sourceTree = "<group>"; };
-		003662012A56374E009FCEA8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		0027ECD82A5B98E3001090E4 /* MediaDetailsEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailsEntryView.swift; sourceTree = "<group>"; };
+		0027ECDA2A5B99C2001090E4 /* DataEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEntry.swift; sourceTree = "<group>"; };
+		003661FC2A56374E009FCEA8 /* Physical.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Physical.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		003661FF2A56374E009FCEA8 /* PhysicalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalApp.swift; sourceTree = "<group>"; };
+		003662012A56374E009FCEA8 /* MediaCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCollectionView.swift; sourceTree = "<group>"; };
 		003662032A563754009FCEA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		003662062A563754009FCEA8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		0088FEC62A5A09BC00FEAF8B /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
+		0088FECB2A5A0E7300FEAF8B /* PreviewSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewSampleData.swift; sourceTree = "<group>"; };
+		0088FECD2A5A11D100FEAF8B /* SampleCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCollection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,7 +45,7 @@
 		003661F32A56374E009FCEA8 = {
 			isa = PBXGroup;
 			children = (
-				003661FE2A56374E009FCEA8 /* Vinyls */,
+				003661FE2A56374E009FCEA8 /* Physical */,
 				003661FD2A56374E009FCEA8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,20 +53,22 @@
 		003661FD2A56374E009FCEA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				003661FC2A56374E009FCEA8 /* Vinyls.app */,
+				003661FC2A56374E009FCEA8 /* Physical.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		003661FE2A56374E009FCEA8 /* Vinyls */ = {
+		003661FE2A56374E009FCEA8 /* Physical */ = {
 			isa = PBXGroup;
 			children = (
-				003661FF2A56374E009FCEA8 /* VinylsApp.swift */,
-				003662012A56374E009FCEA8 /* ContentView.swift */,
+				003661FF2A56374E009FCEA8 /* PhysicalApp.swift */,
+				0088FEC82A5A09F700FEAF8B /* Model */,
+				0088FEC92A5A0A0600FEAF8B /* Views */,
+				0088FECA2A5A0DAE00FEAF8B /* Support */,
 				003662032A563754009FCEA8 /* Assets.xcassets */,
 				003662052A563754009FCEA8 /* Preview Content */,
 			);
-			path = Vinyls;
+			path = Physical;
 			sourceTree = "<group>";
 		};
 		003662052A563754009FCEA8 /* Preview Content */ = {
@@ -67,12 +79,39 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		0088FEC82A5A09F700FEAF8B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0088FEC62A5A09BC00FEAF8B /* Media.swift */,
+				0088FECD2A5A11D100FEAF8B /* SampleCollection.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		0088FEC92A5A0A0600FEAF8B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				003662012A56374E009FCEA8 /* MediaCollectionView.swift */,
+				0027ECD82A5B98E3001090E4 /* MediaDetailsEntryView.swift */,
+				0027ECDA2A5B99C2001090E4 /* DataEntry.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		0088FECA2A5A0DAE00FEAF8B /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				0088FECB2A5A0E7300FEAF8B /* PreviewSampleData.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		003661FB2A56374E009FCEA8 /* Vinyls */ = {
+		003661FB2A56374E009FCEA8 /* Physical */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0036620A2A563754009FCEA8 /* Build configuration list for PBXNativeTarget "Vinyls" */;
+			buildConfigurationList = 0036620A2A563754009FCEA8 /* Build configuration list for PBXNativeTarget "Physical" */;
 			buildPhases = (
 				003661F82A56374E009FCEA8 /* Sources */,
 				003661F92A56374E009FCEA8 /* Frameworks */,
@@ -82,9 +121,9 @@
 			);
 			dependencies = (
 			);
-			name = Vinyls;
+			name = Physical;
 			productName = Vinyls;
-			productReference = 003661FC2A56374E009FCEA8 /* Vinyls.app */;
+			productReference = 003661FC2A56374E009FCEA8 /* Physical.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -102,7 +141,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 003661F72A56374E009FCEA8 /* Build configuration list for PBXProject "Vinyls" */;
+			buildConfigurationList = 003661F72A56374E009FCEA8 /* Build configuration list for PBXProject "Physical" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -115,7 +154,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				003661FB2A56374E009FCEA8 /* Vinyls */,
+				003661FB2A56374E009FCEA8 /* Physical */,
 			);
 		};
 /* End PBXProject section */
@@ -137,8 +176,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				003662022A56374E009FCEA8 /* ContentView.swift in Sources */,
-				003662002A56374E009FCEA8 /* VinylsApp.swift in Sources */,
+				0088FECC2A5A0E7300FEAF8B /* PreviewSampleData.swift in Sources */,
+				0027ECDB2A5B99C2001090E4 /* DataEntry.swift in Sources */,
+				003662022A56374E009FCEA8 /* MediaCollectionView.swift in Sources */,
+				0088FECE2A5A11D100FEAF8B /* SampleCollection.swift in Sources */,
+				0027ECD92A5B98E3001090E4 /* MediaDetailsEntryView.swift in Sources */,
+				003662002A56374E009FCEA8 /* PhysicalApp.swift in Sources */,
+				0088FEC72A5A09BC00FEAF8B /* Media.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,10 +315,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Vinyls/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Physical/Preview Content\"";
 				DEVELOPMENT_TEAM = 4M48D4QJHN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Physical/Info.plist;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Physical uses Apple Music to automatically populate information about new additions to your collection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -285,11 +331,15 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = spencerhartland.Vinyls;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spencerhartland.Physical;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -300,10 +350,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Vinyls/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Physical/Preview Content\"";
 				DEVELOPMENT_TEAM = 4M48D4QJHN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Physical/Info.plist;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Physical uses Apple Music to automatically populate information about new additions to your collection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -314,18 +366,22 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = spencerhartland.Vinyls;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spencerhartland.Physical;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		003661F72A56374E009FCEA8 /* Build configuration list for PBXProject "Vinyls" */ = {
+		003661F72A56374E009FCEA8 /* Build configuration list for PBXProject "Physical" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				003662082A563754009FCEA8 /* Debug */,
@@ -334,7 +390,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0036620A2A563754009FCEA8 /* Build configuration list for PBXNativeTarget "Vinyls" */ = {
+		0036620A2A563754009FCEA8 /* Build configuration list for PBXNativeTarget "Physical" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0036620B2A563754009FCEA8 /* Debug */,
