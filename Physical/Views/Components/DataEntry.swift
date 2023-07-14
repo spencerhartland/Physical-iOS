@@ -7,37 +7,9 @@
 
 import SwiftUI
 
-struct TextEntryListItemView: View {
-    let header: String
-    let prompt: String
-    let footer: String?
-    
-    @Binding var input: String
-    
-    init(header: String, prompt: String, footer: String? = nil, input: Binding<String>) {
-        self.header = header
-        self.prompt = prompt
-        self.footer = footer
-        self._input = input
-    }
-    
-    var body: some View {
-        Section {
-            TextField(prompt, text: $input)
-        } header: {
-            Text(header)
-        } footer: {
-            if let footer = footer {
-                Text(footer)
-            }
-        }
-    }
-}
-
 struct DateEntryListItemView: View {
     private let rightChevronSymbol = "chevron.right"
     
-    let header: String
     let prompt: String
     let footer: String?
     
@@ -45,38 +17,29 @@ struct DateEntryListItemView: View {
     @State private var userHasSelected = false
     @State private var presentPicker = false
     
-    init(header: String, prompt: String, footer: String? = nil, input: Binding<Date>) {
-        self.header = header
+    init(prompt: String, footer: String? = nil, input: Binding<Date>) {
         self.prompt = prompt
         self.footer = footer
         self._input = input
     }
     
     var body: some View {
-        Section {
-            NavigationLink {
-                dateSelection
-            } label: {
-                Text(userHasSelected ? DateFormatter.localizedString(from: input, dateStyle: .long, timeStyle: .none) : prompt)
-                    .foregroundStyle(userHasSelected ? .primary : .tertiary)
-            }
-        } header: {
-            Text(header)
-        } footer: {
-            if let footer = footer {
-                Text(footer)
-            }
+        NavigationLink {
+            dateSelection
+        } label: {
+            Text(userHasSelected ? DateFormatter.localizedString(from: input, dateStyle: .long, timeStyle: .none) : prompt)
+                .foregroundStyle(userHasSelected ? .primary : .tertiary)
         }
     }
     
     private var dateSelection: some View {
         VStack {
-            DatePicker(header, selection: $input, displayedComponents: [.date])
+            DatePicker(prompt, selection: $input, displayedComponents: [.date])
                 .datePickerStyle(.graphical)
             Spacer()
         }
         .padding()
-        .navigationTitle(header)
+        .navigationTitle(prompt)
         .onAppear {
             userHasSelected = true
         }
@@ -200,24 +163,22 @@ struct MediaConditionSelectionListItemView: View {
 }
 
 struct PhotoSelectionView: View {
-    private let openPhotosSymbolName = "photo"
-    private let openCameraSymbolName = "camera"
+    private let addPhotosSymbolName = "photo.badge.plus.fill"
+    private let addPhotosText = "Add images"
     
     var body: some View {
         Button {
             print("tapped")
         } label: {
             ZStack {
-                Color(UIColor.secondarySystemBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                Color(UIColor.secondarySystemGroupedBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
                     .aspectRatio(1.0, contentMode: .fit)
-                    .padding()
-                HStack {
-                    Image(systemName: openPhotosSymbolName)
-                    Image(systemName: openCameraSymbolName)
-                }
-                .font(.system(size: 32))
-                .foregroundStyle(.tertiary)
+                    .padding(.horizontal, 32)
+                    .padding(.vertical, 16)
+                Image(systemName: addPhotosSymbolName)
+                    .font(.system(size: 64, weight: .light))
+                    .foregroundStyle(.tertiary)
             }
         }
     }

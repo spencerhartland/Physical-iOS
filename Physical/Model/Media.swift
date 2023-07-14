@@ -35,7 +35,7 @@ final class Media {
         self.tracks = tracks
     }
     
-    enum MediaType: String, Codable, CaseIterable, Identifiable {
+    enum MediaType: String, Codable, CaseIterable, Identifiable, Equatable {
         var id: Self {
             return self
         }
@@ -44,7 +44,7 @@ final class Media {
         case compactCassette = "Compact Cassette"
     }
     
-    enum MediaCondition: String, Codable, CaseIterable, Identifiable {
+    enum MediaCondition: String, Codable, CaseIterable, Identifiable, Equatable {
         var id: Self {
             return self
         }

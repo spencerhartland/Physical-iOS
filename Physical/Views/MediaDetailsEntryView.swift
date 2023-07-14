@@ -6,125 +6,135 @@
 //
 
 import SwiftUI
-import MusicKit
+import PhotosUI
+
+fileprivate enum EntryState {
+    case searching, reviewingDetails, takingPhoto, selectingPhotos
+}
 
 struct MediaDetailsEntryView: View {
     private let navTitle = "Review Details"
-    private let albumTitleText = "Album Title"
-    private let albumTitlePrompt = "What's the album's title?"
-    private let albumArtistText = "Album Artist"
-    private let albumArtistPrompt = "Who made the album?"
-    private let albumReleaseDateText = "Album Release Date"
-    private let albumReleaseDatePrompt = "When was it released?"
+    private let albumInfoSectionHeaderText = "Album info"
+    private let mediaInfoSectionHeaderText = "Physical media"
+    private let albumTitleText = "Title"
+    private let albumArtistText = "Artist"
+    private let albumReleaseDateText = "Release Date"
     private let mediaTypeText = "Media Type"
-    private let mediaTypePrompt = "Vinyl Record, CD, or Cassette?"
     private let mediaConditionText = "Media Condition"
-    private let mediaConditionPrompt = "What condition is it in?"
     
-    @State private var doneSearching = false
+    // View state
+    @State private var state: EntryState = .searching
+    @State private var presentCamera = false
+    @State private var presentPhotosPicker = false
+    
     @State private var newMedia = Media()
+    @State private var mediaTypeSymbol = Image(.vinylRecord)
+    @State private var chosenImages: PhotosPickerItem? = nil
+    @State private var chosenImage: UIImage? = nil
     
     var body: some View {
-        if doneSearching {
+        if state != .searching {
             NavigationStack {
-                GeometryReader { geo in
-                    ScrollView {
-                        // Photos
-                        PhotoSelectionView()
-                            .listRowBackground(Color.clear)
-                            .frame(width: geo.size.width)
-                        List {
-                            // Title
-                            TextEntryListItemView(header: albumTitleText, prompt: albumTitlePrompt, input: $newMedia.title)
-                            // Artist
-                            TextEntryListItemView(header: albumArtistText, prompt: albumArtistPrompt, input: $newMedia.artist)
-                            // Release Date
-                            DateEntryListItemView(header: albumReleaseDateText, prompt: albumReleaseDatePrompt, input: $newMedia.releaseDate)
-                            // Media Type
-                            MediaTypeSelectionListItemView(header: mediaTypeText, prompt: mediaTypePrompt, input: $newMedia.type)
-                            // Condition
-                            MediaConditionSelectionListItemView(header: mediaConditionText, prompt: mediaConditionPrompt, input: $newMedia.condition)
+                List {
+                    Menu {
+                        Button {
+                            self.state = .takingPhoto
+                        } label: {
+                            Label("Take Photo", systemImage: "camera")
                         }
-                        .scrollDisabled(true)
-                        .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
+                        
+                        Button {
+                            self.state = .selectingPhotos
+                        } label: {
+                            Label("Photo Library", systemImage: "photo.on.rectangle")
+                        }
+                    } label: {
+                        ListItemLabel(color: .green, symbolName: "photo.fill", labelText: "Add image")
+                            .font(.headline)
+                    }
+
+                    // Physical Media
+                    Section {
+                        // Type
+                        Picker(selection: $newMedia.type) {
+                            ForEach(Media.MediaType.allCases) {
+                                Text($0.rawValue)
+                            }
+                        } label: {
+                            ListItemLabel(color: .blue, symbol: mediaTypeSymbol, labelText: mediaTypeText)
+                        }
+                        // Condition
+                        Picker(selection: $newMedia.condition) {
+                            ForEach(Media.MediaCondition.allCases) {
+                                Text($0.rawValue)
+                            }
+                        } label: {
+                            ListItemLabel(color: .purple, symbolName: "sparkles", labelText: mediaConditionText)
+                        }
+                    } header: {
+                        Text(mediaInfoSectionHeaderText)
+                    }
+                    
+                    // Album Info
+                    Section {
+                        // Release date
+                        DatePicker(selection: $newMedia.releaseDate, displayedComponents: [.date]) {
+                            ListItemLabel(color: .red, symbolName: "calendar", labelText: albumReleaseDateText)
+                        }
+                        // Title
+                        TextField(albumTitleText, text: $newMedia.title)
+                        // Artist
+                        TextField(albumArtistText, text: $newMedia.artist)
+                    } header: {
+                        Text(albumInfoSectionHeaderText)
                     }
                 }
             }
+            .photosPicker(isPresented: $presentPhotosPicker, selection: $chosenImages, matching: .images)
+            .fullScreenCover(isPresented: $presentCamera) {
+                ImagePicker(image: $chosenImage)
+            }
             .navigationTitle(navTitle)
+            .background {
+                Color(UIColor.systemGroupedBackground)
+                    .ignoresSafeArea()
+            }
+            .onChange(of: newMedia.type) { _, newValue in
+                switch newValue {
+                case .vinylRecord:
+                    mediaTypeSymbol = Image(.vinylRecord)
+                case .compactDisc:
+                    mediaTypeSymbol = Image(systemName: "opticaldisc.fill")
+                case .compactCassette:
+                    mediaTypeSymbol = Image(.compactCassette)
+                }
+            }
+            .onChange(of: state) { _, newValue in
+                switch newValue {
+                case .takingPhoto:
+                    presentCamera = true
+                    break
+                case .selectingPhotos:
+                    presentPhotosPicker = true
+                    break
+                default:
+                    break
+                }
+            }
+            .onChange(of: presentCamera) { _, newValue in
+                if newValue == false {
+                    self.state = .reviewingDetails
+                }
+            }
+            .onChange(of: presentPhotosPicker) { _, newValue in
+                if newValue == false {
+                    self.state = .reviewingDetails
+                }
+            }
         } else {
-            AlbumTitleEntryView(newMedia: $newMedia, doneSearching: $doneSearching)
-        }
-    }
-}
-
-fileprivate struct AlbumTitleEntryView: View {
-    private let navTitle = "Add Media"
-    private let albumTitleText = "Album Title"
-    private let albumTitlePrompt = "What's the album's title?"
-    private let albumTitleFooterText = "Search for and fetch album information from Apple Music or enter the title and continue to manually add details."
-    private let continueButtonText = "Continue"
-    
-    @Binding var newMedia: Media
-    @Binding var doneSearching: Bool
-    @State private var searchResults: MusicItemCollection<Album> = []
-    
-    var body: some View {
-        List {
-            TextEntryListItemView(
-                header: albumTitleText,
-                prompt: albumTitlePrompt,
-                footer: searchResults.isEmpty ? albumTitleFooterText : nil,
-                input: $newMedia.title
-            )
-            ForEach(searchResults) { album in
-                Text("\(album.title) by \(album.artistName)")
+            AlbumTitleSearchView(albumTitle: $newMedia.title) {
+                self.state = .reviewingDetails
             }
         }
-        .toolbar {
-            ToolbarItemGroup {
-                Button(continueButtonText) {
-                    doneSearching.toggle()
-                }
-                .disabled(newMedia.title.isEmpty)
-                .padding()
-            }
-        }
-        .navigationTitle(navTitle)
-        .onChange(of: newMedia.title) {
-            if MusicAuthorization.currentStatus == .authorized {
-                self.requestSearchResults(newMedia.title)
-            }
-        }
-    }
-    
-    private func requestSearchResults(_ entry: String) {
-        Task {
-            if entry.isEmpty {
-                await self.resetSearchResults()
-            } else {
-                do {
-                    var searchRequest = MusicCatalogSearchRequest(term: entry, types: [Album.self])
-                    searchRequest.limit = 5
-                    let searchResponse = try await searchRequest.response()
-                    
-                    await self.updateSearchResults(searchResponse, for: self.newMedia.title)
-                } catch {
-                    print("Search request failed with error: \(error).")
-                    await self.resetSearchResults()
-                }
-            }
-        }
-    }
-    
-    @MainActor
-    private func updateSearchResults(_ searchResponse: MusicCatalogSearchResponse, for searchTerrm: String) {
-        if self.newMedia.title == searchTerrm {
-            self.searchResults = searchResponse.albums
-        }
-    }
-    
-    @MainActor
-    private func resetSearchResults() {
-        self.searchResults = []
     }
 }
