@@ -44,13 +44,16 @@ struct MediaDetailsEntryView: View {
     var body: some View {
         NavigationStack {
             List {
+                // Add image
                 Menu {
+                    // Take Photo
                     Button {
                         presentCamera = true
                     } label: {
                         Label(takePhotoMenuItemText, systemImage: takePhotoMenuItemSymbol)
                     }
                     
+                    // Photo Library
                     Button {
                         presentPhotosPicker = true
                     } label: {
@@ -109,6 +112,7 @@ struct MediaDetailsEntryView: View {
                 .ignoresSafeArea()
         }
         .onChange(of: newMedia.type) { _, newValue in
+            // Change icon based upon the chosen physical media type
             switch newValue {
             case .vinylRecord:
                 mediaTypeSymbol = Image(.vinylRecord)
