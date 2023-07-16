@@ -8,10 +8,6 @@
 import SwiftUI
 import PhotosUI
 
-fileprivate enum EntryState {
-    case reviewingDetails, takingPhoto, selectingPhotos
-}
-
 struct MediaDetailsEntryView: View {
     // String constants
     private let navTitle = "Review Details"
@@ -38,7 +34,6 @@ struct MediaDetailsEntryView: View {
     @Binding var newMedia: Media
     
     // View state
-    //@State private var state: EntryState = .reviewingDetails
     @State private var presentCamera = false
     @State private var presentPhotosPicker = false
     
@@ -123,27 +118,5 @@ struct MediaDetailsEntryView: View {
                 mediaTypeSymbol = Image(.compactCassette)
             }
         }
-//        .onChange(of: state) { _, newValue in
-//            switch newValue {
-//            case .takingPhoto:
-//                presentCamera = true
-//                break
-//            case .selectingPhotos:
-//                presentPhotosPicker = true
-//                break
-//            default:
-//                break
-//            }
-//        }
-//        .onChange(of: presentCamera) { _, newValue in
-//            if newValue == false {
-//                self.state = .reviewingDetails
-//            }
-//        }
-//        .onChange(of: presentPhotosPicker) { _, newValue in
-//            if newValue == false {
-//                self.state = .reviewingDetails
-//            }
-//        }
     }
 }
