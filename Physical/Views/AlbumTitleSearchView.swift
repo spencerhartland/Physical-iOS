@@ -11,43 +11,63 @@ import MusicKit
 struct AlbumTitleSearchView: View {
     private let navTitle = "Add Media"
     private let albumTitleText = "Album Title"
-    private let albumTitlePrompt = "Miss Anthropocene"
+    private let albumTitlePrompts = ["Miss Anthropocene", "Art Angels", "Visions", "Halfaxa", "Geidi Primes", "Homogenic", "Utopia", "KiCk i"]
     private let albumTitleFooterText = "Search for and fetch album information from Apple Music or enter the title and continue to manually add details."
+    private let searchResultsHeaderText = "Search Results"
     private let continueButtonText = "Continue"
     
-    @Binding var albumTitle: String
-    var doneSearching: () -> Void
+    @State private var newMedia = Media()
     @State private var searchResults: MusicItemCollection<Album> = []
+    @State private var doneSearching = false
+    
+    // Animating prompts
+    @State private var prompt = 0
+    private let timer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        List {
-            Section {
-                TextField(albumTitlePrompt, text: $albumTitle)
-            } header: {
-                Text(albumTitleText)
-            } footer: {
-                if searchResults.isEmpty {
-                    Text(albumTitleFooterText)
+        NavigationStack {
+            List {
+                Section {
+                    TextField(albumTitlePrompts[prompt], text: $newMedia.title)
+                } header: {
+                    Text(albumTitleText)
+                } footer: {
+                    if searchResults.isEmpty {
+                        Text(albumTitleFooterText)
+                    }
+                }
+                
+                if !searchResults.isEmpty {
+                    Section {
+                        ForEach(searchResults) { album in
+                            Text("\(album.title) by \(album.artistName)")
+                        }
+                    } header: {
+                        Text(searchResultsHeaderText)
+                    }
                 }
             }
-            
-            ForEach(searchResults) { album in
-                Text("\(album.title) by \(album.artistName)")
+            .navigationTitle(navTitle)
+            .navigationDestination(isPresented: $doneSearching) {
+                MediaDetailsEntryView(newMedia: $newMedia)
             }
-        }
-        .toolbar {
-            ToolbarItemGroup {
-                Button(continueButtonText) {
-                    doneSearching()
+            .toolbar {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button(continueButtonText) {
+                        doneSearching = true
+                    }
+                    .disabled(newMedia.title.isEmpty)
                 }
-                .disabled(albumTitle.isEmpty)
-                .padding()
             }
-        }
-        .navigationTitle(navTitle)
-        .onChange(of: albumTitle) {
-            if MusicAuthorization.currentStatus == .authorized {
-                self.requestSearchResults(albumTitle)
+            .onChange(of: newMedia.title) {
+                if MusicAuthorization.currentStatus == .authorized {
+                    self.requestSearchResults(newMedia.title)
+                }
+            }
+            .onReceive(timer) { _ in
+                withAnimation(.smooth) {
+                    self.prompt = self.prompt < albumTitlePrompts.count - 1 ? self.prompt + 1 : 0
+                }
             }
         }
     }
@@ -62,7 +82,7 @@ struct AlbumTitleSearchView: View {
                     searchRequest.limit = 5
                     let searchResponse = try await searchRequest.response()
                     
-                    await self.updateSearchResults(searchResponse, for: albumTitle)
+                    await self.updateSearchResults(searchResponse, for: newMedia.title)
                 } catch {
                     print("Search request failed with error: \(error).")
                     await self.resetSearchResults()
@@ -72,8 +92,8 @@ struct AlbumTitleSearchView: View {
     }
     
     @MainActor
-    private func updateSearchResults(_ searchResponse: MusicCatalogSearchResponse, for searchTerrm: String) {
-        if self.albumTitle == searchTerrm {
+    private func updateSearchResults(_ searchResponse: MusicCatalogSearchResponse, for searchTerm: String) {
+        if self.newMedia.title == searchTerm {
             self.searchResults = searchResponse.albums
         }
     }
@@ -81,5 +101,19 @@ struct AlbumTitleSearchView: View {
     @MainActor
     private func resetSearchResults() {
         self.searchResults = []
+    }
+    
+    private func createMediaWithInfo(from album: Album) -> Media {
+        let newMedia = Media()
+        newMedia.title = album.title
+        newMedia.artist = album.artistName
+        newMedia.releaseDate = album.releaseDate ?? .now
+        guard let tracks = album.tracks else {
+            return newMedia
+        }
+        for track in tracks {
+            newMedia.tracks.append(track.title)
+        }
+        return newMedia
     }
 }

@@ -11,7 +11,11 @@ import MusicKit
 
 struct MediaCollectionView: View {
     private let navTitle = "Collection"
+    private let manualDetailsEntryText = "Enter manually"
+    private let barcodeDetailsEntryText = "Scan barcode"
     private let addMediaButtonSymbolName = "plus"
+    private let manualDetailsEntryButtonSymbolName = "character.cursor.ibeam"
+    private let barcodeButtonSymbolName = "barcode.viewfinder"
     private let menuDisclosureButtonSymbolName = "ellipsis.circle"
     private static let appleMusicPreferenceKey = "shouldAskForAppleMusicAuthorization"
     private let appleMusicDisabledAlertTitle = "Apple Music access is disabled!"
@@ -33,41 +37,59 @@ struct MediaCollectionView: View {
         NavigationStack {
             Text("Testing")
                 .navigationTitle(navTitle)
-                .navigationDestination(isPresented: $addingMedia) {
-                    MediaDetailsEntryView()
-                }
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        Button {
-                            if shouldAskForAppleMusicAuthorization {
-                                checkForMusicAuthorization()
+                        Menu {
+                            Button {
+                                if shouldAskForAppleMusicAuthorization {
+                                    checkForMusicAuthorization()
+                                }
+                                addingMedia.toggle()
+                            } label: {
+                                Label {
+                                    Text(manualDetailsEntryText)
+                                } icon: {
+                                    Image(systemName: manualDetailsEntryButtonSymbolName)
+                                }
                             }
-                            addingMedia.toggle()
+                            
+                            Button {
+                                // Scan barcode
+                            } label: {
+                                Label {
+                                    Text(barcodeDetailsEntryText)
+                                } icon: {
+                                    Image(systemName: barcodeButtonSymbolName)
+                                }
+                            }
                         } label: {
                             Image(systemName: addMediaButtonSymbolName)
                         }
-                        .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
-                            Button(enableInSettingsButtonText) {
-                                if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                                    openURL(settingsURL)
-                                }
-                            }
-                            Button(dontAskAgainButtonText) {
-                                shouldAskForAppleMusicAuthorization = false
-                            }
-                            Button(notNowButtonText, role: .cancel) {
-                                return
-                            }
-                        } message: {
-                            Text(appleMusicDisabledAlertMessage)
-                        }
-
+                        
                         Button {
                             // Trigger menu to sort collection
                         } label: {
                             Image(systemName: menuDisclosureButtonSymbolName)
                         }
                     }
+                }
+                .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
+                    Button(enableInSettingsButtonText) {
+                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                            openURL(settingsURL)
+                        }
+                    }
+                    Button(dontAskAgainButtonText) {
+                        shouldAskForAppleMusicAuthorization = false
+                    }
+                    Button(notNowButtonText, role: .cancel) {
+                        return
+                    }
+                } message: {
+                    Text(appleMusicDisabledAlertMessage)
+                }
+                .sheet(isPresented: $addingMedia) {
+                    AlbumTitleSearchView()
                 }
         }
     }
