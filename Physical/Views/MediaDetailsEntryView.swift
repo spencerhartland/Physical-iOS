@@ -13,6 +13,7 @@ fileprivate enum EntryState {
 }
 
 struct MediaDetailsEntryView: View {
+    // String constants
     private let navTitle = "Review Details"
     private let albumInfoSectionHeaderText = "Album info"
     private let mediaInfoSectionHeaderText = "Physical media"
@@ -21,11 +22,23 @@ struct MediaDetailsEntryView: View {
     private let albumReleaseDateText = "Release Date"
     private let mediaTypeText = "Media Type"
     private let mediaConditionText = "Media Condition"
+    private let takePhotoMenuItemText = "Take Photo"
+    private let photoLibarayMenuItemText = "Photo Library"
+    private let addImageText = "Add image"
     
+    // SF Symbol names
+    private let takePhotoMenuItemSymbol = "camera"
+    private let photoLibarayMenuItemSymbol = "photo.on.rectangle"
+    private let addImageSymbol = "photo.fill"
+    private let mediaConditionSymbol = "sparkles"
+    private let albumReleaseDateSymbol = "calendar"
+    private let compactDiscSymbol = "opticaldisc.fill"
+    
+    // The media being added to the collection
     @Binding var newMedia: Media
     
     // View state
-    @State private var state: EntryState = .reviewingDetails
+    //@State private var state: EntryState = .reviewingDetails
     @State private var presentCamera = false
     @State private var presentPhotosPicker = false
     
@@ -38,18 +51,18 @@ struct MediaDetailsEntryView: View {
             List {
                 Menu {
                     Button {
-                        self.state = .takingPhoto
+                        presentCamera = true
                     } label: {
-                        Label("Take Photo", systemImage: "camera")
+                        Label(takePhotoMenuItemText, systemImage: takePhotoMenuItemSymbol)
                     }
                     
                     Button {
-                        self.state = .selectingPhotos
+                        presentPhotosPicker = true
                     } label: {
-                        Label("Photo Library", systemImage: "photo.on.rectangle")
+                        Label(photoLibarayMenuItemText, systemImage: photoLibarayMenuItemSymbol)
                     }
                 } label: {
-                    ListItemLabel(color: .green, symbolName: "photo.fill", labelText: "Add image")
+                    ListItemLabel(color: .green, symbolName: addImageSymbol, labelText: addImageText)
                         .font(.headline)
                 }
                 
@@ -69,7 +82,7 @@ struct MediaDetailsEntryView: View {
                             Text($0.rawValue)
                         }
                     } label: {
-                        ListItemLabel(color: .purple, symbolName: "sparkles", labelText: mediaConditionText)
+                        ListItemLabel(color: .purple, symbolName: mediaConditionSymbol, labelText: mediaConditionText)
                     }
                 } header: {
                     Text(mediaInfoSectionHeaderText)
@@ -79,7 +92,7 @@ struct MediaDetailsEntryView: View {
                 Section {
                     // Release date
                     DatePicker(selection: $newMedia.releaseDate, displayedComponents: [.date]) {
-                        ListItemLabel(color: .red, symbolName: "calendar", labelText: albumReleaseDateText)
+                        ListItemLabel(color: .red, symbolName: albumReleaseDateSymbol, labelText: albumReleaseDateText)
                     }
                     // Title
                     TextField(albumTitleText, text: $newMedia.title)
@@ -93,6 +106,7 @@ struct MediaDetailsEntryView: View {
         .photosPicker(isPresented: $presentPhotosPicker, selection: $chosenImages, matching: .images)
         .fullScreenCover(isPresented: $presentCamera) {
             ImagePicker(image: $chosenImage)
+                .ignoresSafeArea()
         }
         .navigationTitle(navTitle)
         .background {
@@ -104,32 +118,32 @@ struct MediaDetailsEntryView: View {
             case .vinylRecord:
                 mediaTypeSymbol = Image(.vinylRecord)
             case .compactDisc:
-                mediaTypeSymbol = Image(systemName: "opticaldisc.fill")
+                mediaTypeSymbol = Image(systemName: compactDiscSymbol)
             case .compactCassette:
                 mediaTypeSymbol = Image(.compactCassette)
             }
         }
-        .onChange(of: state) { _, newValue in
-            switch newValue {
-            case .takingPhoto:
-                presentCamera = true
-                break
-            case .selectingPhotos:
-                presentPhotosPicker = true
-                break
-            default:
-                break
-            }
-        }
-        .onChange(of: presentCamera) { _, newValue in
-            if newValue == false {
-                self.state = .reviewingDetails
-            }
-        }
-        .onChange(of: presentPhotosPicker) { _, newValue in
-            if newValue == false {
-                self.state = .reviewingDetails
-            }
-        }
+//        .onChange(of: state) { _, newValue in
+//            switch newValue {
+//            case .takingPhoto:
+//                presentCamera = true
+//                break
+//            case .selectingPhotos:
+//                presentPhotosPicker = true
+//                break
+//            default:
+//                break
+//            }
+//        }
+//        .onChange(of: presentCamera) { _, newValue in
+//            if newValue == false {
+//                self.state = .reviewingDetails
+//            }
+//        }
+//        .onChange(of: presentPhotosPicker) { _, newValue in
+//            if newValue == false {
+//                self.state = .reviewingDetails
+//            }
+//        }
     }
 }
