@@ -115,8 +115,3 @@ struct MediaCollectionView: View {
         self.musicAuthorizationStatus = musicAuthorizationStatus
     }
 }
-
-#Preview {
-    MediaCollectionView()
-        .modelContainer(previewContainer)
-}
