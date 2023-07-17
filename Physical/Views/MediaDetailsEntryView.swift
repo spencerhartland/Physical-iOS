@@ -47,8 +47,8 @@ struct MediaDetailsEntryView: View {
     @State private var editMode = EditMode.inactive
     
     @State private var mediaTypeSymbol = Image(.vinylRecord)
-    @State private var chosenImages: PhotosPickerItem? = nil
-    @State private var chosenImage: UIImage? = nil
+    @State private var chosenImage: PhotosPickerItem? = nil
+    @State private var capturedImage: UIImage? = nil
     @State private var trackTitleText: String = ""
     
     var body: some View {
@@ -139,9 +139,9 @@ struct MediaDetailsEntryView: View {
                 }
             }
         }
-        .photosPicker(isPresented: $presentPhotosPicker, selection: $chosenImages, matching: .images)
+        .photosPicker(isPresented: $presentPhotosPicker, selection: $chosenImage, matching: .images)
         .fullScreenCover(isPresented: $presentCamera) {
-            ImagePicker(image: $chosenImage)
+            ImagePicker(image: $capturedImage)
                 .ignoresSafeArea()
         }
         .navigationTitle(navTitle)
