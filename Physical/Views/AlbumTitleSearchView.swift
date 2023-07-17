@@ -16,6 +16,7 @@ struct AlbumTitleSearchView: View {
     private let searchResultsHeaderText = "Search Results"
     private let continueButtonText = "Continue"
     
+    
     @State private var newMedia = Media()
     @State private var searchResults: MusicItemCollection<Album> = []
     @State private var doneSearching = false
@@ -40,7 +41,12 @@ struct AlbumTitleSearchView: View {
                 if !searchResults.isEmpty {
                     Section {
                         ForEach(searchResults) { album in
-                            Text("\(album.title) by \(album.artistName)")
+                            Button {
+                                updateMediaWithInfo(from: album)
+                                doneSearching = true
+                            } label: {
+                                SearchResultListItem(for: album)
+                            }
                         }
                     } header: {
                         Text(searchResultsHeaderText)
@@ -103,17 +109,22 @@ struct AlbumTitleSearchView: View {
         self.searchResults = []
     }
     
-    private func createMediaWithInfo(from album: Album) -> Media {
-        let newMedia = Media()
+    private func updateMediaWithInfo(from album: Album) {
         newMedia.title = album.title
         newMedia.artist = album.artistName
         newMedia.releaseDate = album.releaseDate ?? .now
-        guard let tracks = album.tracks else {
-            return newMedia
+        Task {
+            do {
+                let detailedAlbum = try await album.with([.tracks])
+                guard let tracks = detailedAlbum.tracks else {
+                    print("Error while unwrapping collection of tracks.")
+                    return
+                }
+                newMedia.tracks = []
+                for track in tracks {
+                    newMedia.tracks.append(track.title)
+                }
+            }
         }
-        for track in tracks {
-            newMedia.tracks.append(track.title)
-        }
-        return newMedia
     }
 }

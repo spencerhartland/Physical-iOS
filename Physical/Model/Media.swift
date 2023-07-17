@@ -23,7 +23,7 @@ final class Media {
         self.releaseDate = .now
         self.title = ""
         self.artist = ""
-        self.tracks = [""]
+        self.tracks = []
     }
     
     init(type: MediaType, condition: MediaCondition, releaseDate: Date, title: String, artist: String, tracks: [String]) {
