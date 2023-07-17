@@ -114,17 +114,25 @@ struct AlbumTitleSearchView: View {
         newMedia.artist = album.artistName
         newMedia.releaseDate = album.releaseDate ?? .now
         Task {
-            do {
-                let detailedAlbum = try await album.with([.tracks])
-                guard let tracks = detailedAlbum.tracks else {
-                    print("Error while unwrapping collection of tracks.")
-                    return
-                }
-                newMedia.tracks = []
-                for track in tracks {
-                    newMedia.tracks.append(track.title)
-                }
+            newMedia.tracks = await fetchTracks(from: album)
+        }
+    }
+    
+    private func fetchTracks(from album: Album) async -> [String] {
+        do {
+            let detailedAlbum = try await album.with([.tracks])
+            guard let tracks = detailedAlbum.tracks else {
+                print("Error while unwrapping collection of tracks.")
+                return []
             }
+            var tracksArray = [String]()
+            for track in tracks {
+                tracksArray.append(track.title)
+            }
+            return tracksArray
+        } catch {
+            print("Error getting tracks: \(error.localizedDescription)")
+            return []
         }
     }
 }
