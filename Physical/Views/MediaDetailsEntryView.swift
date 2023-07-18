@@ -50,28 +50,41 @@ struct MediaDetailsEntryView: View {
     @State private var chosenImage: PhotosPickerItem? = nil
     @State private var capturedImage: UIImage? = nil
     @State private var trackTitleText: String = ""
+    @State private var screenSize: CGSize = {
+        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            return .zero
+        }
+        
+        return window.screen.bounds.size
+    }()
     
     var body: some View {
         NavigationStack {
             List {
-                // Add image
-                Menu {
-                    // Take Photo
-                    Button {
-                        presentCamera = true
+                Section {
+                    // Add image
+                    Menu {
+                        // Take Photo
+                        Button {
+                            presentCamera = true
+                        } label: {
+                            Label(takePhotoMenuItemText, systemImage: takePhotoMenuItemSymbol)
+                        }
+                        
+                        // Photo Library
+                        Button {
+                            presentPhotosPicker = true
+                        } label: {
+                            Label(photoLibarayMenuItemText, systemImage: photoLibarayMenuItemSymbol)
+                        }
                     } label: {
-                        Label(takePhotoMenuItemText, systemImage: takePhotoMenuItemSymbol)
+                        ListItemLabel(color: .green, symbolName: addImageSymbol, labelText: addImageText)
+                            .font(.headline)
                     }
-                    
-                    // Photo Library
-                    Button {
-                        presentPhotosPicker = true
-                    } label: {
-                        Label(photoLibarayMenuItemText, systemImage: photoLibarayMenuItemSymbol)
+                } header : {
+                    if !newMedia.images.isEmpty {
+                        MediaImageCarousel(size: $screenSize, imageURLStrings: $newMedia.images)
                     }
-                } label: {
-                    ListItemLabel(color: .green, symbolName: addImageSymbol, labelText: addImageText)
-                        .font(.headline)
                 }
                 
                 // Physical Media

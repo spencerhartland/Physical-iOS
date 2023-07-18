@@ -16,6 +16,7 @@ final class Media {
     var title: String
     var artist: String
     var tracks: [String]
+    var images: [String]
     
     init() {
         self.type = .vinylRecord
@@ -24,15 +25,7 @@ final class Media {
         self.title = ""
         self.artist = ""
         self.tracks = []
-    }
-    
-    init(type: MediaType, condition: MediaCondition, releaseDate: Date, title: String, artist: String, tracks: [String]) {
-        self.type = type
-        self.condition = condition
-        self.releaseDate = releaseDate
-        self.title = title
-        self.artist = artist
-        self.tracks = tracks
+        self.images = []
     }
     
     enum MediaType: String, Codable, CaseIterable, Identifiable, Equatable {

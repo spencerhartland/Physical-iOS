@@ -113,6 +113,9 @@ struct AlbumTitleSearchView: View {
         newMedia.title = album.title
         newMedia.artist = album.artistName
         newMedia.releaseDate = album.releaseDate ?? .now
+        if let url = getArtworkURLString(from: album.artwork) {
+            newMedia.images = [url]
+        }
         Task {
             newMedia.tracks = await fetchTracks(from: album)
         }
@@ -134,5 +137,13 @@ struct AlbumTitleSearchView: View {
             print("Error getting tracks: \(error.localizedDescription)")
             return []
         }
+    }
+    
+    private func getArtworkURLString(from artwork: Artwork?) -> String? {
+        guard let artwork = artwork,
+              let url = artwork.url(width: 1080, height: 1080) else {
+            return nil
+        }
+        return url.absoluteString
     }
 }
