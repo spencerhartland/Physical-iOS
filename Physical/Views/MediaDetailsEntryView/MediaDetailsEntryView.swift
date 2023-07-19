@@ -37,10 +37,14 @@ struct MediaDetailsEntryView: View {
     private let beginEditingSymbol = "pencil"
     private let stopEditingSymbol = "pencil.slash"
     
+    // Model context
+    @Environment(\.modelContext) private var modelContext
+    
     // The media being added to the collection
     @Binding var newMedia: Media
     
     // View state
+    @Binding var addingMedia: Bool
     @State private var presentCamera = false
     @State private var presentPhotosPicker = false
     @FocusState private var focusInTrackField: Bool
@@ -57,6 +61,11 @@ struct MediaDetailsEntryView: View {
         
         return window.screen.bounds.size
     }()
+    
+    init(newMedia: Binding<Media>, isPresented: Binding<Bool>) {
+        self._newMedia = newMedia
+        self._addingMedia = isPresented
+    }
     
     var body: some View {
         NavigationStack {
@@ -178,6 +187,12 @@ struct MediaDetailsEntryView: View {
             if !focused && !trackTitleText.isEmpty {
                 newMedia.tracks.append(trackTitleText)
                 trackTitleText = ""
+            }
+        }
+        .toolbar {
+            Button("Continue") {
+                modelContext.insert(newMedia)
+                addingMedia = false
             }
         }
     }

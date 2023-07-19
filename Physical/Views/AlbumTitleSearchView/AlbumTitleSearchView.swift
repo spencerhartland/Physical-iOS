@@ -16,6 +16,7 @@ struct AlbumTitleSearchView: View {
     private let searchResultsHeaderText = "Search Results"
     private let continueButtonText = "Continue"
     
+    @Binding var addingMedia: Bool
     
     @State private var newMedia = Media()
     @State private var searchResults: MusicItemCollection<Album> = []
@@ -24,6 +25,10 @@ struct AlbumTitleSearchView: View {
     // Animating prompts
     @State private var prompt = 0
     private let timer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
+    
+    init(isPresented: Binding<Bool>) {
+        self._addingMedia = isPresented
+    }
     
     var body: some View {
         NavigationStack {
@@ -55,7 +60,7 @@ struct AlbumTitleSearchView: View {
             }
             .navigationTitle(navTitle)
             .navigationDestination(isPresented: $doneSearching) {
-                MediaDetailsEntryView(newMedia: $newMedia)
+                MediaDetailsEntryView(newMedia: $newMedia, isPresented: $addingMedia)
             }
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {

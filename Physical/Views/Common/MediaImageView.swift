@@ -9,11 +9,9 @@ import SwiftUI
 
 struct MediaImageView: View {
     private let placeholderAlbumArtSymbolName = "music.note"
-    private let loadingSymbolName = "rays"
     
     let url: URL?
     @Binding var screenSize: CGSize
-    @State private var imageManager = ImageManager()
     @State private var offset: CGSize = .zero
     
     init(url: String, size: Binding<CGSize>) {
@@ -30,8 +28,8 @@ struct MediaImageView: View {
         let imageSize = screenSize.width * 0.85
         let roundedRect = RoundedRectangle(cornerRadius: 8)
         ZStack {
-            if let uiImage = imageManager.image {
-                Image(uiImage: uiImage)
+            AsyncImage(url: url) { image in
+                image
                     .resizable()
                     .clipShape(roundedRect)
                     .aspectRatio(contentMode: .fit)
@@ -40,23 +38,8 @@ struct MediaImageView: View {
                         roundedRect.stroke(lineWidth: 0.5)
                             .foregroundStyle(.secondary)
                     }
-            } else {
-                Color(UIColor.secondarySystemGroupedBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: imageSize, height: imageSize)
-                    .overlay {
-                        VStack {
-                            Image(systemName: placeholderAlbumArtSymbolName)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .padding(imageSize * 0.2)
-                                .foregroundStyle(.ultraThinMaterial)
-                            Image(systemName: loadingSymbolName)
-                                .frame(width: 32)
-                                .symbolEffect(.variableColor)
-                        }
-                    }
+            } placeholder: {
+                mediaImagePlaceholder
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -74,15 +57,23 @@ struct MediaImageView: View {
                     }
                 })
         )
-        .task {
-            if let imageURL = url {
-                do {
-                    try await imageManager.load(imageURL)
-                } catch {
-                    print("Error loading image: \(error.localizedDescription)")
+    }
+    
+    private var mediaImagePlaceholder: some View {
+        let imageSize = screenSize.width * 0.85
+        return Color(UIColor.secondarySystemGroupedBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .aspectRatio(contentMode: .fit)
+            .frame(width: imageSize, height: imageSize)
+            .overlay {
+                VStack {
+                    Image(systemName: placeholderAlbumArtSymbolName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(imageSize * 0.2)
+                        .foregroundStyle(.ultraThinMaterial)
                 }
             }
-        }
     }
     
     private func calculateAngle(onXAxis: Bool) -> Angle {

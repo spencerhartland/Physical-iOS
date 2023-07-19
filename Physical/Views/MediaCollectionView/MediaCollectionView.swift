@@ -16,7 +16,7 @@ struct MediaCollectionView: View {
     private let addMediaButtonSymbolName = "plus"
     private let manualDetailsEntryButtonSymbolName = "character.cursor.ibeam"
     private let barcodeButtonSymbolName = "barcode.viewfinder"
-    private let menuDisclosureButtonSymbolName = "ellipsis.circle"
+    private let sortMenuButtonSymbolName = "line.3.horizontal.decrease.circle"
     private static let appleMusicPreferenceKey = "shouldAskForAppleMusicAuthorization"
     private let appleMusicDisabledAlertTitle = "Apple Music access is disabled!"
     private let enableInSettingsButtonText = "Enable in Settings"
@@ -66,10 +66,10 @@ struct MediaCollectionView: View {
                             Image(systemName: addMediaButtonSymbolName)
                         }
                         
-                        Button {
+                        Menu {
                             // Trigger menu to sort collection
                         } label: {
-                            Image(systemName: menuDisclosureButtonSymbolName)
+                            Image(systemName: sortMenuButtonSymbolName)
                         }
                     }
                 }
@@ -89,7 +89,7 @@ struct MediaCollectionView: View {
                     Text(appleMusicDisabledAlertMessage)
                 }
                 .sheet(isPresented: $addingMedia) {
-                    AlbumTitleSearchView()
+                    AlbumTitleSearchView(isPresented: $addingMedia)
                 }
         }
     }
