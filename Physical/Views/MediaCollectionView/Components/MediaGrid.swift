@@ -6,13 +6,23 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MediaGrid: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    var collection: [Media]
+    
+    init(_ collection: [Media]) {
+        self.collection = collection
     }
-}
-
-#Preview {
-    MediaGrid()
+    
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 128))]) {
+                ForEach(collection) {
+                    MediaThumbnail(for: $0)
+                }
+            }
+            .padding()
+        }
+    }
 }

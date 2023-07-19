@@ -25,8 +25,8 @@ struct MediaCollectionView: View {
     private let appleMusicDisabledAlertMessage = "Physical uses Apple Music to automatically populate information about new additions to your collection."
     
     @AppStorage(MediaCollectionView.appleMusicPreferenceKey) var shouldAskForAppleMusicAuthorization: Bool = true
-    @Environment(\.modelContext) var modelContext
     @Environment(\.openURL) private var openURL
+    @Environment(\.modelContext) private var modelContext
     @Query private var collection: [Media]
     
     @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
@@ -35,7 +35,7 @@ struct MediaCollectionView: View {
     
     var body: some View {
         NavigationStack {
-            Text("Testing")
+            MediaGrid(collection)
                 .navigationTitle(navTitle)
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
