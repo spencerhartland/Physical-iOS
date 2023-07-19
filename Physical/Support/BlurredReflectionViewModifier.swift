@@ -18,7 +18,7 @@ private struct BlurredReflectionViewModifier: ViewModifier {
                     content
                         .blur(radius: 8.0)
                     content
-                        .blur(radius: 24.0)
+                        .blur(radius: 16.0)
                 }
                     .opacity(0.33)
                 .rotation3DEffect(calculateAngle(onXAxis: true), axis: (x: 1, y: 0, z: 0))
