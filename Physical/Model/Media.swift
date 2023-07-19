@@ -10,8 +10,25 @@ import SwiftData
 
 @Model
 final class Media {
-    var type: MediaType
-    var condition: MediaCondition
+    private var rawType: String
+    private var rawCondition: String
+    
+    var type: MediaType {
+        get {
+            return MediaType(rawValue: self.rawType)!
+        }
+        set {
+            self.rawType = newValue.rawValue
+        }
+    }
+    var condition: MediaCondition {
+        get {
+            return MediaCondition(rawValue: self.rawCondition)!
+        }
+        set {
+            self.rawCondition = newValue.rawValue
+        }
+    }
     var releaseDate: Date
     var title: String
     var artist: String
@@ -19,8 +36,8 @@ final class Media {
     var images: [String]
     
     init() {
-        self.type = .vinylRecord
-        self.condition = .nearMint
+        self.rawType = MediaType.vinylRecord.rawValue
+        self.rawCondition = MediaCondition.nearMint.rawValue
         self.releaseDate = .now
         self.title = ""
         self.artist = ""
