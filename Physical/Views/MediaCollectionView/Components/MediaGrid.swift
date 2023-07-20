@@ -9,6 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct MediaGrid: View {
+    private let allMediaSectionHeaderText = "All media"
+    
     var collection: [Media]
     
     init(_ collection: [Media]) {
@@ -17,9 +19,15 @@ struct MediaGrid: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 128))]) {
-                ForEach(collection) {
-                    MediaThumbnail(for: $0)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 128))], alignment: .leading) {
+                // All media
+                Section {
+                    ForEach(collection) {
+                        MediaThumbnail(for: $0, ornamented: true)
+                    }
+                } header: {
+                    Text(allMediaSectionHeaderText)
+                        .font(.title.weight(.semibold))
                 }
             }
             .padding()

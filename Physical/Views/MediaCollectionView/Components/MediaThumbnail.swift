@@ -8,17 +8,24 @@
 import SwiftUI
 
 struct MediaThumbnail: View {
-    private let placeholderAlbumArtSymbolName = "music.note"
+    private let placeholderAlbumArtSymbol = "music.note"
+    private let compactDiscSymbol = "opticaldisc.fill"
     
     let media: Media
+    let ornamented: Bool
     
-    init(for media: Media) {
+    init(for media: Media, ornamented: Bool) {
         self.media = media
+        self.ornamented = ornamented
     }
     
     var body: some View {
         VStack(alignment: .leading) {
             albumArt
+                .padding([.trailing, .bottom], ornamented ? 8 : 0)
+                .overlay {
+                    if ornamented { mediaTypeOrnament }
+                }
             albumInfo
         }
     }
@@ -39,6 +46,25 @@ struct MediaThumbnail: View {
         }
     }
     
+    private var mediaTypeOrnament: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                RoundedRectangle(cornerRadius: 4)
+                    .foregroundStyle(.ultraThinMaterial)
+                    .frame(width: 32, height: 32)
+                    .shadow(radius: 0.5)
+                    .overlay {
+                        mediaTypeSymbol()
+                            .resizable()
+                            .padding(4)
+                            .foregroundStyle(.white)
+                    }
+            }
+        }
+    }
+    
     private var albumArtPlaceholder: some View {
         Color(UIColor.secondarySystemGroupedBackground)
             .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -46,7 +72,7 @@ struct MediaThumbnail: View {
             .shadow(radius: 2)
             .overlay {
                 GeometryReader {
-                    Image(systemName: placeholderAlbumArtSymbolName)
+                    Image(systemName: placeholderAlbumArtSymbol)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .padding($0.size.width * 0.2)
@@ -64,6 +90,17 @@ struct MediaThumbnail: View {
             Text(media.artist)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+        }
+    }
+    
+    private func mediaTypeSymbol() -> Image {
+        switch media.type {
+        case .vinylRecord:
+            return Image(.vinylRecord)
+        case .compactDisc:
+            return Image(systemName: compactDiscSymbol)
+        case .compactCassette:
+            return Image(.compactCassette)
         }
     }
 }
