@@ -134,7 +134,7 @@ struct MediaDetailsEntryView: View {
             }
         } header : {
             if !newMedia.images.isEmpty {
-                MediaImageCarousel(size: $screenSize, imageURLStrings: $newMedia.images)
+                MediaImageCarousel(size: screenSize, imageURLStrings: newMedia.images)
             }
         }
     }

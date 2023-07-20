@@ -96,9 +96,9 @@ struct MediaCollectionView: View {
         switch MusicAuthorization.currentStatus {
         case .notDetermined:
             musicAuthorizationDenied = false
-            Task {
-                let musicAuthStatus = await MusicAuthorization.request()
-                await self.update(with: musicAuthStatus)
+            Task.detached {
+                let authorizationStatus = await MusicAuthorization.request()
+                musicAuthorizationStatus = authorizationStatus
             }
         case .denied:
             musicAuthorizationDenied = true

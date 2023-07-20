@@ -56,7 +56,7 @@ struct MediaThumbnail: View {
                     .frame(width: 32, height: 32)
                     .shadow(radius: 0.5)
                     .overlay {
-                        mediaTypeSymbol()
+                        mediaTypeSymbol
                             .resizable()
                             .padding(4)
                             .foregroundStyle(.white)
@@ -91,7 +91,7 @@ struct MediaThumbnail: View {
         }
     }
     
-    private func mediaTypeSymbol() -> Image {
+    private var mediaTypeSymbol: Image {
         switch media.type {
         case .vinylRecord:
             return Image(.vinylRecord)

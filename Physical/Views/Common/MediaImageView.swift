@@ -12,17 +12,17 @@ struct MediaImageView: View {
     private let placeholderAlbumArtSymbolName = "music.note"
     
     let url: URL?
-    @Binding var screenSize: CGSize
+    var screenSize: CGSize
     private var motion = MotionObserver()
     
-    init(url: String, size: Binding<CGSize>) {
+    init(url: String, size: CGSize) {
         self.url = URL(string: url)
-        self._screenSize = size
+        self.screenSize = size
     }
     
-    init(url: URL?, size: Binding<CGSize>) {
+    init(url: URL?, size: CGSize) {
         self.url = url
-        self._screenSize = size
+        self.screenSize = size
     }
     
     var body: some View {

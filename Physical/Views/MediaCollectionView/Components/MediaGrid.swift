@@ -31,7 +31,7 @@ struct MediaGrid: View {
                     }
                 } header: {
                     Text(allMediaSectionHeaderText)
-                        .font(.title.weight(.semibold))
+                        .font(.title2.weight(.semibold))
                 }
             }
             .padding()
