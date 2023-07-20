@@ -71,13 +71,11 @@ struct MediaThumbnail: View {
             .aspectRatio(contentMode: .fit)
             .shadow(radius: 2)
             .overlay {
-                GeometryReader {
-                    Image(systemName: placeholderAlbumArtSymbol)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding($0.size.width * 0.2)
-                        .foregroundStyle(.ultraThinMaterial)
-                }
+                Image(systemName: placeholderAlbumArtSymbol)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding()
+                    .foregroundStyle(.ultraThinMaterial)
             }
     }
     
