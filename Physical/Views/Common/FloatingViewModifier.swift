@@ -7,12 +7,23 @@
 
 import SwiftUI
 
-struct FloatingViewModifier: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct FloatingViewModifier: ViewModifier {
+    var roll: Double
+    var pitch: Double
+    var yaw: Double
+    let screenSize: CGSize
+    
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .rotation3DEffect(.degrees(roll), axis: (x: 0, y: -1, z: 0))
+            .rotation3DEffect(.degrees(pitch), axis: (x: -1, y: 0, z: 0))
+            .rotation3DEffect(.degrees(yaw), axis: (x: 0, y: 0, z: 1))
     }
 }
 
-#Preview {
-    FloatingViewModifier()
+extension View {
+    func floating(roll: Double, pitch: Double, yaw: Double, screenSize: CGSize) -> some View {
+        modifier(FloatingViewModifier(roll: roll, pitch: pitch, yaw: yaw, screenSize: screenSize))
+    }
 }

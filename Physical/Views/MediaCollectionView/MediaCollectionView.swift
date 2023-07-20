@@ -26,8 +26,6 @@ struct MediaCollectionView: View {
     
     @AppStorage(MediaCollectionView.appleMusicPreferenceKey) var shouldAskForAppleMusicAuthorization: Bool = true
     @Environment(\.openURL) private var openURL
-    @Environment(\.modelContext) private var modelContext
-    @Query private var collection: [Media]
     
     @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
     @State private var musicAuthorizationDenied = false
@@ -35,7 +33,7 @@ struct MediaCollectionView: View {
     
     var body: some View {
         NavigationStack {
-            MediaGrid(collection)
+            MediaGrid()
                 .navigationTitle(navTitle)
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
@@ -100,7 +98,7 @@ struct MediaCollectionView: View {
             musicAuthorizationDenied = false
             Task {
                 let musicAuthStatus = await MusicAuthorization.request()
-                self.update(with: musicAuthStatus)
+                await self.update(with: musicAuthStatus)
             }
         case .denied:
             musicAuthorizationDenied = true

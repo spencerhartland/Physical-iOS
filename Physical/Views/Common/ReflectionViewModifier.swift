@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-private struct BlurredReflectionViewModifier: ViewModifier {
+private struct ReflectionViewModifier: ViewModifier {
     var roll: Double
     var pitch: Double
     var yaw: Double
@@ -32,6 +32,6 @@ private struct BlurredReflectionViewModifier: ViewModifier {
 
 extension View {
     func reflection(roll: Double, pitch: Double, yaw: Double, screenSize: CGSize) -> some View {
-        modifier(BlurredReflectionViewModifier(roll: roll, pitch: pitch, yaw: yaw, screenSize: screenSize))
+        modifier(ReflectionViewModifier(roll: roll, pitch: pitch, yaw: yaw, screenSize: screenSize))
     }
 }

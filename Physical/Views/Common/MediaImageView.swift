@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MediaImageView: View {
     private let placeholderAlbumArtSymbolName = "music.note"
     
     let url: URL?
     @Binding var screenSize: CGSize
-    @State private var offset: CGSize = .zero
+    private var motion = MotionObserver()
     
     init(url: String, size: Binding<CGSize>) {
         self.url = URL(string: url)
@@ -26,37 +27,31 @@ struct MediaImageView: View {
     
     var body: some View {
         let imageSize = screenSize.width * 0.85
-        let roundedRect = RoundedRectangle(cornerRadius: 8)
         ZStack {
             AsyncImage(url: url) { image in
-                image
-                    .resizable()
-                    .clipShape(roundedRect)
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: imageSize, height: imageSize)
-                    .overlay {
-                        roundedRect.stroke(lineWidth: 0.5)
-                            .foregroundStyle(.secondary)
-                    }
+                albumArt(image, size: imageSize)
             } placeholder: {
                 mediaImagePlaceholder
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .rotation3DEffect(calculateAngle(onXAxis: true), axis: (x: -1, y: 0, z: 0))
-        .rotation3DEffect(calculateAngle(onXAxis: false), axis: (x: 0, y: 1, z: 0))
-        .reflection(offset: $offset, screenSize: screenSize)
-        .gesture(
-            DragGesture()
-                .onChanged({ value in
-                    offset = value.translation
-                })
-                .onEnded({ _ in
-                    withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.32, blendDuration: 0.32)) {
-                        offset = .zero
-                    }
-                })
-        )
+        .floating(roll: motion.roll, pitch: motion.pitch, yaw: motion.yaw, screenSize: screenSize)
+        .reflection(roll: motion.roll, pitch: motion.pitch, yaw: motion.yaw, screenSize: screenSize)
+        .onAppear {
+            motion.startUpdates()
+        }
+    }
+    
+    private func albumArt(_ image: Image, size: CGFloat) -> some View {
+        let roundedRect = RoundedRectangle(cornerRadius: 8)
+        return image
+            .resizable()
+            .clipShape(roundedRect)
+            .aspectRatio(contentMode: .fit)
+            .frame(width: size, height: size)
+            .overlay {
+                roundedRect.stroke(lineWidth: 0.5)
+                    .foregroundStyle(.secondary)
+            }
     }
     
     private var mediaImagePlaceholder: some View {
@@ -74,10 +69,5 @@ struct MediaImageView: View {
                         .foregroundStyle(.ultraThinMaterial)
                 }
             }
-    }
-    
-    private func calculateAngle(onXAxis: Bool) -> Angle {
-        let progress = (onXAxis ? offset.height : offset.width) / (onXAxis ? screenSize.height : screenSize.width)
-        return .init(degrees: progress * 10)
     }
 }
