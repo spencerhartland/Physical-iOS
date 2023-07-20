@@ -8,22 +8,26 @@
 import SwiftUI
 import SwiftData
 
+enum DisplayModes {
+    case allMedia, sortByMediaType, sortByCondition
+}
+
 struct MediaGrid: View {
     private let allMediaSectionHeaderText = "All media"
     
-    var collection: [Media]
-    
-    init(_ collection: [Media]) {
-        self.collection = collection
-    }
+    @Query(sort: \.dateAdded, order: .reverse) private var collection: [Media]
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 128))], alignment: .leading) {
                 // All media
                 Section {
-                    ForEach(collection) {
-                        MediaThumbnail(for: $0, ornamented: true)
+                    ForEach(collection) { media in
+                        NavigationLink {
+                            MediaDetailView(media: media)
+                        } label: {
+                            MediaThumbnail(for: media, ornamented: true)
+                        }
                     }
                 } header: {
                     Text(allMediaSectionHeaderText)
