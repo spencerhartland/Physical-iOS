@@ -11,7 +11,7 @@ import PhotosUI
 struct MediaDetailsEntryView: View {
     // String constants
     private let navTitle = "Review Details"
-    private let albumInfoSectionHeaderText = "Album info"
+    private let albumDetailsSectionHeaderText = "Album details"
     private let mediaInfoSectionHeaderText = "Physical media"
     private let albumTitleText = "Title"
     private let albumArtistText = "Artist"
@@ -70,95 +70,10 @@ struct MediaDetailsEntryView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    // Add image
-                    Menu {
-                        // Take Photo
-                        Button {
-                            presentCamera = true
-                        } label: {
-                            Label(takePhotoMenuItemText, systemImage: takePhotoMenuItemSymbol)
-                        }
-                        
-                        // Photo Library
-                        Button {
-                            presentPhotosPicker = true
-                        } label: {
-                            Label(photoLibarayMenuItemText, systemImage: photoLibarayMenuItemSymbol)
-                        }
-                    } label: {
-                        ListItemLabel(color: .green, symbolName: addImageSymbol, labelText: addImageText)
-                            .font(.headline)
-                    }
-                } header : {
-                    if !newMedia.images.isEmpty {
-                        MediaImageCarousel(size: $screenSize, imageURLStrings: $newMedia.images)
-                    }
-                }
-                
-                // Physical Media
-                Section {
-                    // Type
-                    Picker(selection: $newMedia.type) {
-                        ForEach(Media.MediaType.allCases) {
-                            Text($0.rawValue)
-                        }
-                    } label: {
-                        ListItemLabel(color: .blue, symbol: mediaTypeSymbol, labelText: mediaTypeText)
-                    }
-                    // Condition
-                    Picker(selection: $newMedia.condition) {
-                        ForEach(Media.MediaCondition.allCases) {
-                            Text($0.rawValue)
-                        }
-                    } label: {
-                        ListItemLabel(color: .purple, symbolName: mediaConditionSymbol, labelText: mediaConditionText)
-                    }
-                } header: {
-                    Text(mediaInfoSectionHeaderText)
-                }
-                
-                // Album Info
-                Section {
-                    // Release date
-                    DatePicker(selection: $newMedia.releaseDate, displayedComponents: [.date]) {
-                        ListItemLabel(color: .red, symbolName: albumReleaseDateSymbol, labelText: albumReleaseDateText)
-                    }
-                    // Title
-                    TextField(albumTitleText, text: $newMedia.title)
-                    // Artist
-                    TextField(albumArtistText, text: $newMedia.artist)
-                } header: {
-                    Text(albumInfoSectionHeaderText)
-                }
-                
-                // Tracks
-                Section {
-                    if !newMedia.tracks.isEmpty {
-                        ForEach(Array(newMedia.tracks.enumerated()), id: \.element) { trackNum, trackTitle in
-                            HStack {
-                                Text("\(trackNum + 1)")
-                                    .foregroundStyle(.secondary)
-                                    .font(.headline)
-                                Text(trackTitle)
-                                    .lineLimit(1)
-                            }
-                        }
-                        .onDelete(perform: removeTrack)
-                        .onMove(perform: moveTrack)
-                    }
-                    
-                    TextField(addTrackText, text: $trackTitleText)
-                        .focused($focusInTrackField)
-                } header: {
-                    Text(tracksSectionHeaderText)
-                } footer: {
-                    HStack {
-                        Spacer()
-                        tracklistEditButton
-                        Spacer()
-                    }
-                }
+                mediaImagesSection
+                physicalMediaDetailsSection
+                albumDetailsSection
+                tracksSection
             }
         }
         .photosPicker(isPresented: $presentPhotosPicker, selection: $chosenImage, matching: .images)
@@ -193,6 +108,100 @@ struct MediaDetailsEntryView: View {
             Button("Continue") {
                 modelContext.insert(newMedia)
                 addingMedia = false
+            }
+        }
+    }
+    
+    private var mediaImagesSection: some View {
+        Section {
+            Menu {
+                // Take Photo
+                Button {
+                    presentCamera = true
+                } label: {
+                    Label(takePhotoMenuItemText, systemImage: takePhotoMenuItemSymbol)
+                }
+                
+                // Photo Library
+                Button {
+                    presentPhotosPicker = true
+                } label: {
+                    Label(photoLibarayMenuItemText, systemImage: photoLibarayMenuItemSymbol)
+                }
+            } label: {
+                ListItemLabel(color: .green, symbolName: addImageSymbol, labelText: addImageText)
+                    .font(.headline)
+            }
+        } header : {
+            if !newMedia.images.isEmpty {
+                MediaImageCarousel(size: $screenSize, imageURLStrings: $newMedia.images)
+            }
+        }
+    }
+    
+    private var physicalMediaDetailsSection: some View {
+        Section {
+            // Type
+            Picker(selection: $newMedia.type) {
+                ForEach(Media.MediaType.allCases) {
+                    Text($0.rawValue)
+                }
+            } label: {
+                ListItemLabel(color: .blue, symbol: mediaTypeSymbol, labelText: mediaTypeText)
+            }
+            // Condition
+            Picker(selection: $newMedia.condition) {
+                ForEach(Media.MediaCondition.allCases) {
+                    Text($0.rawValue)
+                }
+            } label: {
+                ListItemLabel(color: .purple, symbolName: mediaConditionSymbol, labelText: mediaConditionText)
+            }
+        } header: {
+            Text(mediaInfoSectionHeaderText)
+        }
+    }
+    
+    private var albumDetailsSection: some View {
+        Section {
+            // Release date
+            DatePicker(selection: $newMedia.releaseDate, displayedComponents: [.date]) {
+                ListItemLabel(color: .red, symbolName: albumReleaseDateSymbol, labelText: albumReleaseDateText)
+            }
+            // Title
+            TextField(albumTitleText, text: $newMedia.title)
+            // Artist
+            TextField(albumArtistText, text: $newMedia.artist)
+        } header: {
+            Text(albumDetailsSectionHeaderText)
+        }
+    }
+    
+    private var tracksSection: some View {
+        Section {
+            if !newMedia.tracks.isEmpty {
+                ForEach(Array(newMedia.tracks.enumerated()), id: \.element) { trackNum, trackTitle in
+                    HStack {
+                        Text("\(trackNum + 1)")
+                            .foregroundStyle(.secondary)
+                            .font(.headline)
+                        Text(trackTitle)
+                            .lineLimit(1)
+                    }
+                }
+                .onDelete(perform: removeTrack)
+                .onMove(perform: moveTrack)
+            }
+            
+            TextField(addTrackText, text: $trackTitleText)
+                .focused($focusInTrackField)
+        } header: {
+            Text(tracksSectionHeaderText)
+        } footer: {
+            HStack {
+                Spacer()
+                tracklistEditButton
+                Spacer()
             }
         }
     }
