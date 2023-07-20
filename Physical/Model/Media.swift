@@ -29,6 +29,7 @@ final class Media {
             self.rawCondition = newValue.rawValue
         }
     }
+    let dateAdded: Date
     var releaseDate: Date
     var title: String
     var artist: String
@@ -38,6 +39,7 @@ final class Media {
     init() {
         self.rawType = MediaType.vinylRecord.rawValue
         self.rawCondition = MediaCondition.nearMint.rawValue
+        self.dateAdded = .now
         self.releaseDate = .now
         self.title = ""
         self.artist = ""
