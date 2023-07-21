@@ -24,7 +24,8 @@ struct MediaDetailView: View {
     private let compactDiscSymbol = "opticaldisc.fill"
     private let horizontalDetailsSeparatorSymbol = "circle.fill"
     
-    var media: Media
+    @Bindable var media: Media
+    @State private var isEditing: Bool = false
     @State private var screenSize: CGSize = {
         guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return .zero
@@ -53,24 +54,27 @@ struct MediaDetailView: View {
                 }
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 moreMenu
             }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $isEditing) {
+            MediaDetailsEntryView(newMedia: $media, isPresented: $isEditing)
         }
     }
     
     private var moreMenu: some View {
         Menu {
             Button {
-                // media.isFavorite.toggle()
+                media.isFavorite.toggle()
             } label: {
-                Label(favoriteMenuItemText, systemImage: notFavoriteMenuItemSymbol)
+                Label(favoriteMenuItemText, systemImage: media.isFavorite ? favoriteMenuItemSymbol : notFavoriteMenuItemSymbol)
             }
             Divider()
             Button {
-                // Navigate to MediaDetailsEntryView
+                self.isEditing = true
             } label: {
                 Label(editMenuItemText, systemImage: editMenuItemSymbol)
             }

@@ -10,7 +10,7 @@ import PhotosUI
 
 struct MediaDetailsEntryView: View {
     // String constants
-    private let navTitle = "Review Details"
+    private let navTitle = "Media Details"
     private let albumDetailsSectionHeaderText = "Album details"
     private let mediaInfoSectionHeaderText = "Physical media"
     private let albumTitleText = "Title"
@@ -25,6 +25,7 @@ struct MediaDetailsEntryView: View {
     private let addTrackText = "Track title"
     private let tracklistEditButtonText = "Edit tracklist"
     private let tracklistCancelButtonText = "Cancel"
+    private let finishEditingButton = "Done"
     
     // SF Symbol names
     private let takePhotoMenuItemSymbol = "camera"
@@ -41,7 +42,7 @@ struct MediaDetailsEntryView: View {
     @Environment(\.modelContext) private var modelContext
     
     // The media being added to the collection
-    @Binding var newMedia: Media
+    @Bindable var newMedia: Media
     
     // View state
     @Binding var addingMedia: Bool
@@ -62,7 +63,7 @@ struct MediaDetailsEntryView: View {
         return window.screen.bounds.size
     }()
     
-    init(newMedia: Binding<Media>, isPresented: Binding<Bool>) {
+    init(newMedia: Bindable<Media>, isPresented: Binding<Bool>) {
         self._newMedia = newMedia
         self._addingMedia = isPresented
     }
@@ -106,7 +107,7 @@ struct MediaDetailsEntryView: View {
             }
         }
         .toolbar {
-            Button("Continue") {
+            Button(finishEditingButton) {
                 modelContext.insert(newMedia)
                 addingMedia = false
             }

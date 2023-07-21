@@ -18,7 +18,7 @@ struct AlbumTitleSearchView: View {
     
     @Binding var addingMedia: Bool
     
-    @State private var newMedia = Media()
+    @Bindable private var newMedia = Media()
     @State private var searchResults: MusicItemCollection<Album> = []
     @State private var doneSearching = false
     
