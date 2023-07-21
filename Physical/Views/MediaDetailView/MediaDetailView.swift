@@ -13,7 +13,7 @@ struct MediaDetailView: View {
     private let shareMenuItemText = "Share"
     private let deleteMenuItemText = "Delete from Collection"
     private let releaseDateText = "Released on"
-    private let dateAddedText = "Aquired on"
+    private let dateAddedText = "Added to Collection on"
     
     private let moreMenuSymbol = "ellipsis.circle.fill"
     private let notFavoriteMenuItemSymbol = "heart"
@@ -94,7 +94,7 @@ struct MediaDetailView: View {
                     .font(.title3)
                     .foregroundStyle(.secondary)
             }
-            .padding(.bottom, 16)
+            .padding(.bottom, 8)
             // Details
             HStack {
                 HStack(spacing: 4) {
@@ -113,7 +113,7 @@ struct MediaDetailView: View {
             }
             .font(.system(.caption, weight: .medium))
             .foregroundStyle(.secondary)
-            .padding(.bottom, 32)
+            .padding(.bottom, 16)
         }
         .textCase(.none)
         .foregroundStyle(.primary)
