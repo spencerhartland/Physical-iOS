@@ -35,6 +35,9 @@ final class Media {
     var artist: String
     var tracks: [String]
     var images: [String]
+    var notes: String
+    var genre: String
+    var isFavorite: Bool
     
     init() {
         self.rawType = MediaType.vinylRecord.rawValue
@@ -45,6 +48,9 @@ final class Media {
         self.artist = ""
         self.tracks = []
         self.images = []
+        self.notes = ""
+        self.genre = ""
+        self.isFavorite = false
     }
     
     enum MediaType: String, Codable, CaseIterable, Identifiable, Equatable {

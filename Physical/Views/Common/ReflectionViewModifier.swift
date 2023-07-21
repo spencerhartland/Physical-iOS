@@ -23,8 +23,8 @@ private struct ReflectionViewModifier: ViewModifier {
                         .blur(radius: 16.0)
                 }
                     .opacity(0.33)
-                    .rotation3DEffect(.degrees(roll), axis: (x: 0, y: 1, z: 0))
-                    .rotation3DEffect(.degrees(pitch), axis: (x: 1, y: 0, z: 0))
+                    .rotation3DEffect(.degrees(roll), axis: (x: 0, y: -1, z: 0))
+                    .rotation3DEffect(.degrees(pitch), axis: (x: -1, y: 0, z: 0))
                     .rotation3DEffect(.degrees(yaw), axis: (x: 0, y: 0, z: 1))
             )
     }

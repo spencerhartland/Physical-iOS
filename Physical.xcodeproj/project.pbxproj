@@ -82,7 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				003661FF2A56374E009FCEA8 /* PhysicalApp.swift */,
-				0088FEC82A5A09F700FEAF8B /* Model */,
+				0088FEC82A5A09F700FEAF8B /* Models */,
 				0088FEC92A5A0A0600FEAF8B /* Views */,
 				0088FECA2A5A0DAE00FEAF8B /* Support */,
 				003662032A563754009FCEA8 /* Assets.xcassets */,
@@ -99,12 +99,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		0088FEC82A5A09F700FEAF8B /* Model */ = {
+		0088FEC82A5A09F700FEAF8B /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				0088FEC62A5A09BC00FEAF8B /* Media.swift */,
+				00F5FBB92A69156C00FCAA61 /* MotionObserver.swift */,
 			);
-			path = Model;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		0088FEC92A5A0A0600FEAF8B /* Views */ = {
@@ -122,7 +123,6 @@
 		0088FECA2A5A0DAE00FEAF8B /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				00F5FBB92A69156C00FCAA61 /* MotionObserver.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
