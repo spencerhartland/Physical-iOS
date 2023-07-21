@@ -14,6 +14,8 @@
 		003662042A563754009FCEA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662032A563754009FCEA8 /* Assets.xcassets */; };
 		003662072A563754009FCEA8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662062A563754009FCEA8 /* Preview Assets.xcassets */; };
 		0088FEC72A5A09BC00FEAF8B /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0088FEC62A5A09BC00FEAF8B /* Media.swift */; };
+		008B64802A6A165F00586C69 /* GenreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B647F2A6A165F00586C69 /* GenreManager.swift */; };
+		008B64822A6A1E8A00586C69 /* GenreSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B64812A6A1E8A00586C69 /* GenreSelectionView.swift */; };
 		009A57C92A609346000EF6F8 /* AlbumTitleSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */; };
 		009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */; };
 		00CFE3B42A6531BB004BE57E /* SearchResultListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CFE3B32A6531BB004BE57E /* SearchResultListItem.swift */; };
@@ -37,6 +39,8 @@
 		003662032A563754009FCEA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		003662062A563754009FCEA8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		0088FEC62A5A09BC00FEAF8B /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
+		008B647F2A6A165F00586C69 /* GenreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreManager.swift; sourceTree = "<group>"; };
+		008B64812A6A1E8A00586C69 /* GenreSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreSelectionView.swift; sourceTree = "<group>"; };
 		009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumTitleSearchView.swift; sourceTree = "<group>"; };
 		009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItemLabel.swift; sourceTree = "<group>"; };
 		00CFE3B32A6531BB004BE57E /* SearchResultListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultListItem.swift; sourceTree = "<group>"; };
@@ -104,6 +108,7 @@
 			children = (
 				0088FEC62A5A09BC00FEAF8B /* Media.swift */,
 				00F5FBB92A69156C00FCAA61 /* MotionObserver.swift */,
+				008B647F2A6A165F00586C69 /* GenreManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -186,6 +191,7 @@
 			children = (
 				00DEC2682A613F3800353643 /* ImagePicker.swift */,
 				009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */,
+				008B64812A6A1E8A00586C69 /* GenreSelectionView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -282,11 +288,13 @@
 				00F810862A669DD700D0EAEA /* MediaThumbnail.swift in Sources */,
 				0027ECDB2A5B99C2001090E4 /* DataEntry.swift in Sources */,
 				00F5FBB82A69110600FCAA61 /* MediaDetailView.swift in Sources */,
+				008B64822A6A1E8A00586C69 /* GenreSelectionView.swift in Sources */,
 				003662022A56374E009FCEA8 /* MediaCollectionView.swift in Sources */,
 				0027ECD92A5B98E3001090E4 /* MediaDetailsEntryView.swift in Sources */,
 				009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */,
 				00DEC2692A613F3800353643 /* ImagePicker.swift in Sources */,
 				00CFE3B82A65E261004BE57E /* ReflectionViewModifier.swift in Sources */,
+				008B64802A6A165F00586C69 /* GenreManager.swift in Sources */,
 				00CFE3B42A6531BB004BE57E /* SearchResultListItem.swift in Sources */,
 				003662002A56374E009FCEA8 /* PhysicalApp.swift in Sources */,
 				00F5FBBC2A691DA000FCAA61 /* FloatingViewModifier.swift in Sources */,

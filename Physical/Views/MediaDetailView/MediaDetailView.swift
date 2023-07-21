@@ -109,7 +109,7 @@ struct MediaDetailView: View {
                 Text(media.releaseDate, format: .dateTime.year())
                 Image(systemName: horizontalDetailsSeparatorSymbol)
                     .font(.system(size: 3))
-                Text("Genre")
+                Text(media.genre)
             }
             .font(.system(.caption, weight: .medium))
             .foregroundStyle(.secondary)

@@ -164,6 +164,19 @@ struct MediaDetailsEntryView: View {
     
     private var albumDetailsSection: some View {
         Section {
+            // Genre
+            NavigationLink {
+                GenreSelectionView(selection: $newMedia.genre)
+            } label: {
+                HStack {
+                    ListItemLabel(color: .orange, symbolName: "guitars.fill", labelText: "Genre")
+                    Spacer()
+                    if !newMedia.genre.isEmpty {
+                        Text(newMedia.genre)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
             // Release date
             DatePicker(selection: $newMedia.releaseDate, displayedComponents: [.date]) {
                 ListItemLabel(color: .red, symbolName: albumReleaseDateSymbol, labelText: albumReleaseDateText)

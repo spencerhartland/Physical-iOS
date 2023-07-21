@@ -114,33 +114,45 @@ struct AlbumTitleSearchView: View {
         self.searchResults = []
     }
     
+    @MainActor
     private func updateMediaWithInfo(from album: Album) {
+        Task {
+            let albumRelatedData = await fetchRelatedData(from: album)
+            if let data = albumRelatedData {
+                self.updateMediaWithDetailedInfo(genre: data.0, tracks: data.1)
+            }
+        }
         newMedia.title = album.title
         newMedia.artist = album.artistName
         newMedia.releaseDate = album.releaseDate ?? .now
         if let url = getArtworkURLString(from: album.artwork) {
             newMedia.images = [url]
         }
-        Task {
-            newMedia.tracks = await fetchTracks(from: album)
-        }
     }
     
-    private func fetchTracks(from album: Album) async -> [String] {
+    @MainActor
+    private func updateMediaWithDetailedInfo(genre: String, tracks: [String]) {
+        newMedia.genre = genre
+        newMedia.tracks = tracks
+    }
+    
+    private func fetchRelatedData(from album: Album) async -> (String, [String])? {
         do {
-            let detailedAlbum = try await album.with([.tracks])
-            guard let tracks = detailedAlbum.tracks else {
-                print("Error while unwrapping collection of tracks.")
-                return []
+            let detailedAlbum = try await album.with([.tracks, .genres])
+            guard let tracks = detailedAlbum.tracks,
+                  let genres = detailedAlbum.genres,
+                  let primaryGenre = genres.first else {
+                print("Error fetching detailed album.")
+                return nil
             }
             var tracksArray = [String]()
             for track in tracks {
                 tracksArray.append(track.title)
             }
-            return tracksArray
+            return (primaryGenre.name, tracksArray)
         } catch {
-            print("Error getting tracks: \(error.localizedDescription)")
-            return []
+            print("Error fetching detailed album: \(error.localizedDescription)")
+            return nil
         }
     }
     
