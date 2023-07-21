@@ -9,6 +9,7 @@ import SwiftUI
 import MusicKit
 
 struct GenreSelectionView: View {
+    private let navTitle = "Genre"
     private let genreSelectionHeaderText = "Select a genre"
     private let selectionIndicatorSymbol = "checkmark"
     
@@ -34,6 +35,8 @@ struct GenreSelectionView: View {
                 }
             }
         }
+        .navigationTitle(navTitle)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             manager.fetchGenres()
         }

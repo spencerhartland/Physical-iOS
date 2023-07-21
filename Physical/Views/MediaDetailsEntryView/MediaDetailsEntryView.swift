@@ -74,6 +74,7 @@ struct MediaDetailsEntryView: View {
                 physicalMediaDetailsSection
                 albumDetailsSection
                 tracksSection
+                notesSection
             }
         }
         .photosPicker(isPresented: $presentPhotosPicker, selection: $chosenImage, matching: .images)
@@ -216,6 +217,7 @@ struct MediaDetailsEntryView: View {
                 tracklistEditButton
                 Spacer()
             }
+            .padding(.top)
         }
     }
     
@@ -239,6 +241,14 @@ struct MediaDetailsEntryView: View {
             .buttonStyle(.bordered)
             .disabled($newMedia.tracks.isEmpty)
             Spacer()
+        }
+    }
+    
+    private var notesSection: some View {
+        NavigationLink {
+            MediaNotesEntryView(notes: $newMedia.notes)
+        } label: {
+            ListItemLabel(color: .yellow, symbolName: "note.text", labelText: "Notes")
         }
     }
     

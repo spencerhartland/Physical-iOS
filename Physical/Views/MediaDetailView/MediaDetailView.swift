@@ -43,6 +43,15 @@ struct MediaDetailView: View {
             } footer: {
                 tracklistFooter
             }
+            
+            // Notes
+            if !media.notes.isEmpty {
+                Section {
+                    Text(media.notes)
+                } header: {
+                    Text("Notes")
+                }
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -89,10 +98,13 @@ struct MediaDetailView: View {
                 Text(media.title)
                     .font(.title.weight(.semibold))
                     .foregroundStyle(.primary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
                 // Artist
                 Text(media.artist)
                     .font(.title3)
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
             .padding(.bottom, 8)
             // Details
