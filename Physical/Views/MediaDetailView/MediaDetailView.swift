@@ -24,6 +24,9 @@ struct MediaDetailView: View {
     private let compactDiscSymbol = "opticaldisc.fill"
     private let horizontalDetailsSeparatorSymbol = "circle.fill"
     
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    
     @Bindable var media: Media
     @State private var isEditing: Bool = false
     @State private var screenSize: CGSize = {
@@ -85,7 +88,8 @@ struct MediaDetailView: View {
             }
             Divider()
             Button(role: .destructive) {
-                // Delete media
+                modelContext.delete(media)
+                dismiss()
             } label: {
                 Label(deleteMenuItemText, systemImage: deleteMenuItemSymbol)
             }
