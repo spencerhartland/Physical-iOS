@@ -33,9 +33,11 @@ struct MediaCollectionView: View {
     @State private var musicAuthorizationDenied = false
     @State private var addingMedia = false
     
+    @Query private var collection: [Media]
+    
     var body: some View {
         NavigationStack {
-            MediaGrid(sorting: collectionSorting, filter: collectionFiltering)
+            MediaGrid(collection, sorting: collectionSorting, filter: collectionFiltering)
                 .navigationTitle(navTitle)
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
@@ -135,7 +137,7 @@ struct MediaCollectionView: View {
             musicAuthorizationDenied = false
             Task.detached {
                 let authorizationStatus = await MusicAuthorization.request()
-                musicAuthorizationStatus = authorizationStatus
+                await self.update(with: authorizationStatus)
             }
         case .denied:
             musicAuthorizationDenied = true
