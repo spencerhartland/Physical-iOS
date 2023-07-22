@@ -70,14 +70,19 @@ enum MediaSorting: String, Identifiable, CaseIterable {
 }
 
 struct MediaGrid: View {
-    @Query private var collection: [Media]
-    @State private var sections: [String:[Media]] = [:]
-    
+    private var collection: [Media]
     private var sorting: MediaSorting
     
-    init(sorting: MediaSorting, filter: MediaFilter) {
-        self.sorting = sorting
-        self._collection = Query(filter: filter.predicate, sort: [sorting.sortDescriptor])
+    @State private var sections: [String:[Media]] = [:]
+    
+    init(_ collection: [Media], sorting: MediaSorting, filter: MediaFilter) {
+        do {
+            self.sorting = sorting
+            self.collection = try collection.filter(filter.predicate).sorted(using: sorting.sortDescriptor)
+        } catch {
+            print("Error filtering and sorting collection: \(error.localizedDescription)")
+            self.collection = collection
+        }
     }
     
     var body: some View {
