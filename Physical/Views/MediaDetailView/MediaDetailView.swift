@@ -14,6 +14,7 @@ struct MediaDetailView: View {
     private let deleteMenuItemText = "Delete from Collection"
     private let releaseDateText = "Released on"
     private let dateAddedText = "Added to Collection on"
+    private let conditionStringFormatSpecifier = "Condition: %@"
     
     private let moreMenuSymbol = "ellipsis.circle.fill"
     private let notFavoriteMenuItemSymbol = "heart"
@@ -141,6 +142,7 @@ struct MediaDetailView: View {
     
     private var tracklistFooter: some View {
         VStack(alignment: .leading) {
+            Text(String(format: conditionStringFormatSpecifier, media.condition.rawValue))
             Text("\(releaseDateText) \(media.releaseDate, format: .dateTime.month().day().year())")
             Text("\(dateAddedText) \(media.dateAdded, format: .dateTime.month().day().year())")
         }

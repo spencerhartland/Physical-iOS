@@ -1,5 +1,5 @@
 //
-//  MotionObserver.swift
+//  Motion.swift
 //  Physical
 //
 //  Created by Spencer Hartland on 7/20/23.
@@ -10,13 +10,13 @@ import SwiftData
 import SwiftUI
 
 @Observable
-final class MotionObserver {
+final class Motion {
     private let xMultiplier = 0.1
     private let yOffset = -0.1
     private let yMultiplier = 0.1
     private let zMultiplier = 0.01
     private let frequency = 1.0 / 50.0 // 50 times per second
-    private var motion = CMMotionManager()
+    private var manager = CMMotionManager()
     var roll: Double = 0.0
     var pitch: Double = 0.0
     var yaw: Double = 0.0
@@ -24,7 +24,7 @@ final class MotionObserver {
     private var counter: Int = 0
     
     func startUpdates() {
-        motion.startDeviceMotionUpdates(to: .main) { data, error in
+        manager.startDeviceMotionUpdates(to: .main) { data, error in
             if let error = error {
                 print("Error occurred while starting device motion updates: \(error.localizedDescription)")
                 return

@@ -13,7 +13,7 @@ struct MediaImageView: View {
     
     let url: URL?
     var screenSize: CGSize
-    private var motion = MotionObserver()
+    private var motion = Motion()
     
     init(url: String, size: CGSize) {
         self.url = URL(string: url)

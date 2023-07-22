@@ -9,19 +9,19 @@ import Foundation
 import SwiftData
 import MusicKit
 
-private struct GenresResponse: Decodable {
+fileprivate struct GenresResponse: Decodable {
     let data: [Genre]
 }
 
 @Observable
-final class GenreManager {
-    var genres: [Genre]
+class MusicGenres {
+    var all: [Genre]
     
     init() {
-        self.genres = []
+        self.all = []
     }
     
-    func fetchGenres() {
+    func fetch() {
         Task {
             do {
                 let countryCode = try await MusicDataRequest.currentCountryCode
@@ -40,6 +40,6 @@ final class GenreManager {
     
     @MainActor
     private func update(_ genres: [Genre]) {
-        self.genres = genres
+        self.all = genres
     }
 }

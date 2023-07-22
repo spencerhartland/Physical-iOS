@@ -10,8 +10,8 @@ import SwiftData
 
 @Model
 final class Media {
-    private var rawType: String
-    private var rawCondition: String
+    var rawType: String
+    var rawCondition: String
     
     var type: MediaType {
         get {

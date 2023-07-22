@@ -13,7 +13,7 @@ struct GenreSelectionView: View {
     private let genreSelectionHeaderText = "Select a genre"
     private let selectionIndicatorSymbol = "checkmark"
     
-    private var manager = GenreManager()
+    private var genres = MusicGenres()
     
     @Binding var selectedGenre: String
     
@@ -22,7 +22,7 @@ struct GenreSelectionView: View {
     }
     
     var body: some View {
-        List(manager.genres) { genre in
+        List(genres.all) { genre in
             HStack {
                 Button(genre.name) {
                     selectedGenre = genre.name
@@ -38,7 +38,7 @@ struct GenreSelectionView: View {
         .navigationTitle(navTitle)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            manager.fetchGenres()
+            genres.fetch()
         }
     }
 }

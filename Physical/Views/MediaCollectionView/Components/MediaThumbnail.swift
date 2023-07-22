@@ -10,11 +10,12 @@ import SwiftUI
 struct MediaThumbnail: View {
     private let placeholderAlbumArtSymbol = "music.note"
     private let compactDiscSymbol = "opticaldisc.fill"
+    private let favoriteSymbol = "heart.fill"
     
     let media: Media
     let ornamented: Bool
     
-    init(for media: Media, ornamented: Bool) {
+    init(for media: Media, ornamented: Bool = true) {
         self.media = media
         self.ornamented = ornamented
     }

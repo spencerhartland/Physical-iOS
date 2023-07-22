@@ -16,7 +16,7 @@ struct MediaCollectionView: View {
     private let addMediaButtonSymbolName = "plus"
     private let manualDetailsEntryButtonSymbolName = "character.cursor.ibeam"
     private let barcodeButtonSymbolName = "barcode.viewfinder"
-    private let sortMenuButtonSymbolName = "line.3.horizontal.decrease.circle"
+    private let sortMenuButtonSymbolName = "ellipsis.circle"
     private static let appleMusicPreferenceKey = "shouldAskForAppleMusicAuthorization"
     private let appleMusicDisabledAlertTitle = "Apple Music access is disabled!"
     private let enableInSettingsButtonText = "Enable in Settings"
@@ -27,13 +27,15 @@ struct MediaCollectionView: View {
     @AppStorage(MediaCollectionView.appleMusicPreferenceKey) var shouldAskForAppleMusicAuthorization: Bool = true
     @Environment(\.openURL) private var openURL
     
+    @State private var collectionSorting: MediaSorting = .recentlyAdded
+    @State private var collectionFiltering: MediaFilter = .allMedia
     @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
     @State private var musicAuthorizationDenied = false
     @State private var addingMedia = false
     
     var body: some View {
         NavigationStack {
-            MediaGrid()
+            MediaGrid(sorting: collectionSorting, filter: collectionFiltering)
                 .navigationTitle(navTitle)
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
@@ -64,11 +66,7 @@ struct MediaCollectionView: View {
                             Image(systemName: addMediaButtonSymbolName)
                         }
                         
-                        Menu {
-                            // Trigger menu to sort collection
-                        } label: {
-                            Image(systemName: sortMenuButtonSymbolName)
-                        }
+                        filterAndSortMenu
                     }
                 }
                 .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
@@ -89,6 +87,45 @@ struct MediaCollectionView: View {
                 .sheet(isPresented: $addingMedia) {
                     AlbumTitleSearchView(isPresented: $addingMedia)
                 }
+        }
+    }
+    
+    private var filterAndSortMenu: some View {
+        Menu {
+            Menu("Filter") {
+                ForEach(MediaFilter.allCases) { filter in
+                    if filter != .allMedia {
+                        Button {
+                            collectionFiltering = (collectionFiltering == filter) ? .allMedia : filter
+                        } label: {
+                            Label {
+                                Text(filter.rawValue)
+                            } icon: {
+                                if collectionFiltering == filter {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Menu("Sort") {
+                ForEach(MediaSorting.allCases) { sort in
+                    Button {
+                        collectionSorting = sort
+                    } label: {
+                        Label {
+                            Text(sort.rawValue)
+                        } icon: {
+                            if collectionSorting == sort {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                }
+            }
+        } label: {
+            Image(systemName: sortMenuButtonSymbolName)
         }
     }
     

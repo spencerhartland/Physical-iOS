@@ -14,7 +14,7 @@
 		003662042A563754009FCEA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662032A563754009FCEA8 /* Assets.xcassets */; };
 		003662072A563754009FCEA8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662062A563754009FCEA8 /* Preview Assets.xcassets */; };
 		0088FEC72A5A09BC00FEAF8B /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0088FEC62A5A09BC00FEAF8B /* Media.swift */; };
-		008B64802A6A165F00586C69 /* GenreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B647F2A6A165F00586C69 /* GenreManager.swift */; };
+		008B64802A6A165F00586C69 /* MusicGenres.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B647F2A6A165F00586C69 /* MusicGenres.swift */; };
 		008B64822A6A1E8A00586C69 /* GenreSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B64812A6A1E8A00586C69 /* GenreSelectionView.swift */; };
 		009A57C92A609346000EF6F8 /* AlbumTitleSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */; };
 		009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */; };
@@ -24,7 +24,7 @@
 		00CFE3B82A65E261004BE57E /* ReflectionViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CFE3B72A65E261004BE57E /* ReflectionViewModifier.swift */; };
 		00DEC2692A613F3800353643 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DEC2682A613F3800353643 /* ImagePicker.swift */; };
 		00F5FBB82A69110600FCAA61 /* MediaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5FBB72A69110600FCAA61 /* MediaDetailView.swift */; };
-		00F5FBBA2A69156C00FCAA61 /* MotionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5FBB92A69156C00FCAA61 /* MotionObserver.swift */; };
+		00F5FBBA2A69156C00FCAA61 /* Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5FBB92A69156C00FCAA61 /* Motion.swift */; };
 		00F5FBBC2A691DA000FCAA61 /* FloatingViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5FBBB2A691DA000FCAA61 /* FloatingViewModifier.swift */; };
 		00F810712A66779800D0EAEA /* MediaImageCarousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F810702A66779800D0EAEA /* MediaImageCarousel.swift */; };
 		00F810822A669C9600D0EAEA /* MediaGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F810812A669C9600D0EAEA /* MediaGrid.swift */; };
@@ -40,7 +40,7 @@
 		003662032A563754009FCEA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		003662062A563754009FCEA8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		0088FEC62A5A09BC00FEAF8B /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
-		008B647F2A6A165F00586C69 /* GenreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreManager.swift; sourceTree = "<group>"; };
+		008B647F2A6A165F00586C69 /* MusicGenres.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicGenres.swift; sourceTree = "<group>"; };
 		008B64812A6A1E8A00586C69 /* GenreSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreSelectionView.swift; sourceTree = "<group>"; };
 		009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumTitleSearchView.swift; sourceTree = "<group>"; };
 		009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItemLabel.swift; sourceTree = "<group>"; };
@@ -50,7 +50,7 @@
 		00CFE3B72A65E261004BE57E /* ReflectionViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectionViewModifier.swift; sourceTree = "<group>"; };
 		00DEC2682A613F3800353643 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		00F5FBB72A69110600FCAA61 /* MediaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailView.swift; sourceTree = "<group>"; };
-		00F5FBB92A69156C00FCAA61 /* MotionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionObserver.swift; sourceTree = "<group>"; };
+		00F5FBB92A69156C00FCAA61 /* Motion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Motion.swift; sourceTree = "<group>"; };
 		00F5FBBB2A691DA000FCAA61 /* FloatingViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingViewModifier.swift; sourceTree = "<group>"; };
 		00F810702A66779800D0EAEA /* MediaImageCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaImageCarousel.swift; sourceTree = "<group>"; };
 		00F810812A669C9600D0EAEA /* MediaGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaGrid.swift; sourceTree = "<group>"; };
@@ -109,8 +109,8 @@
 			isa = PBXGroup;
 			children = (
 				0088FEC62A5A09BC00FEAF8B /* Media.swift */,
-				00F5FBB92A69156C00FCAA61 /* MotionObserver.swift */,
-				008B647F2A6A165F00586C69 /* GenreManager.swift */,
+				00F5FBB92A69156C00FCAA61 /* Motion.swift */,
+				008B647F2A6A165F00586C69 /* MusicGenres.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -297,7 +297,7 @@
 				009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */,
 				00DEC2692A613F3800353643 /* ImagePicker.swift in Sources */,
 				00CFE3B82A65E261004BE57E /* ReflectionViewModifier.swift in Sources */,
-				008B64802A6A165F00586C69 /* GenreManager.swift in Sources */,
+				008B64802A6A165F00586C69 /* MusicGenres.swift in Sources */,
 				00CFE3B42A6531BB004BE57E /* SearchResultListItem.swift in Sources */,
 				003662002A56374E009FCEA8 /* PhysicalApp.swift in Sources */,
 				00F5FBBC2A691DA000FCAA61 /* FloatingViewModifier.swift in Sources */,
@@ -306,7 +306,7 @@
 				00CFE3B62A65E208004BE57E /* MediaImageView.swift in Sources */,
 				00F810712A66779800D0EAEA /* MediaImageCarousel.swift in Sources */,
 				00F810822A669C9600D0EAEA /* MediaGrid.swift in Sources */,
-				00F5FBBA2A69156C00FCAA61 /* MotionObserver.swift in Sources */,
+				00F5FBBA2A69156C00FCAA61 /* Motion.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,8 +449,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -485,8 +485,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
