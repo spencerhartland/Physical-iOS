@@ -26,18 +26,18 @@ struct MediaCollectionView: View {
     
     @AppStorage(MediaCollectionView.appleMusicPreferenceKey) var shouldAskForAppleMusicAuthorization: Bool = true
     @Environment(\.openURL) private var openURL
+    @Environment(\.modelContext) private var context
     
-    @State private var collectionSorting: MediaSorting = .recentlyAdded
-    @State private var collectionFiltering: MediaFilter = .allMedia
     @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
     @State private var musicAuthorizationDenied = false
     @State private var addingMedia = false
     
-    @Query private var collection: [Media]
+    @State private var organizer = CollectionOrganizer()
+    @Query private var media: [Media]
     
     var body: some View {
         NavigationStack {
-            MediaGrid(collection, sorting: collectionSorting, filter: collectionFiltering)
+            MediaGrid(organizer.sections, thumbnailsOrnamented: (organizer.sorting == .byMediaType) ? false : true)
                 .navigationTitle(navTitle)
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
@@ -90,20 +90,32 @@ struct MediaCollectionView: View {
                     AlbumTitleSearchView(isPresented: $addingMedia)
                 }
         }
+        .onAppear {
+            organizer.makeSections(from: media)
+        }
+        .onChange(of: media) { _, _ in
+            organizer.makeSections(from: media)
+        }
+        .onChange(of: organizer.filter) { _, _ in
+            organizer.makeSections(from: media)
+        }
+        .onChange(of: organizer.sorting) { _, _ in
+            organizer.makeSections(from: media)
+        }
     }
     
     private var filterAndSortMenu: some View {
         Menu {
             Menu("Filter") {
-                ForEach(MediaFilter.allCases) { filter in
+                ForEach(CollectionFilter.allCases) { filter in
                     if filter != .allMedia {
                         Button {
-                            collectionFiltering = (collectionFiltering == filter) ? .allMedia : filter
+                            organizer.filter = (organizer.filter == filter) ? .allMedia : filter
                         } label: {
                             Label {
                                 Text(filter.rawValue)
                             } icon: {
-                                if collectionFiltering == filter {
+                                if organizer.filter == filter {
                                     Image(systemName: "checkmark")
                                 }
                             }
@@ -112,14 +124,14 @@ struct MediaCollectionView: View {
                 }
             }
             Menu("Sort") {
-                ForEach(MediaSorting.allCases) { sort in
+                ForEach(CollectionSorting.allCases) { sort in
                     Button {
-                        collectionSorting = sort
+                        organizer.sorting = sort
                     } label: {
                         Label {
                             Text(sort.rawValue)
                         } icon: {
-                            if collectionSorting == sort {
+                            if organizer.sorting == sort {
                                 Image(systemName: "checkmark")
                             }
                         }
