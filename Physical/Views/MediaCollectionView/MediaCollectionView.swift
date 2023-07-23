@@ -31,76 +31,67 @@ struct MediaCollectionView: View {
     @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
     @State private var musicAuthorizationDenied = false
     @State private var addingMedia = false
+    @State private var collectionSortOption: CollectionSorting = .recentlyAdded
+    @State private var collectionFilterOption: CollectionFilter = .allMedia
     
-    @State private var organizer = CollectionOrganizer()
     @Query private var media: [Media]
     
     var body: some View {
         NavigationStack {
-            MediaGrid(organizer.sections, thumbnailsOrnamented: (organizer.sorting == .byMediaType) ? false : true)
-                .navigationTitle(navTitle)
-                .toolbar {
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        Menu {
-                            Button {
-                                if shouldAskForAppleMusicAuthorization {
-                                    checkForMusicAuthorization()
+            CollectionOrganizer(media, sort: collectionSortOption, filter: collectionFilterOption) { sections in
+                MediaGrid(sections, thumbnailsOrnamented: (collectionSortOption == .byMediaType) ? false : true)
+                    .navigationTitle(navTitle)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .topBarTrailing) {
+                            Menu {
+                                Button {
+                                    if shouldAskForAppleMusicAuthorization {
+                                        checkForMusicAuthorization()
+                                    }
+                                    addingMedia.toggle()
+                                } label: {
+                                    Label {
+                                        Text(manualDetailsEntryText)
+                                    } icon: {
+                                        Image(systemName: manualDetailsEntryButtonSymbolName)
+                                    }
                                 }
-                                addingMedia.toggle()
+                                
+                                Button {
+                                    // Scan barcode
+                                } label: {
+                                    Label {
+                                        Text(barcodeDetailsEntryText)
+                                    } icon: {
+                                        Image(systemName: barcodeButtonSymbolName)
+                                    }
+                                }
                             } label: {
-                                Label {
-                                    Text(manualDetailsEntryText)
-                                } icon: {
-                                    Image(systemName: manualDetailsEntryButtonSymbolName)
-                                }
+                                Image(systemName: addMediaButtonSymbolName)
                             }
                             
-                            Button {
-                                // Scan barcode
-                            } label: {
-                                Label {
-                                    Text(barcodeDetailsEntryText)
-                                } icon: {
-                                    Image(systemName: barcodeButtonSymbolName)
-                                }
+                            filterAndSortMenu
+                        }
+                    }
+                    .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
+                        Button(enableInSettingsButtonText) {
+                            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                                openURL(settingsURL)
                             }
-                        } label: {
-                            Image(systemName: addMediaButtonSymbolName)
                         }
-                        
-                        filterAndSortMenu
-                    }
-                }
-                .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
-                    Button(enableInSettingsButtonText) {
-                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                            openURL(settingsURL)
+                        Button(dontAskAgainButtonText) {
+                            shouldAskForAppleMusicAuthorization = false
                         }
+                        Button(notNowButtonText, role: .cancel) {
+                            return
+                        }
+                    } message: {
+                        Text(appleMusicDisabledAlertMessage)
                     }
-                    Button(dontAskAgainButtonText) {
-                        shouldAskForAppleMusicAuthorization = false
+                    .sheet(isPresented: $addingMedia) {
+                        AlbumTitleSearchView(isPresented: $addingMedia)
                     }
-                    Button(notNowButtonText, role: .cancel) {
-                        return
-                    }
-                } message: {
-                    Text(appleMusicDisabledAlertMessage)
-                }
-                .sheet(isPresented: $addingMedia) {
-                    AlbumTitleSearchView(isPresented: $addingMedia)
-                }
-        }
-        .onAppear {
-            organizer.makeSections(from: media)
-        }
-        .onChange(of: media) { _, _ in
-            organizer.makeSections(from: media)
-        }
-        .onChange(of: organizer.filter) { _, _ in
-            organizer.makeSections(from: media)
-        }
-        .onChange(of: organizer.sorting) { _, _ in
-            organizer.makeSections(from: media)
+            }
         }
     }
     
@@ -110,12 +101,12 @@ struct MediaCollectionView: View {
                 ForEach(CollectionFilter.allCases) { filter in
                     if filter != .allMedia {
                         Button {
-                            organizer.filter = (organizer.filter == filter) ? .allMedia : filter
+                            collectionFilterOption = (collectionFilterOption == filter) ? .allMedia : filter
                         } label: {
                             Label {
                                 Text(filter.rawValue)
                             } icon: {
-                                if organizer.filter == filter {
+                                if collectionFilterOption == filter {
                                     Image(systemName: "checkmark")
                                 }
                             }
@@ -126,12 +117,12 @@ struct MediaCollectionView: View {
             Menu("Sort") {
                 ForEach(CollectionSorting.allCases) { sort in
                     Button {
-                        organizer.sorting = sort
+                        collectionSortOption = sort
                     } label: {
                         Label {
                             Text(sort.rawValue)
                         } icon: {
-                            if organizer.sorting == sort {
+                            if collectionSortOption == sort {
                                 Image(systemName: "checkmark")
                             }
                         }

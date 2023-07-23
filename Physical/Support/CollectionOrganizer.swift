@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import SwiftUI
 
 enum CollectionFilter: String, Identifiable, CaseIterable {
     case allMedia = "All Media"
@@ -75,48 +76,62 @@ struct OrganizerSection: Identifiable {
     var content: [Media]
 }
 
-@Observable
-final class CollectionOrganizer {
-    var sorting: CollectionSorting = .recentlyAdded
-    var filter: CollectionFilter = .allMedia
-    var sections: [OrganizerSection] = []
+struct CollectionOrganizer<Content: View>: View {
+    var content: ([OrganizerSection]) -> Content
+    var collection: [OrganizerSection]
     
-    func makeSections(from collection: [Media]) {
-        let sortedCollection = filterAndSort(collection)
-        sections = []
+    init(
+        _ collection: [Media],
+        sort: CollectionSorting,
+        filter: CollectionFilter,
+        @ViewBuilder content: @escaping ([OrganizerSection]) -> Content
+    ) {
+        let sorted = CollectionOrganizer.organize(collection, sort: sort, filter: filter)
+        self.collection = CollectionOrganizer.makeSections(from: sorted, sort: sort, filter: filter)
+        self.content = content
+    }
+    
+    var body: some View {
+        content(collection)
+    }
+    
+    private static func makeSections(from collection: [Media], sort: CollectionSorting, filter: CollectionFilter) -> [OrganizerSection] {
+        var result = [OrganizerSection]()
         do {
-            switch sorting {
+            switch sort {
             case .byMediaType:
                 for type in Media.MediaType.allCases {
-                    let media = try sortedCollection.filter(#Predicate {$0.rawType == type.rawValue })
-                    sections.append(OrganizerSection(title: type.rawValue, content: media))
+                    let media = try collection.filter(#Predicate {$0.rawType == type.rawValue })
+                    result.append(OrganizerSection(title: type.rawValue, content: media))
                 }
             case .byMediaCondition:
                 for condition in Media.MediaCondition.allCases {
-                    let media = try sortedCollection.filter(#Predicate{ $0.rawCondition == condition.rawValue })
-                    sections.append(OrganizerSection(title: condition.rawValue, content: media))
+                    let media = try collection.filter(#Predicate{ $0.rawCondition == condition.rawValue })
+                    result.append(OrganizerSection(title: condition.rawValue, content: media))
                 }
             case .byArtist:
                 var artist = ""
-                for item in sortedCollection {
+                for item in collection {
                     if item.artist != artist {
                         artist = item.artist
-                        let media = try sortedCollection.filter(#Predicate{ $0.artist.contains(artist) })
-                        sections.append(OrganizerSection(title: artist, content: media))
+                        let media = try collection.filter(#Predicate{ $0.artist.contains(artist) })
+                        result.append(OrganizerSection(title: artist, content: media))
                     }
                 }
             default:
-                sections.append(OrganizerSection(title: sorting.rawValue, content: sortedCollection))
+                result.append(OrganizerSection(title: sort.rawValue, content: collection))
             }
         } catch {
             print("Failed to sort collection: \(error.localizedDescription)")
         }
+        
+        return result
     }
     
-    private func filterAndSort(_ collection: [Media]) -> [Media] {
+    private static func organize(_ collection: [Media], sort: CollectionSorting, filter: CollectionFilter) -> [Media] {
         var result: [Media] = []
         do {
-            result = try collection.filter(filter.predicate).sorted(using: sorting.sortDescriptor)
+            result = try collection.filter(filter.predicate).sorted(using: sort.sortDescriptor)
         } catch {
             print("Error organizing collection  with provided predicate and sort descriptor: \(error.localizedDescription)")
         }
