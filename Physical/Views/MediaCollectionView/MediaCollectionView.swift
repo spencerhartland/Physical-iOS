@@ -38,60 +38,58 @@ struct MediaCollectionView: View {
     
     var body: some View {
         NavigationStack {
-            CollectionOrganizer(media, sort: collectionSortOption, filter: collectionFilterOption) { sections in
-                MediaGrid(sections, thumbnailsOrnamented: (collectionSortOption == .byMediaType) ? false : true)
-                    .navigationTitle(navTitle)
-                    .toolbar {
-                        ToolbarItemGroup(placement: .topBarTrailing) {
-                            Menu {
-                                Button {
-                                    if shouldAskForAppleMusicAuthorization {
-                                        checkForMusicAuthorization()
-                                    }
-                                    addingMedia.toggle()
-                                } label: {
-                                    Label {
-                                        Text(manualDetailsEntryText)
-                                    } icon: {
-                                        Image(systemName: manualDetailsEntryButtonSymbolName)
-                                    }
+            Collection(media, sort: collectionSortOption, filter: collectionFilterOption)
+                .navigationTitle(navTitle)
+                .toolbar {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        Menu {
+                            Button {
+                                if shouldAskForAppleMusicAuthorization {
+                                    checkForMusicAuthorization()
                                 }
-                                
-                                Button {
-                                    // Scan barcode
-                                } label: {
-                                    Label {
-                                        Text(barcodeDetailsEntryText)
-                                    } icon: {
-                                        Image(systemName: barcodeButtonSymbolName)
-                                    }
-                                }
+                                addingMedia.toggle()
                             } label: {
-                                Image(systemName: addMediaButtonSymbolName)
+                                Label {
+                                    Text(manualDetailsEntryText)
+                                } icon: {
+                                    Image(systemName: manualDetailsEntryButtonSymbolName)
+                                }
                             }
                             
-                            filterAndSortMenu
-                        }
-                    }
-                    .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
-                        Button(enableInSettingsButtonText) {
-                            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                                openURL(settingsURL)
+                            Button {
+                                // Scan barcode
+                            } label: {
+                                Label {
+                                    Text(barcodeDetailsEntryText)
+                                } icon: {
+                                    Image(systemName: barcodeButtonSymbolName)
+                                }
                             }
+                        } label: {
+                            Image(systemName: addMediaButtonSymbolName)
                         }
-                        Button(dontAskAgainButtonText) {
-                            shouldAskForAppleMusicAuthorization = false
-                        }
-                        Button(notNowButtonText, role: .cancel) {
-                            return
-                        }
-                    } message: {
-                        Text(appleMusicDisabledAlertMessage)
+                        
+                        filterAndSortMenu
                     }
-                    .sheet(isPresented: $addingMedia) {
-                        AlbumTitleSearchView(isPresented: $addingMedia)
+                }
+                .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
+                    Button(enableInSettingsButtonText) {
+                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                            openURL(settingsURL)
+                        }
                     }
-            }
+                    Button(dontAskAgainButtonText) {
+                        shouldAskForAppleMusicAuthorization = false
+                    }
+                    Button(notNowButtonText, role: .cancel) {
+                        return
+                    }
+                } message: {
+                    Text(appleMusicDisabledAlertMessage)
+                }
+                .sheet(isPresented: $addingMedia) {
+                    AlbumTitleSearchView(isPresented: $addingMedia)
+                }
         }
     }
     

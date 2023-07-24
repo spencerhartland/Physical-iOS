@@ -70,44 +70,84 @@ enum CollectionSorting: String, Identifiable, CaseIterable {
     }
 }
 
-struct OrganizerSection: Identifiable {
+struct Category: Identifiable {
     var id = UUID()
     var title: String
     var content: [Media]
 }
 
-struct CollectionOrganizer<Content: View>: View {
-    var content: ([OrganizerSection]) -> Content
-    var collection: [OrganizerSection]
+struct Collection: View {
+    var collection: [Category]
+    var sort: CollectionSorting
+    var filter: CollectionFilter
     
     init(
         _ collection: [Media],
         sort: CollectionSorting,
-        filter: CollectionFilter,
-        @ViewBuilder content: @escaping ([OrganizerSection]) -> Content
+        filter: CollectionFilter
     ) {
-        let sorted = CollectionOrganizer.organize(collection, sort: sort, filter: filter)
-        self.collection = CollectionOrganizer.makeSections(from: sorted, sort: sort, filter: filter)
-        self.content = content
+        self.sort = sort
+        self.filter = filter
+        // First, organize and sort the collection according to the selected options
+        let sorted = Collection.organize(collection, sort: sort, filter: filter)
+        // Next, split the collection content up into categories if appropriate based on sort option.
+        self.collection = Collection.categorize(sorted, sort: sort)
     }
     
     var body: some View {
-        content(collection)
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 128))], alignment: .leading, spacing: 16) {
+                ForEach(collection) { category in
+                    if !category.content.isEmpty {
+                        Section {
+                            ForEach(category.content) { media in
+                                NavigationLink {
+                                    MediaDetailView(media: media)
+                                } label: {
+                                    MediaThumbnail(for: media, ornamented: (sort == .byMediaType) ? false : true)
+                                }
+                            }
+                        } header: {
+                            Text(category.title)
+                                .font(.title2.weight(.semibold))
+                        }
+                    }
+                }
+            }
+            .padding()
+        }
     }
     
-    private static func makeSections(from collection: [Media], sort: CollectionSorting, filter: CollectionFilter) -> [OrganizerSection] {
-        var result = [OrganizerSection]()
+    // Splits the collection for sort options with discrete categories like
+    // media type, media condition, or artist. Each category is given a representative
+    // title and contains only the media belonging to that category.
+    //
+    // Sort options which are not discrete in nature, like recently added, will not be split up;
+    // a single category with the title set to the sort option's raw value will be created.
+    private static func categorize(_ collection: [Media], sort: CollectionSorting) -> [Category] {
+        var result = [Category]()
         do {
             switch sort {
             case .byMediaType:
                 for type in Media.MediaType.allCases {
                     let media = try collection.filter(#Predicate {$0.rawType == type.rawValue })
-                    result.append(OrganizerSection(title: type.rawValue, content: media))
+                    result.append(Category(title: type.rawValue, content: media))
                 }
             case .byMediaCondition:
                 for condition in Media.MediaCondition.allCases {
                     let media = try collection.filter(#Predicate{ $0.rawCondition == condition.rawValue })
-                    result.append(OrganizerSection(title: condition.rawValue, content: media))
+                    result.append(Category(title: condition.rawValue, content: media))
+                }
+            case .byTitle:
+                var firstLetter = ""
+                for item in collection {
+                    if let currentFirst = item.title.first?.lowercased(),
+                       currentFirst != firstLetter {
+                        firstLetter = currentFirst
+                        let uppercaseCurrentFirst = currentFirst.uppercased()
+                        let media = try collection.filter(#Predicate{ $0.title.starts(with: currentFirst) || $0.title.starts(with: uppercaseCurrentFirst) })
+                        result.append(Category(title: String(uppercaseCurrentFirst), content: media))
+                    }
                 }
             case .byArtist:
                 var artist = ""
@@ -115,11 +155,11 @@ struct CollectionOrganizer<Content: View>: View {
                     if item.artist != artist {
                         artist = item.artist
                         let media = try collection.filter(#Predicate{ $0.artist.contains(artist) })
-                        result.append(OrganizerSection(title: artist, content: media))
+                        result.append(Category(title: artist, content: media))
                     }
                 }
             default:
-                result.append(OrganizerSection(title: sort.rawValue, content: collection))
+                result.append(Category(title: sort.rawValue, content: collection))
             }
         } catch {
             print("Failed to sort collection: \(error.localizedDescription)")
@@ -128,6 +168,7 @@ struct CollectionOrganizer<Content: View>: View {
         return result
     }
     
+    // Organizes the entire collection by applying the selected filter and then sorting the remaining media.
     private static func organize(_ collection: [Media], sort: CollectionSorting, filter: CollectionFilter) -> [Media] {
         var result: [Media] = []
         do {
