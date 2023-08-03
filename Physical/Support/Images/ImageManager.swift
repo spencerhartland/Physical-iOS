@@ -53,22 +53,28 @@ final class ImageManager {
     }
     
     /// Uploads the image to server for long-term storage and public availability.
-    ///
+    /// 
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - request: The `URLRequest` to use for this upload.
-    func upload(_ image: UIImage, request: URLRequest) async throws {
+    ///
+    /// - Returns: The UUID string assigned to this image.
+    func upload(_ image: UIImage) async throws -> String {
         do {
             guard let imageData = image.pngData() else {
                 throw ImageManagerError.imageDataError
             }
             
+            let imageKey = UUID().uuidString
+            let request = try ImageRequest.urlRequest(forKey: imageKey, method: .PUT)
             let (_, response) = try await URLSession.shared.upload(for: request, from: imageData)
             
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 201 /* Created */ else {
                 throw ImageManagerError.invalidResponse
             }
+            
+            return imageKey
         }
     }
     
