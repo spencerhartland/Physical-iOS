@@ -9,10 +9,10 @@ import Foundation
 import UIKit
 
 enum ImageManagerError: String, Error {
-    case InvalidResponse = "The HTTP response is invalid or indicates error."
-    case UnsupportedImageType = "The image type is unsupported."
-    case ImageFetchError = "There was an issue fetching the image."
-    case ImageDataError = "There was an issue getting PNG data from the image."
+    case invalidResponse = "The HTTP response is invalid or indicates error."
+    case unsupportedImageType = "The image type is unsupported."
+    case imageFetchError = "There was an issue fetching the image."
+    case imageDataError = "There was an issue getting PNG data from the image."
 }
 
 final class ImageManager {
@@ -60,14 +60,14 @@ final class ImageManager {
     func upload(_ image: UIImage, request: URLRequest) async throws {
         do {
             guard let imageData = image.pngData() else {
-                throw ImageManagerError.ImageDataError
+                throw ImageManagerError.imageDataError
             }
             
             let (_, response) = try await URLSession.shared.upload(for: request, from: imageData)
             
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 201 /* Created */ else {
-                throw ImageManagerError.InvalidResponse
+                throw ImageManagerError.invalidResponse
             }
         }
     }
@@ -87,16 +87,16 @@ final class ImageManager {
             
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 200 else {
-                throw ImageManagerError.InvalidResponse
+                throw ImageManagerError.invalidResponse
             }
             
             guard let image = UIImage(data: data) else {
-                throw ImageManagerError.UnsupportedImageType
+                throw ImageManagerError.unsupportedImageType
             }
             
             return image
         } catch {
-            throw ImageManagerError.ImageFetchError
+            throw ImageManagerError.imageFetchError
         }
     }
 }
