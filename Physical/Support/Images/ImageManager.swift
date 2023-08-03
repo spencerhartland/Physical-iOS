@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 enum ImageManagerError: String, Error {
-    case InvalidResponse = "HTTP response is invalid or indicates error."
+    case InvalidResponse = "The HTTP response is invalid or indicates error."
     case UnsupportedImageType = "The image type is unsupported."
     case ImageFetchError = "There was an issue fetching the image."
     case ImageDataError = "There was an issue getting PNG data from the image."
