@@ -8,6 +8,10 @@
 import Foundation
 
 extension ImageManager {
+    enum ImageRequestError: String, Error {
+        case invalidURL
+    }
+    
     final class ImageRequest {
         private static let scheme = "https"
         private static let host = "api.spencerhartland.com"
@@ -17,22 +21,22 @@ extension ImageManager {
             case GET, PUT
         }
         
-        static func urlRequest(forKey key: String, method: HTTPMethod) -> URLRequest? {
-            if let url = url(forKey: key) {
-                var request = URLRequest(url: url)
-                request.httpMethod = method.rawValue
-            }
-            
-            return nil
+        static func urlRequest(forKey key: String, method: HTTPMethod) throws -> URLRequest {
+            let url = try url(forKey: key)
+            return URLRequest(url: url)
         }
         
-        static func url(forKey key: String) -> URL? {
+        static func url(forKey key: String) throws -> URL {
             var components = URLComponents()
             components.scheme = ImageRequest.scheme
             components.host = ImageRequest.host
             components.path = "\(ImageRequest.bucketName)/\(key).png"
             
-            return components.url
+            guard let url = components.url else {
+                throw ImageRequestError.invalidURL
+            }
+            
+            return url
         }
     }
 }
