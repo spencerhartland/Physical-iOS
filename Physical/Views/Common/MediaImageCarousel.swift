@@ -9,17 +9,22 @@ import SwiftUI
 
 struct MediaImageCarousel: View {
     var screenSize: CGSize
-    var imageURLStrings: [String]
+    var albumArtworkURL: String?
+    var imageKeys: [String]
     
-    init(size: CGSize, imageURLStrings: [String]) {
+    init(size: CGSize, albumArtworkURL: String?, imageKeys: [String]) {
         self.screenSize = size
-        self.imageURLStrings = imageURLStrings
+        self.albumArtworkURL = albumArtworkURL
+        self.imageKeys = imageKeys
     }
     
     var body: some View {
         TabView {
-            ForEach(imageURLStrings, id: \.self) { urlString in
-                MediaImageView(url: urlString, size: screenSize)
+            if let albumArtworkURL {
+                MediaImageView(url: albumArtworkURL, size: screenSize)
+            }
+            ForEach(imageKeys, id: \.self) { key in
+                MediaImageView(key: key, size: screenSize)
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))

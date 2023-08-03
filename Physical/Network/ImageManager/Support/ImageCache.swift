@@ -13,6 +13,7 @@ extension ImageManager {
         case cachesDirectoryWriteError
         case cachesDirectoryRemoveError
         case invalidCachesDirectoryURL
+        case invalidCacheData
     }
     
     final class ImageCache {
@@ -25,7 +26,7 @@ extension ImageManager {
             cache.setObject(image, forKey: key as NSString)
             // Add to ~/Library/Caches
             guard let data = image.pngData() else {
-                throw ImageManagerError.unsupportedImageType
+                throw ImageCacheError.invalidCacheData
             }
             let url = try filePath(forKey: key)
             try data.write(to: url)
@@ -42,7 +43,7 @@ extension ImageManager {
             let data = try Data(contentsOf: url)
             
             guard let image = UIImage(data: data) else {
-                throw ImageManagerError.unsupportedImageType
+                throw ImageCacheError.invalidCacheData
             }
             
             return image

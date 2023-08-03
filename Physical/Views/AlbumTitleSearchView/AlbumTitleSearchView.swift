@@ -126,7 +126,7 @@ struct AlbumTitleSearchView: View {
         newMedia.artist = album.artistName
         newMedia.releaseDate = album.releaseDate ?? .now
         if let url = getArtworkURLString(from: album.artwork) {
-            newMedia.images = [url]
+            newMedia.albumArtworkURL = url
         }
     }
     

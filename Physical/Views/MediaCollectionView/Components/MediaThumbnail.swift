@@ -33,7 +33,8 @@ struct MediaThumbnail: View {
     
     private var albumArt: some View {
         let roundedRect = RoundedRectangle(cornerRadius: 6.0)
-        return AsyncImage(url: URL(string: media.images[0])) { image in
+        // TODO: Update to show user images if album artwork is disabled / not there
+        return AsyncImage(url: URL(string: media.albumArtworkURL)) { image in
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)

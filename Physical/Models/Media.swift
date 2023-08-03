@@ -34,7 +34,10 @@ final class Media {
     var title: String
     var artist: String
     var tracks: [String]
-    var images: [String]
+    /// The URL string for the official album artwork provided by Apple Music.
+    var albumArtworkURL: String
+    /// A collection of keys associated with user-generated images.
+    var imageKeys: [String]
     var notes: String
     var genre: String
     var isFavorite: Bool
@@ -47,7 +50,8 @@ final class Media {
         self.title = ""
         self.artist = ""
         self.tracks = []
-        self.images = []
+        self.albumArtworkURL = ""
+        self.imageKeys = []
         self.notes = ""
         self.genre = ""
         self.isFavorite = false

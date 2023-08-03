@@ -11,26 +11,38 @@ import SwiftData
 struct MediaImageView: View {
     private let placeholderAlbumArtSymbolName = "music.note"
     
-    let url: URL?
-    var screenSize: CGSize
+    private let key: String?
+    private let url: URL?
+    private var screenSize: CGSize
     private var motion = Motion()
     
+    @State private var image: UIImage? = nil
+    
     init(url: String, size: CGSize) {
+        self.key = nil
         self.url = URL(string: url)
         self.screenSize = size
     }
     
     init(url: URL?, size: CGSize) {
+        self.key = nil
         self.url = url
+        self.screenSize = size
+    }
+    
+    init(key: String, size: CGSize) {
+        self.key = key
+        self.url = nil
         self.screenSize = size
     }
     
     var body: some View {
         let imageSize = screenSize.width * 0.85
         ZStack {
-            AsyncImage(url: url) { image in
-                albumArt(image, size: imageSize)
-            } placeholder: {
+            if let image {
+                let imageView = Image(uiImage: image)
+                albumArt(imageView, size: imageSize)
+            } else {
                 mediaImagePlaceholder
             }
         }
@@ -38,6 +50,17 @@ struct MediaImageView: View {
         .reflection(roll: motion.roll, pitch: motion.pitch, yaw: motion.yaw, screenSize: screenSize)
         .onAppear {
             motion.startUpdates()
+        }
+        .task {
+            do {
+                if let url {
+                    image = try await ImageManager.shared.fetchImage(url: url)
+                } else if let key {
+                    image = try await ImageManager.shared.retrieveImage(withKey: key)
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
     

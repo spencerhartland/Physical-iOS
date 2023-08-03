@@ -109,18 +109,17 @@ struct MediaDetailsEntryView: View {
                     let key = UUID().uuidString
                     // Cache the image
                     try ImageManager.shared.cache(image, withKey: key)
-                    Task {
-                        // Upload the image to server
-                        try await ImageManager.shared.upload(image, withKey: key)
-                    }
                     // Store the image key
+                    newMedia.imageKeys.append(key)
                 }
             } catch {
+                print("There was an error caching the image.")
                 print(error.localizedDescription)
             }
         }
         .toolbar {
             Button(finishEditingButton) {
+                uploadCachedImages()
                 modelContext.insert(newMedia)
                 addingMedia = false
             }
@@ -148,8 +147,8 @@ struct MediaDetailsEntryView: View {
                     .font(.headline)
             }
         } header : {
-            if !newMedia.images.isEmpty {
-                MediaImageCarousel(size: screenSize, imageURLStrings: newMedia.images)
+            if !newMedia.imageKeys.isEmpty || !newMedia.albumArtworkURL.isEmpty {
+                MediaImageCarousel(size: screenSize, albumArtworkURL: newMedia.albumArtworkURL, imageKeys: newMedia.imageKeys)
             }
         }
     }
@@ -280,6 +279,18 @@ struct MediaDetailsEntryView: View {
     private func endEditingIfTracklistEmpty() {
         if newMedia.tracks.isEmpty && editMode == .active {
             editMode = .inactive
+        }
+    }
+    
+    // MARK: - Image upload logic
+    
+    private func uploadCachedImages() {
+        Task {
+            do {
+                try await ImageManager.shared.uploadFromCache(keys: newMedia.imageKeys)
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }

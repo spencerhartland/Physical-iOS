@@ -8,14 +8,6 @@
 import Foundation
 import UIKit
 
-enum ImageManagerError: String, Error {
-    case invalidResponse = "The HTTP response is invalid or indicates error."
-    case unsupportedImageType = "The image type is unsupported."
-    case imageFetchError = "There was an issue fetching the image."
-    case imageDataError = "There was an issue getting PNG data from the image."
-    case imageDoesNotExist = "The requested image does not exist."
-}
-
 final class ImageManager {
     private let scheme = "https"
     private let host = "api.spencerhartland.com"
@@ -42,13 +34,15 @@ final class ImageManager {
         
         // Try fetching from server
         do {
-            let url = try ImageRequest.url(forKey: key)
+            guard let url = ImageRequest.url(forKey: key) else {
+                throw NetworkError.invalidURL
+            }
             let image = try await fetchImage(url: url)
             
             return image
         } catch {
             print(error.localizedDescription)
-            throw ImageManagerError.imageDoesNotExist
+            throw NetworkError.imageDoesNotExist
         }
     }
     
@@ -72,7 +66,7 @@ final class ImageManager {
     func upload(_ image: UIImage, withKey key: String) async throws {
         do {
             guard let imageData = image.pngData() else {
-                throw ImageManagerError.imageDataError
+                throw NetworkError.imageDataError
             }
             
             let request = try ImageRequest.urlRequest(forKey: key, method: .PUT)
@@ -80,8 +74,26 @@ final class ImageManager {
             
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 201 /* Created */ else {
-                throw ImageManagerError.invalidResponse
+                throw NetworkError.invalidHTTPResponse
             }
+        }
+    }
+    
+    /// Uploads all images with keys matching the provided keys to server.
+    ///
+    /// - Parameter keys: The keys of the images to upload.
+    func uploadFromCache(keys: [String]) async throws {
+        do {
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                for key in keys {
+                    let image = try cache.retrieveImage(forKey: key)
+                    group.addTask {
+                        try await self.upload(image, withKey: key)
+                    }
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
@@ -94,22 +106,25 @@ final class ImageManager {
         // TODO: Remove from server and remove key from media
     }
     
-    private func fetchImage(url: URL) async throws -> UIImage {
+    /// Fetches the image at the provided URL.
+    ///
+    /// - Parameter url: The URL at which the image is located.
+    func fetchImage(url: URL) async throws -> UIImage {
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
             
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 200 else {
-                throw ImageManagerError.invalidResponse
+                throw NetworkError.invalidHTTPResponse
             }
             
             guard let image = UIImage(data: data) else {
-                throw ImageManagerError.unsupportedImageType
+                throw NetworkError.unsupportedImageType
             }
             
             return image
         } catch {
-            throw ImageManagerError.imageFetchError
+            throw NetworkError.imageFetchError
         }
     }
 }

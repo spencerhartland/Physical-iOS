@@ -25,6 +25,8 @@
 		00A8139A2A7B1BA300596620 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A813992A7B1BA300596620 /* ImageCache.swift */; };
 		00A8139D2A7B2E8E00596620 /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A8139C2A7B2E8E00596620 /* ImageManager.swift */; };
 		00A8139F2A7B36AB00596620 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00A8139E2A7B36AB00596620 /* README.md */; };
+		00BBEED12A7C56180078F0B1 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBEED02A7C56180078F0B1 /* NetworkError.swift */; };
+		00BBEED32A7C61E10078F0B1 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBEED22A7C61E10078F0B1 /* HTTPRequest.swift */; };
 		00C57DB72A6C88A7000DDBD3 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C57DB62A6C88A7000DDBD3 /* Collection.swift */; };
 		00CFE3B42A6531BB004BE57E /* SearchResultListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CFE3B32A6531BB004BE57E /* SearchResultListItem.swift */; };
 		00CFE3B62A65E208004BE57E /* MediaImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CFE3B52A65E208004BE57E /* MediaImageView.swift */; };
@@ -57,6 +59,8 @@
 		00A813992A7B1BA300596620 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		00A8139C2A7B2E8E00596620 /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		00A8139E2A7B36AB00596620 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		00BBEED02A7C56180078F0B1 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
+		00BBEED22A7C61E10078F0B1 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
 		00C57DB62A6C88A7000DDBD3 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		00CFE3B32A6531BB004BE57E /* SearchResultListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultListItem.swift; sourceTree = "<group>"; };
 		00CFE3B52A65E208004BE57E /* MediaImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaImageView.swift; sourceTree = "<group>"; };
@@ -101,9 +105,9 @@
 			isa = PBXGroup;
 			children = (
 				003661FF2A56374E009FCEA8 /* PhysicalApp.swift */,
+				00BBEECD2A7C55880078F0B1 /* Network */,
 				0088FEC82A5A09F700FEAF8B /* Models */,
 				0088FEC92A5A0A0600FEAF8B /* Views */,
-				0088FECA2A5A0DAE00FEAF8B /* Support */,
 				003662032A563754009FCEA8 /* Assets.xcassets */,
 				003662052A563754009FCEA8 /* Preview Content */,
 			);
@@ -140,14 +144,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		0088FECA2A5A0DAE00FEAF8B /* Support */ = {
-			isa = PBXGroup;
-			children = (
-				00A8139B2A7B2E4900596620 /* Images */,
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
 		009A57C72A60905B000EF6F8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -161,14 +157,32 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		00A8139B2A7B2E4900596620 /* Images */ = {
+		00BBEECD2A7C55880078F0B1 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				00BBEED02A7C56180078F0B1 /* NetworkError.swift */,
+				00BBEED22A7C61E10078F0B1 /* HTTPRequest.swift */,
+				00BBEECE2A7C55950078F0B1 /* ImageManager */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		00BBEECE2A7C55950078F0B1 /* ImageManager */ = {
+			isa = PBXGroup;
+			children = (
+				00A8139C2A7B2E8E00596620 /* ImageManager.swift */,
+				00BBEECF2A7C55A90078F0B1 /* Support */,
+			);
+			path = ImageManager;
+			sourceTree = "<group>";
+		};
+		00BBEECF2A7C55A90078F0B1 /* Support */ = {
 			isa = PBXGroup;
 			children = (
 				00A813992A7B1BA300596620 /* ImageCache.swift */,
-				00A8139C2A7B2E8E00596620 /* ImageManager.swift */,
 				003DB82E2A7B4E2B004192C2 /* ImageRequest.swift */,
 			);
-			path = Images;
+			path = Support;
 			sourceTree = "<group>";
 		};
 		00F5FBB52A6910D500FCAA61 /* MediaDetailView */ = {
@@ -323,6 +337,7 @@
 				003662022A56374E009FCEA8 /* MediaCollectionView.swift in Sources */,
 				0027ECD92A5B98E3001090E4 /* MediaDetailsEntryView.swift in Sources */,
 				009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */,
+				00BBEED32A7C61E10078F0B1 /* HTTPRequest.swift in Sources */,
 				00A8139D2A7B2E8E00596620 /* ImageManager.swift in Sources */,
 				00DEC2692A613F3800353643 /* ImagePicker.swift in Sources */,
 				00CFE3B82A65E261004BE57E /* ReflectionViewModifier.swift in Sources */,
@@ -337,6 +352,7 @@
 				00932C4A2A6E6543004AFE1D /* CroppedImagePicker.swift in Sources */,
 				0088FEC72A5A09BC00FEAF8B /* Media.swift in Sources */,
 				00CFE3B62A65E208004BE57E /* MediaImageView.swift in Sources */,
+				00BBEED12A7C56180078F0B1 /* NetworkError.swift in Sources */,
 				00F810712A66779800D0EAEA /* MediaImageCarousel.swift in Sources */,
 				00F5FBBA2A69156C00FCAA61 /* Motion.swift in Sources */,
 			);
