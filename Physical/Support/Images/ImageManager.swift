@@ -27,7 +27,18 @@ final class ImageManager {
     /// - Parameter key: The images's assigned key.
     /// - Returns: The image, if it exists. Otherwise, nil.
     func retrieveImage(forKey key: String) -> UIImage? {
-        return cache.retrieveImage(forKey: key)
+        // First try the caches
+        if let cachedImage = cache.retrieveImage(forKey: key) {
+            return cachedImage
+        }
+        
+        // Try fetching from server
+        if let image = fetchImage(forKey: key) {
+            return image
+        }
+        
+        // Unable to retrieve an image for the provided key
+        return nil
     }
     
     /// Removes the image from both cache locations and server.
@@ -36,5 +47,14 @@ final class ImageManager {
     /// - Parameter key: The image's assigned key.
     func removeImage(forKey key: String) {
         cache.removeImage(forKey: key)
+    }
+    
+    private func fetchImage(forKey key: String) -> UIImage? {
+        // Fetch the image from AWS...
+        return nil
+    }
+    
+    private func uploadImage(forKey key: String) {
+        // Upload the image to AWS
     }
 }
