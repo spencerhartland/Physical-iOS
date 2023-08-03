@@ -101,6 +101,24 @@ struct MediaDetailsEntryView: View {
                 trackTitleText = ""
             }
         }
+        .onChange(of: newImage) { _, image in
+            // If the user captured / selected an image, save it
+            do {
+                if let image {
+                    // Generate a key
+                    let key = UUID().uuidString
+                    // Cache the image
+                    try ImageManager.shared.cache(image, withKey: key)
+                    Task {
+                        // Upload the image to server
+                        try await ImageManager.shared.upload(image, withKey: key)
+                    }
+                    // Store the image key
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
         .toolbar {
             Button(finishEditingButton) {
                 modelContext.insert(newMedia)

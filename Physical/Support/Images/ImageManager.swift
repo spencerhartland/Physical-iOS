@@ -13,6 +13,7 @@ enum ImageManagerError: String, Error {
     case unsupportedImageType = "The image type is unsupported."
     case imageFetchError = "There was an issue fetching the image."
     case imageDataError = "There was an issue getting PNG data from the image."
+    case imageDoesNotExist = "The requested image does not exist."
 }
 
 final class ImageManager {
@@ -21,25 +22,34 @@ final class ImageManager {
     private let bucketName = "physical-ios"
     private let cache = ImageCache.shared
     
+    static let shared = ImageManager()
+    
     /// Retrieves the image associated with the provided key.
     ///
     /// First checks NSCache (best performance), then checks `Caches` directory (better performance).
     /// If the image is not located in either cache location, it is retrieved from server (good performance).
     /// - Parameter key: The images's assigned key.
     /// - Returns: The image, if it exists. Otherwise, nil.
-    func retrieveImage(forKey key: String) async -> UIImage? {
+    func retrieveImage(withKey key: String) async throws -> UIImage {
         // First try the caches
-        if let cachedImage = cache.retrieveImage(forKey: key) {
+        do {
+            let cachedImage = try cache.retrieveImage(forKey: key)
+            
             return cachedImage
+        } catch {
+            print(error.localizedDescription)
         }
         
         // Try fetching from server
-        guard let url = try? ImageRequest.url(forKey: key),
-              let image = try? await fetchImage(url: url) else {
-            return nil
+        do {
+            let url = try ImageRequest.url(forKey: key)
+            let image = try await fetchImage(url: url)
+            
+            return image
+        } catch {
+            print(error.localizedDescription)
+            throw ImageManagerError.imageDoesNotExist
         }
-        
-        return image
     }
     
     /// Caches the image in NSCache and the Caches directory
@@ -47,9 +57,9 @@ final class ImageManager {
     /// - Parameters:
     ///   - image: The UIImage object to be cached.
     ///   - key: The image's assigned key.
-    func cache(_ image: UIImage, forKey key: String) {
+    func cache(_ image: UIImage, withKey key: String) throws {
         // First, cache locally
-        cache.add(image, forKey: key)
+        try cache.add(image, forKey: key)
     }
     
     /// Uploads the image to server for long-term storage and public availability.
@@ -59,22 +69,19 @@ final class ImageManager {
     ///   - request: The `URLRequest` to use for this upload.
     ///
     /// - Returns: The UUID string assigned to this image.
-    func upload(_ image: UIImage) async throws -> String {
+    func upload(_ image: UIImage, withKey key: String) async throws {
         do {
             guard let imageData = image.pngData() else {
                 throw ImageManagerError.imageDataError
             }
             
-            let imageKey = UUID().uuidString
-            let request = try ImageRequest.urlRequest(forKey: imageKey, method: .PUT)
+            let request = try ImageRequest.urlRequest(forKey: key, method: .PUT)
             let (_, response) = try await URLSession.shared.upload(for: request, from: imageData)
             
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 201 /* Created */ else {
                 throw ImageManagerError.invalidResponse
             }
-            
-            return imageKey
         }
     }
     
@@ -82,8 +89,8 @@ final class ImageManager {
     ///
     /// This action cannot be undone. The image will be removed from all storage locations.
     /// - Parameter key: The image's assigned key.
-    func removeImage(forKey key: String) {
-        cache.removeImage(forKey: key)
+    func removeImage(withKey key: String) throws {
+        try cache.removeImage(forKey: key)
         // TODO: Remove from server and remove key from media
     }
     
