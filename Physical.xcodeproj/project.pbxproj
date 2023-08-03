@@ -21,6 +21,8 @@
 		009A57C92A609346000EF6F8 /* AlbumTitleSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */; };
 		009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */; };
 		009C01402A6A437E0039CEA2 /* MediaNotesEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009C013F2A6A437E0039CEA2 /* MediaNotesEntryView.swift */; };
+		00A8139A2A7B1BA300596620 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A813992A7B1BA300596620 /* ImageCache.swift */; };
+		00A8139D2A7B2E8E00596620 /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A8139C2A7B2E8E00596620 /* ImageManager.swift */; };
 		00C57DB72A6C88A7000DDBD3 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C57DB62A6C88A7000DDBD3 /* Collection.swift */; };
 		00CFE3B42A6531BB004BE57E /* SearchResultListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CFE3B32A6531BB004BE57E /* SearchResultListItem.swift */; };
 		00CFE3B62A65E208004BE57E /* MediaImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CFE3B52A65E208004BE57E /* MediaImageView.swift */; };
@@ -49,6 +51,8 @@
 		009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumTitleSearchView.swift; sourceTree = "<group>"; };
 		009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItemLabel.swift; sourceTree = "<group>"; };
 		009C013F2A6A437E0039CEA2 /* MediaNotesEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaNotesEntryView.swift; sourceTree = "<group>"; };
+		00A813992A7B1BA300596620 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		00A8139C2A7B2E8E00596620 /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		00C57DB62A6C88A7000DDBD3 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		00CFE3B32A6531BB004BE57E /* SearchResultListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultListItem.swift; sourceTree = "<group>"; };
 		00CFE3B52A65E208004BE57E /* MediaImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaImageView.swift; sourceTree = "<group>"; };
@@ -134,6 +138,7 @@
 		0088FECA2A5A0DAE00FEAF8B /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				00A8139B2A7B2E4900596620 /* Images */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -149,6 +154,15 @@
 				003BC1DA2A6F455900E16A9F /* HapticsViewExtension.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		00A8139B2A7B2E4900596620 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				00A813992A7B1BA300596620 /* ImageCache.swift */,
+				00A8139C2A7B2E8E00596620 /* ImageManager.swift */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		00F5FBB52A6910D500FCAA61 /* MediaDetailView */ = {
@@ -302,12 +316,14 @@
 				003662022A56374E009FCEA8 /* MediaCollectionView.swift in Sources */,
 				0027ECD92A5B98E3001090E4 /* MediaDetailsEntryView.swift in Sources */,
 				009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */,
+				00A8139D2A7B2E8E00596620 /* ImageManager.swift in Sources */,
 				00DEC2692A613F3800353643 /* ImagePicker.swift in Sources */,
 				00CFE3B82A65E261004BE57E /* ReflectionViewModifier.swift in Sources */,
 				008B64802A6A165F00586C69 /* MusicGenres.swift in Sources */,
 				00CFE3B42A6531BB004BE57E /* SearchResultListItem.swift in Sources */,
 				00C57DB72A6C88A7000DDBD3 /* Collection.swift in Sources */,
 				003662002A56374E009FCEA8 /* PhysicalApp.swift in Sources */,
+				00A8139A2A7B1BA300596620 /* ImageCache.swift in Sources */,
 				00F5FBBC2A691DA000FCAA61 /* FloatingViewModifier.swift in Sources */,
 				009C01402A6A437E0039CEA2 /* MediaNotesEntryView.swift in Sources */,
 				00932C4A2A6E6543004AFE1D /* CroppedImagePicker.swift in Sources */,
