@@ -13,17 +13,13 @@ Physical also helps you share and discover new music with social features that a
 - UIKit
 
 ## To-do
-1. Enable addition of user-generated images.
-    - Store locally (NSCache, Caches dir)
-    - Upload to AWS
-    - Store keys in `Media`
-2. Add `isOwned` property to `Media` to enable users to add media that they *want* but do not *own*.
+1. Add `isOwned` property to `Media` to enable users to add media that they *want* but do not *own*.
     - Update `Media`.
     - Update `MediaDetailsEntryView`.
     - Update `MediaDetailView`.
     - Add "Own" and "Want" filters to `MediaCollectionView`.
-3. Build a `User` model.
+2. Build a `User` model.
     - Persist with SwiftData.
     - Save to AWS and make available publicly.
-4. Add `SocialProfileView`.
-5. Add `SocialDashboardView`.
+3. Add `SocialProfileView`.
+4. Add `SocialDashboardView`.
