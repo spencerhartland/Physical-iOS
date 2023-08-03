@@ -3,6 +3,8 @@ Physical is a digital catalogue of your music on physical media. Build your cata
 
 Physical also helps you share and discover new music with social features that allow you to browse friends' collections and post your favorite tracks or albums. This is social media designed for music lovers.
 
+[Learn more](http://spencerhartland.com/physical.html)
+
 ## Technologies and frameworks
 - SwiftData
 - AWS (S3, DynamoDB, API Gateway, Lambda)
@@ -11,17 +13,17 @@ Physical also helps you share and discover new music with social features that a
 - UIKit
 
 ## To-do
-- Enable addition of user-generated images.
+1. Enable addition of user-generated images.
     - Store locally (NSCache, Caches dir)
     - Upload to AWS
     - Store keys in `Media`
-- Add `isOwned` property to `Media` to enable users to add media that they *want* but do not *own*.
+2. Add `isOwned` property to `Media` to enable users to add media that they *want* but do not *own*.
     - Update `Media`.
     - Update `MediaDetailsEntryView`.
     - Update `MediaDetailView`.
     - Add "Own" and "Want" filters to `MediaCollectionView`.
-- Build a `User` model.
+3. Build a `User` model.
     - Persist with SwiftData.
     - Save to AWS and make available publicly.
-- Add `SocialProfileView`.
-- Add `SocialDashboardView`.
+4. Add `SocialProfileView`.
+5. Add `SocialDashboardView`.
