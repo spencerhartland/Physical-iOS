@@ -9,6 +9,9 @@ import Foundation
 import UIKit
 
 final class ImageManager {
+    private let scheme = "https"
+    private let host = "api.spencerhartland.com"
+    private let bucketName = "physical-ios"
     private let cache = ImageCache.shared
     
     /// Caches the image in NSCache and the Caches directory
@@ -26,14 +29,15 @@ final class ImageManager {
     /// If the image is not located in either cache location, it is retrieved from server (good performance).
     /// - Parameter key: The images's assigned key.
     /// - Returns: The image, if it exists. Otherwise, nil.
-    func retrieveImage(forKey key: String) -> UIImage? {
+    func retrieveImage(forKey key: String) async -> UIImage? {
         // First try the caches
         if let cachedImage = cache.retrieveImage(forKey: key) {
             return cachedImage
         }
         
         // Try fetching from server
-        if let image = fetchImage(forKey: key) {
+        if let url = ImageRequest.url(forKey: key),
+           let image = await fetchImage(url: url) {
             return image
         }
         
@@ -49,12 +53,29 @@ final class ImageManager {
         cache.removeImage(forKey: key)
     }
     
-    private func fetchImage(forKey key: String) -> UIImage? {
-        // Fetch the image from AWS...
-        return nil
+    private func fetchImage(url: URL) async -> UIImage? {
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                print("HTTP response is invalid or indicates error.")
+                return nil
+            }
+            
+            guard let image = UIImage(data: data) else {
+                print("Unsupported image type.")
+                return nil
+            }
+            
+            return image
+        } catch {
+            print("Error fetching image from server: \(error.localizedDescription).")
+            return nil
+        }
     }
     
-    private func uploadImage(forKey key: String) {
+    private func uploadImage(url: URL) {
         // Upload the image to AWS
     }
 }
