@@ -52,8 +52,7 @@ struct MediaDetailsEntryView: View {
     @State private var editMode = EditMode.inactive
     
     @State private var mediaTypeSymbol = Image(.vinylRecord)
-    @State private var chosenImage: PhotosPickerItem? = nil
-    @State private var capturedImage: UIImage? = nil
+    @State private var newImage: UIImage? = nil
     @State private var trackTitleText: String = ""
     @State private var screenSize: CGSize = {
         guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
@@ -78,11 +77,7 @@ struct MediaDetailsEntryView: View {
                 notesSection
             }
         }
-        .photosPicker(isPresented: $presentPhotosPicker, selection: $chosenImage, matching: .images)
-        .fullScreenCover(isPresented: $presentCamera) {
-            ImagePicker(image: $capturedImage)
-                .ignoresSafeArea()
-        }
+        .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
         .navigationTitle(navTitle)
         .environment(\.editMode, $editMode)
         .background {
