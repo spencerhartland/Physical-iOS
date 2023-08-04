@@ -26,17 +26,22 @@ struct MediaDetailsEntryView: View {
     private let tracklistEditButtonText = "Edit tracklist"
     private let tracklistCancelButtonText = "Cancel"
     private let finishEditingButton = "Done"
+    private let isOwnedToggleText = "Owned"
+    private let officialAlbumArtText = "Display official artwork"
     
     // SF Symbol names
     private let takePhotoMenuItemSymbol = "camera"
     private let photoLibarayMenuItemSymbol = "photo.on.rectangle"
-    private let addImageSymbol = "photo.fill"
+    private let addImageSymbol = "plus.circle.fill"
     private let mediaConditionSymbol = "sparkles"
     private let albumReleaseDateSymbol = "calendar"
     private let compactDiscSymbol = "opticaldisc.fill"
     private let addTrackSymbol = "plus.circle.fill"
     private let beginEditingSymbol = "pencil"
     private let stopEditingSymbol = "pencil.slash"
+    private let wantedMediaSymbol = "checkmark.circle"
+    private let ownedMediaSymbol = "checkmark.circle.fill"
+    private let officialAlbumArtSymbol = "photo.artframe"
     
     // Model context
     @Environment(\.modelContext) private var modelContext
@@ -71,6 +76,7 @@ struct MediaDetailsEntryView: View {
         NavigationStack {
             List {
                 mediaImagesSection
+                isOwnedToggleSection
                 physicalMediaDetailsSection
                 albumDetailsSection
                 tracksSection
@@ -128,6 +134,12 @@ struct MediaDetailsEntryView: View {
     
     private var mediaImagesSection: some View {
         Section {
+            // Official album art toggle
+            Toggle(isOn: $newMedia.displaysOfficialArtwork) {
+                ListItemLabel(color: .blue, symbolName: officialAlbumArtSymbol, labelText: officialAlbumArtText)
+            }
+            
+            // Add image menu
             Menu {
                 // Take Photo
                 Button {
@@ -147,8 +159,24 @@ struct MediaDetailsEntryView: View {
                     .font(.headline)
             }
         } header : {
-            if !newMedia.imageKeys.isEmpty || !newMedia.albumArtworkURL.isEmpty {
-                MediaImageCarousel(size: screenSize, albumArtworkURL: newMedia.albumArtworkURL, imageKeys: newMedia.imageKeys)
+            if !newMedia.imageKeys.isEmpty || (!newMedia.albumArtworkURL.isEmpty && newMedia.displaysOfficialArtwork) {
+                MediaImageCarousel(
+                    size: screenSize,
+                    albumArtworkURL: newMedia.displaysOfficialArtwork ? newMedia.albumArtworkURL : nil,
+                    imageKeys: newMedia.imageKeys
+                )
+            }
+        }
+    }
+    
+    private var isOwnedToggleSection: some View {
+        Section {
+            Toggle(isOn: $newMedia.isOwned) {
+                ListItemLabel(
+                    color: .yellow,
+                    symbolName: newMedia.isOwned ? ownedMediaSymbol : wantedMediaSymbol,
+                    labelText: isOwnedToggleText
+                )
             }
         }
     }
@@ -161,7 +189,7 @@ struct MediaDetailsEntryView: View {
                     Text($0.rawValue)
                 }
             } label: {
-                ListItemLabel(color: .blue, symbol: mediaTypeSymbol, labelText: mediaTypeText)
+                ListItemLabel(color: .indigo, symbol: mediaTypeSymbol, labelText: mediaTypeText)
             }
             // Condition
             Picker(selection: $newMedia.condition) {

@@ -34,6 +34,7 @@ final class Media {
     var title: String
     var artist: String
     var tracks: [String]
+    var displaysOfficialArtwork: Bool
     /// The URL string for the official album artwork provided by Apple Music.
     var albumArtworkURL: String
     /// A collection of keys associated with user-generated images.
@@ -41,6 +42,7 @@ final class Media {
     var notes: String
     var genre: String
     var isFavorite: Bool
+    var isOwned: Bool
     
     init() {
         self.rawType = MediaType.vinylRecord.rawValue
@@ -50,11 +52,13 @@ final class Media {
         self.title = ""
         self.artist = ""
         self.tracks = []
+        self.displaysOfficialArtwork = true
         self.albumArtworkURL = ""
         self.imageKeys = []
         self.notes = ""
         self.genre = ""
         self.isFavorite = false
+        self.isOwned = true
     }
     
     enum MediaType: String, Codable, CaseIterable, Identifiable, Equatable {
