@@ -16,7 +16,7 @@ Physical also helps you share and discover new music with social features that a
 1. Add `isOwned` property to `Media` to enable users to add media that they *want* but do not *own*.
     - ~~Update `Media`~~.
     - ~~Update `MediaDetailsEntryView`~~.
-    - Update `MediaDetailView`.
+    - ~~Update `MediaDetailView`~~.
     - Add "Own" and "Want" filters to `MediaCollectionView`.
 2. Build a `User` model.
     - Persist with SwiftData.

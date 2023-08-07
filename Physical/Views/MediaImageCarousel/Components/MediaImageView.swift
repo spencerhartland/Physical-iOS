@@ -40,8 +40,9 @@ struct MediaImageView: View {
         let imageSize = screenSize.width * 0.85
         ZStack {
             if let image {
-                let imageView = Image(uiImage: image)
-                albumArt(imageView, size: imageSize)
+                albumArt(size: imageSize) {
+                    Image(uiImage: image)
+                }
             } else {
                 mediaImagePlaceholder
             }
@@ -64,9 +65,9 @@ struct MediaImageView: View {
         }
     }
     
-    private func albumArt(_ image: Image, size: CGFloat) -> some View {
+    private func albumArt(size: CGFloat, @ViewBuilder _ image: () -> Image) -> some View {
         let roundedRect = RoundedRectangle(cornerRadius: 8)
-        return image
+        return image()
             .resizable()
             .clipShape(roundedRect)
             .aspectRatio(contentMode: .fit)
