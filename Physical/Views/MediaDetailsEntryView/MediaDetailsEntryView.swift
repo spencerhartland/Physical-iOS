@@ -26,22 +26,19 @@ struct MediaDetailsEntryView: View {
     private let tracklistEditButtonText = "Edit tracklist"
     private let tracklistCancelButtonText = "Cancel"
     private let finishEditingButton = "Done"
-    private let isOwnedToggleText = "Owned"
-    private let officialAlbumArtText = "Display official artwork"
+    private let officialAlbumArtText = "Display Official Artwork"
     
     // SF Symbol names
     private let takePhotoMenuItemSymbol = "camera"
     private let photoLibarayMenuItemSymbol = "photo.on.rectangle"
-    private let addImageSymbol = "plus.circle.fill"
+    private let addImageSymbol = "plus.circle"
     private let mediaConditionSymbol = "sparkles"
     private let albumReleaseDateSymbol = "calendar"
     private let compactDiscSymbol = "opticaldisc.fill"
     private let addTrackSymbol = "plus.circle.fill"
     private let beginEditingSymbol = "pencil"
     private let stopEditingSymbol = "pencil.slash"
-    private let wantedMediaSymbol = "checkmark.circle"
-    private let ownedMediaSymbol = "checkmark.circle.fill"
-    private let officialAlbumArtSymbol = "photo.artframe"
+    private let officialAlbumArtSymbol = "checkmark.seal.fill"
     
     // Model context
     @Environment(\.modelContext) private var modelContext
@@ -76,7 +73,7 @@ struct MediaDetailsEntryView: View {
         NavigationStack {
             List {
                 mediaImagesSection
-                isOwnedToggleSection
+                ownershipPickerSection
                 physicalMediaDetailsSection
                 albumDetailsSection
                 tracksSection
@@ -136,7 +133,11 @@ struct MediaDetailsEntryView: View {
         Section {
             // Official album art toggle
             Toggle(isOn: $newMedia.displaysOfficialArtwork) {
-                ListItemLabel(color: .blue, symbolName: officialAlbumArtSymbol, labelText: officialAlbumArtText)
+                ListItemLabel(
+                    color: .blue,
+                    symbolName: officialAlbumArtSymbol,
+                    labelText: officialAlbumArtText
+                )
             }
             
             // Add image menu
@@ -155,8 +156,12 @@ struct MediaDetailsEntryView: View {
                     Label(photoLibarayMenuItemText, systemImage: photoLibarayMenuItemSymbol)
                 }
             } label: {
-                ListItemLabel(color: .green, symbolName: addImageSymbol, labelText: addImageText)
-                    .font(.headline)
+                ListItemLabel(
+                    color: .green,
+                    symbolName: addImageSymbol,
+                    labelText: addImageText,
+                    labelFontWeight: .semibold
+                )
             }
         } header : {
             if !newMedia.imageKeys.isEmpty || (!newMedia.albumArtworkURL.isEmpty && newMedia.displaysOfficialArtwork) {
@@ -169,15 +174,9 @@ struct MediaDetailsEntryView: View {
         }
     }
     
-    private var isOwnedToggleSection: some View {
+    private var ownershipPickerSection: some View {
         Section {
-            Toggle(isOn: $newMedia.isOwned) {
-                ListItemLabel(
-                    color: .yellow,
-                    symbolName: newMedia.isOwned ? ownedMediaSymbol : wantedMediaSymbol,
-                    labelText: isOwnedToggleText
-                )
-            }
+            OwnershipPicker(selection: $newMedia.isOwned)
         }
     }
     
