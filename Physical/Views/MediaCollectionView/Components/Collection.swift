@@ -15,6 +15,8 @@ enum CollectionFilter: String, Identifiable, CaseIterable {
     case vinylRecordsOnly = "Vinyl Record"
     case cdsOnly = "Compact Disc"
     case cassettesOnly = "Compact Cassette"
+    case ownedOnly = "Owned"
+    case wantedOnly = "Wanted"
     
     var id: Self {
         return self
@@ -36,6 +38,10 @@ enum CollectionFilter: String, Identifiable, CaseIterable {
             return #Predicate { $0.rawType == compactDisc }
         case .cassettesOnly:
             return #Predicate { $0.rawType == compactCassette }
+        case .ownedOnly:
+            return #Predicate { $0.isOwned == true }
+        case .wantedOnly:
+            return #Predicate { $0.isOwned == false }
         }
     }
 }

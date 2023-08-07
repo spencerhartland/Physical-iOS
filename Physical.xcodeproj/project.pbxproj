@@ -207,16 +207,8 @@
 			isa = PBXGroup;
 			children = (
 				00F5FBB72A69110600FCAA61 /* MediaDetailView.swift */,
-				00F5FBB62A6910F000FCAA61 /* Components */,
 			);
 			path = MediaDetailView;
-			sourceTree = "<group>";
-		};
-		00F5FBB62A6910F000FCAA61 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		00F8107A2A669B9200D0EAEA /* AlbumTitleSearchView */ = {
