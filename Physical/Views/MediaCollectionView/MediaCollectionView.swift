@@ -16,7 +16,8 @@ struct MediaCollectionView: View {
     private let addMediaButtonSymbolName = "plus"
     private let manualDetailsEntryButtonSymbolName = "character.cursor.ibeam"
     private let barcodeButtonSymbolName = "barcode.viewfinder"
-    private let sortMenuButtonSymbolName = "ellipsis.circle"
+    private let filterMenuButtonSymbolName = "line.3.horizontal.decrease.circle"
+    private let sortMenuButtonSymbolName = "arrow.up.arrow.down.circle"
     private static let appleMusicPreferenceKey = "shouldAskForAppleMusicAuthorization"
     private let appleMusicDisabledAlertTitle = "Apple Music access is disabled!"
     private let enableInSettingsButtonText = "Enable in Settings"
@@ -41,36 +42,7 @@ struct MediaCollectionView: View {
             Collection(media, sort: collectionSortOption, filter: collectionFilterOption)
                 .navigationTitle(navTitle)
                 .toolbar {
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        Menu {
-                            Button {
-                                if shouldAskForAppleMusicAuthorization {
-                                    checkForMusicAuthorization()
-                                }
-                                addingMedia.toggle()
-                            } label: {
-                                Label {
-                                    Text(manualDetailsEntryText)
-                                } icon: {
-                                    Image(systemName: manualDetailsEntryButtonSymbolName)
-                                }
-                            }
-                            
-                            Button {
-                                // Scan barcode
-                            } label: {
-                                Label {
-                                    Text(barcodeDetailsEntryText)
-                                } icon: {
-                                    Image(systemName: barcodeButtonSymbolName)
-                                }
-                            }
-                        } label: {
-                            Image(systemName: addMediaButtonSymbolName)
-                        }
-                        
-                        filterAndSortMenu
-                    }
+                    toolbarItems
                 }
                 .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
                     Button(enableInSettingsButtonText) {
@@ -93,36 +65,76 @@ struct MediaCollectionView: View {
         }
     }
     
-    private var filterAndSortMenu: some View {
+    private var toolbarItems: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .topBarTrailing) {
+            addMediaMenu
+            filterMenu
+            sortMenu
+        }
+    }
+    
+    private var addMediaMenu: some View {
         Menu {
-            Menu("Filter") {
-                ForEach(CollectionFilter.allCases) { filter in
-                    if filter != .allMedia {
-                        Button {
-                            collectionFilterOption = (collectionFilterOption == filter) ? .allMedia : filter
-                        } label: {
-                            Label {
-                                Text(filter.rawValue)
-                            } icon: {
-                                if collectionFilterOption == filter {
-                                    Image(systemName: "checkmark")
-                                }
+            Button {
+                if shouldAskForAppleMusicAuthorization {
+                    checkForMusicAuthorization()
+                }
+                addingMedia.toggle()
+            } label: {
+                Label {
+                    Text(manualDetailsEntryText)
+                } icon: {
+                    Image(systemName: manualDetailsEntryButtonSymbolName)
+                }
+            }
+            
+            Button {
+                // Scan barcode
+            } label: {
+                Label {
+                    Text(barcodeDetailsEntryText)
+                } icon: {
+                    Image(systemName: barcodeButtonSymbolName)
+                }
+            }
+        } label: {
+            Image(systemName: addMediaButtonSymbolName)
+        }
+    }
+    
+    private var filterMenu: some View {
+        Menu {
+            ForEach(CollectionFilter.allCases) { filter in
+                if filter != .allMedia {
+                    Button {
+                        collectionFilterOption = (collectionFilterOption == filter) ? .allMedia : filter
+                    } label: {
+                        Label {
+                            Text(filter.rawValue)
+                        } icon: {
+                            if collectionFilterOption == filter {
+                                Image(systemName: "checkmark")
                             }
                         }
                     }
                 }
             }
-            Menu("Sort") {
-                ForEach(CollectionSorting.allCases) { sort in
-                    Button {
-                        collectionSortOption = sort
-                    } label: {
-                        Label {
-                            Text(sort.rawValue)
-                        } icon: {
-                            if collectionSortOption == sort {
-                                Image(systemName: "checkmark")
-                            }
+        } label: {
+            Image(systemName: filterMenuButtonSymbolName)
+        }
+    }
+    
+    private var sortMenu: some View {
+        Menu {
+            ForEach(CollectionSorting.allCases) { sort in
+                Button {
+                    collectionSortOption = sort
+                } label: {
+                    Label {
+                        Text(sort.rawValue)
+                    } icon: {
+                        if collectionSortOption == sort {
+                            Image(systemName: "checkmark")
                         }
                     }
                 }
