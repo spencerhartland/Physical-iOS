@@ -133,7 +133,12 @@ struct SocialProfileView: View {
                 .padding(.horizontal)
                 
                 // Favorites section
-                profileSectionView(ProfileSection.favorites.rawValue, content: favoriteMedia)
+                profileSectionView(
+                    ProfileSection.favorites.rawValue,
+                    content: favoriteMedia,
+                    thumbnailWidth: screenSize.width - 24,
+                    steppedScrolling: true
+                )
                 
                 // Vinyl records
                 profileSectionView(
@@ -220,8 +225,14 @@ struct SocialProfileView: View {
         .frame(width: size, height: size)
     }
     
-    private func profileSectionView(_ title: String, content: [Media], thumbnailsOrnamented: Bool = true) -> some View {
-        let mediaThumbnailWidth = screenSize.width / 2
+    private func profileSectionView(
+        _ title: String,
+        content: [Media],
+        thumbnailsOrnamented: Bool = true,
+        thumbnailWidth: CGFloat? = nil,
+        steppedScrolling: Bool = false
+    ) -> some View {
+        let mediaThumbnailWidth = thumbnailWidth ?? (screenSize.width / 2) - 24
         
         return VStack(alignment: .leading) {
             // Profile section title
@@ -232,7 +243,7 @@ struct SocialProfileView: View {
             
             // Media carousel
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
+                HStack(spacing: steppedScrolling ? 16 : 8) {
                     ForEach(0..<5) { index in
                         if index < content.count {
                             MediaThumbnail(for: content[index], ornamented: thumbnailsOrnamented)
@@ -242,7 +253,22 @@ struct SocialProfileView: View {
                     }
                 }
                 .padding(.horizontal)
+                .scrollTargetLayout()
             }
+            .steppedScrollBehavior(steppedScrolling)
+        }
+    }
+    
+}
+
+// View extension to optionally enable stepped scrolling for profile sections
+fileprivate extension View {
+    @ViewBuilder func steppedScrollBehavior(_ enabled: Bool) -> some View {
+        if enabled {
+            self
+                .scrollTargetBehavior(.viewAligned)
+        } else {
+            self
         }
     }
 }
