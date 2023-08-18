@@ -61,6 +61,24 @@ final class Media {
         self.isOwned = true
     }
     
+    init(artworkURLString: String, title: String, artist: String, type: Media.MediaType, tracks: [String], genre: String, releaseDate: Date, isFavorite: Bool, isOwned: Bool) {
+        self.rawType = type.rawValue
+        self.rawCondition = MediaCondition.nearMint.rawValue
+        self.dateAdded = .now
+        self.displaysOfficialArtwork = true
+        self.imageKeys = []
+        self.notes = ""
+        
+        self.albumArtworkURL = artworkURLString
+        self.title = title
+        self.artist = artist
+        self.tracks = tracks
+        self.genre = genre
+        self.releaseDate = releaseDate
+        self.isFavorite = isFavorite
+        self.isOwned = isOwned
+    }
+    
     enum MediaType: String, Codable, CaseIterable, Identifiable, Equatable {
         var id: Self {
             return self

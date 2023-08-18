@@ -58,6 +58,7 @@ struct MediaDetailView: View {
                 }
             }
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 moreMenu
@@ -67,6 +68,9 @@ struct MediaDetailView: View {
         .navigationDestination(isPresented: $isEditing) {
             MediaDetailsEntryView(newMedia: $media, isPresented: $isEditing)
         }
+        .scrollContentBackground(.hidden)
+        .variableBlurBackground(media.albumArtworkURL)
+        .variableBlurNavigationBackground()
     }
     
     private var moreMenu: some View {
@@ -157,6 +161,10 @@ struct MediaDetailView: View {
                 Text(trackTitle)
                     .lineLimit(1)
             }
+            .listRowBackground (
+                Rectangle()
+                    .foregroundStyle(.thickMaterial)
+            )
         }
     }
     

@@ -17,4 +17,8 @@ Physical also helps you share and discover new music with social features that a
     - Persist with SwiftData.
     - Save to AWS and make available publicly.
 2. Add `SocialProfileView`.
+    - Add highlight / featured
+    - Add user's top genres
+    - Enable editing of favorites' top 5
+    - Add posts
 3. Add `SocialDashboardView`.
