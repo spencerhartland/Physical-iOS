@@ -12,30 +12,6 @@ private enum ProfileViewSelection: String, Hashable, CaseIterable {
     case collection, posts
 }
 
-private enum ProfileSection: String {
-    case favorites = "Favorites"
-    case vinylRecords = "Vinyl Records"
-    case compactDiscs = "Compact Discs"
-    case compactCassettes = "Compact Cassettes"
-    
-    var predicate: Predicate<Media> {
-        let vinylRecord = Media.MediaType.vinylRecord.rawValue
-        let compactDisc = Media.MediaType.compactDisc.rawValue
-        let compactCassette = Media.MediaType.compactCassette.rawValue
-        
-        switch self {
-        case .favorites:
-            return #Predicate { $0.isFavorite }
-        case .vinylRecords:
-            return #Predicate { $0.rawType == vinylRecord }
-        case .compactDiscs:
-            return #Predicate { $0.rawType == compactDisc }
-        case .compactCassettes:
-            return #Predicate { $0.rawType == compactCassette }
-        }
-    }
-}
-
 struct SocialProfileView: View {
     // Text constants
     private let segmentedControlTitle = "View collection or view posts"
@@ -46,40 +22,12 @@ struct SocialProfileView: View {
     private let profilePhotoPlaceholderSymbol = "camera"
     
     @State private var profileViewSelection: ProfileViewSelection = .collection
-    @State private var screenSize: CGSize = {
-        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .zero
-        }
-        
-        return window.screen.bounds.size
-    }()
     
-    @Query(
-        filter: ProfileSection.favorites.predicate,
-        sort: \.title
-    )
-    private var favoriteMedia: [Media]
-    
-    @Query(
-        filter: ProfileSection.vinylRecords.predicate,
-        sort: \.title
-    )
-    private var vinylRecords: [Media]
-    
-    @Query(
-        filter: ProfileSection.compactDiscs.predicate,
-        sort: \.title
-    )
-    private var compactDiscs: [Media]
-    
-    @Query(
-        filter: ProfileSection.compactCassettes.predicate,
-        sort: \.title
-    )
-    private var compactCassettes: [Media]
+    @Namespace private var animationNamespace
+    @Environment(\.screenSize) private var screenSize: CGSize
     
     var body: some View {
-        let coverPhotoHeight = screenSize.height * 0.2
+        let coverPhotoHeight = screenSize.height * 0.225
         let profilePhotoSize = screenSize.width * 0.2
         
         ScrollView(.vertical, showsIndicators: false) {
@@ -121,45 +69,24 @@ struct SocialProfileView: View {
                     .font(.callout)
                     .padding(.top, 8)
                     
+                    // Featured section
+                    FeaturedMediaView(title: "I Wanna Be Software", artist: "Grimes")
+                    
                     // Collection / posts toggle
                     Picker(segmentedControlTitle, selection: $profileViewSelection) {
-                        ForEach(ProfileViewSelection.allCases, id: \.self) { selection in
-                            Text(selection.rawValue.capitalized)
-                        }
+                        Text("Collection").tag(ProfileViewSelection.collection)
+                        Text("Posts").tag(ProfileViewSelection.posts)
                     }
                     .pickerStyle(.segmented)
                     .padding(.top, 24)
                 }
                 .padding(.horizontal)
                 
-                // Favorites section
-                profileSectionView(
-                    ProfileSection.favorites.rawValue,
-                    content: favoriteMedia,
-                    thumbnailWidth: screenSize.width - 24,
-                    steppedScrolling: true
-                )
-                
-                // Vinyl records
-                profileSectionView(
-                    ProfileSection.vinylRecords.rawValue,
-                    content: vinylRecords,
-                    thumbnailsOrnamented: false
-                )
-                
-                // Compact discs
-                profileSectionView(
-                    ProfileSection.compactDiscs.rawValue,
-                    content: compactDiscs,
-                    thumbnailsOrnamented: false
-                )
-                
-                // Compact cassettes
-                profileSectionView(
-                    ProfileSection.compactCassettes.rawValue,
-                    content: compactCassettes,
-                    thumbnailsOrnamented: false
-                )
+                if profileViewSelection == .collection {
+                    SocialProfileCollectionView()
+                } else {
+                    SocialProfilePostsView()
+                }
             }
             .padding(.bottom, 32)
         }
@@ -179,7 +106,6 @@ struct SocialProfileView: View {
         } label: {
             Image(systemName: followButtonSymbol)
                 .resizable()
-                .foregroundStyle(.thickMaterial)
         }
     }
     
@@ -189,7 +115,6 @@ struct SocialProfileView: View {
         } label: {
             Image(systemName: editProfileButtonSymbol)
                 .resizable()
-                .foregroundStyle(.thickMaterial)
         }
     }
     
@@ -197,6 +122,20 @@ struct SocialProfileView: View {
         AsyncImage(url: URL(string: "https://fp-corporatewebsite-prod-umbraco.azurewebsites.net/api/media/getCroppedImage?imagePath=/media/l1thbnh0/1895-apple-park-01.jpg&width=2000&height=2000&crop=false")) { image in
             image
                 .resizable()
+                .overlay {
+                    Rectangle()
+                        .foregroundStyle(.ultraThinMaterial)
+                        .mask {
+                            LinearGradient(
+                                stops: [
+                                    .init(color: .white.opacity(0.85), location: 0.2),
+                                    .init(color: .clear, location: 0.75)
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        }
+                }
         } placeholder: {
             Color(UIColor.secondarySystemBackground)
         }
@@ -224,58 +163,20 @@ struct SocialProfileView: View {
         }
         .frame(width: size, height: size)
     }
-    
-    private func profileSectionView(
-        _ title: String,
-        content: [Media],
-        thumbnailsOrnamented: Bool = true,
-        thumbnailWidth: CGFloat? = nil,
-        steppedScrolling: Bool = false
-    ) -> some View {
-        let mediaThumbnailWidth = thumbnailWidth ?? (screenSize.width / 2) - 24
-        
-        return VStack(alignment: .leading) {
-            // Profile section title
-            Text(title)
-                .padding(.top, 24)
-                .padding(.leading, 16)
-                .font(.title2.weight(.semibold))
-            
-            // Media carousel
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: steppedScrolling ? 16 : 8) {
-                    ForEach(0..<5) { index in
-                        if index < content.count {
-                            MediaThumbnail(for: content[index], ornamented: thumbnailsOrnamented)
-                                .frame(width: mediaThumbnailWidth)
-                                .padding(.top, 4)
-                        }
-                    }
-                }
-                .padding(.horizontal)
-                .scrollTargetLayout()
-            }
-            .steppedScrollBehavior(steppedScrolling)
-        }
-    }
-    
-}
-
-// View extension to optionally enable stepped scrolling for profile sections
-fileprivate extension View {
-    @ViewBuilder func steppedScrollBehavior(_ enabled: Bool) -> some View {
-        if enabled {
-            self
-                .scrollTargetBehavior(.viewAligned)
-        } else {
-            self
-        }
-    }
 }
 
 #Preview {
-    NavigationStack {
+    @State var screenSize: CGSize = {
+        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            return .zero
+        }
+        
+        return window.screen.bounds.size
+    }()
+    
+    return NavigationStack {
         SocialProfileView()
             .modelContainer(previewContainer)
     }
+    .environment(\.screenSize, screenSize)
 }
