@@ -1,16 +1,15 @@
 //
-//  FeaturedMediaView.swift
+//  CompactMediaView.swift
 //  Physical
 //
-//  Created by Spencer Hartland on 8/18/23.
+//  Created by Spencer Hartland on 8/27/23.
 //
 
 import SwiftUI
 import MusicKit
 
-struct FeaturedMediaView: View {
+struct CompactMediaView: View {
     private let demoAlbumArtURL = "https://static.wikia.nocookie.net/grimes/images/3/3e/I_Wanna_Be_Software_single_artwork.png/revision/latest/scale-to-width-down/1000?cb=20230705192807"
-    private let featuredText = "Featured"
     
     private let favoriteSymbol = "star.circle.fill"
     private let placeholderSymbol = "music.note"
@@ -19,25 +18,30 @@ struct FeaturedMediaView: View {
     
     let title: String
     let artist: String
+    let enabled: Bool
     
     private let musicPlayer = ApplicationMusicPlayer.shared
     @State private var playingMedia: Bool = false
     
     @Environment(\.screenSize) private var screenSize: CGSize
     
+    init(title: String, artist: String, enabled: Bool = true) {
+        self.title = title
+        self.artist = artist
+        self.enabled = enabled
+    }
+    
     var body: some View {
-        let height = screenSize.height * 0.105
+        let height = screenSize.height * 0.065
         
         return ZStack(alignment: .leading) {
-            Color(UIColor.secondarySystemBackground)
-                .cornerRadius(16)
+            if enabled {
+                Color(UIColor.secondarySystemBackground)
+                    .cornerRadius(12)
+            }
             HStack {
                 mediaImage(urlString: demoAlbumArtURL, height: height)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(featuredText.uppercased())
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(.tertiary)
-                        .padding(.bottom, 4)
                     Text(title)
                         .font(.system(size: 16, weight: .semibold))
                         .lineLimit(1)
@@ -47,28 +51,12 @@ struct FeaturedMediaView: View {
                         .lineLimit(1)
                 }
                 Spacer()
-                playbackControl
+                if enabled {
+                    playbackControl
+                }
             }
         }
         .frame(height: height)
-    }
-    
-    private var favoriteOrnament: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Spacer()
-                ZStack {
-                    Circle()
-                        .foregroundStyle(Color(UIColor.secondarySystemBackground))
-                    Image(systemName: favoriteSymbol)
-                        .resizable()
-                        .foregroundStyle(.yellow)
-                        .padding(4)
-                }
-                .frame(width: 28, height: 28)
-            }
-        }
     }
     
     private var playbackControl: some View {
@@ -88,8 +76,8 @@ struct FeaturedMediaView: View {
             }
         } label: {
             Image(systemName: playingMedia ? pauseMediaSymbol : playMediaSymbol)
-                .font(.system(size: 28))
-                .padding(24)
+                .font(.system(size: 24))
+                .padding(.trailing)
         }
     }
     
@@ -100,14 +88,9 @@ struct FeaturedMediaView: View {
         } placeholder: {
             mediaImagePlaceholder(height: height)
         }
-        .frame(width: height - 32, height: height - 32)
+        .frame(width: height - 8, height: height - 8)
         .cornerRadius(8)
-        .padding([.top, .leading], 16)
-        .padding([.bottom, .trailing], 8)
-        .overlay {
-            favoriteOrnament
-        }
-        .padding([.bottom, .trailing], 8)
+        .padding(4)
     }
     
     private func mediaImagePlaceholder(height: CGFloat) -> some View {
@@ -131,6 +114,7 @@ struct FeaturedMediaView: View {
         return window.screen.bounds.size
     }()
     
-    return FeaturedMediaView(title: "So heavy i fell through the earth (art mix)", artist: "Grimes")
+    return CompactMediaView(title: "I Wanna Be Software", artist: "Grimes")
         .environment(\.screenSize, screenSize)
+        .padding(.horizontal)
 }

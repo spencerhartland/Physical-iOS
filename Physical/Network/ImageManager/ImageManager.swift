@@ -34,7 +34,8 @@ final class ImageManager {
         
         // Try fetching from server
         do {
-            guard let url = ImageRequest.url(forKey: key) else {
+            let imageRequest = ImageRequest(forImageWithKey: key)
+            guard let url = imageRequest.url else {
                 throw NetworkError.invalidURL
             }
             let image = try await fetchImage(url: url)
@@ -69,7 +70,7 @@ final class ImageManager {
                 throw NetworkError.imageDataError
             }
             
-            let request = try ImageRequest.urlRequest(forKey: key, method: .PUT)
+            let request = try ImageRequest(forImageWithKey: key, method: .PUT, body: imageData).urlRequest()
             let (_, response) = try await URLSession.shared.upload(for: request, from: imageData)
             
             guard let httpResponse = response as? HTTPURLResponse,

@@ -86,18 +86,23 @@ struct Collection: View {
     var collection: [Category]
     var sort: CollectionSorting
     var filter: CollectionFilter
+    var search: String
     
     init(
         _ collection: [Media],
         sort: CollectionSorting,
-        filter: CollectionFilter
+        filter: CollectionFilter,
+        search: String
     ) {
         self.sort = sort
         self.filter = filter
-        // First, organize and sort the collection according to the selected options
-        let sorted = Collection.organize(collection, sort: sort, filter: filter)
-        // Next, split the collection content up into categories if appropriate based on sort option.
-        self.collection = Collection.categorize(sorted, sort: sort)
+        self.search = search
+        // Organize the collection according to the selected options.
+        let organized = Collection.organize(collection, sort: sort, filter: filter)
+        // Perform search.
+        let searched = search.isEmpty ? organized : Collection.search(organized, for: search)
+        // Split the collection content up into categories if appropriate based on sort option.
+        self.collection = Collection.categorize(searched, sort: sort)
     }
     
     var body: some View {
@@ -114,8 +119,11 @@ struct Collection: View {
                                 }
                             }
                         } header: {
-                            Text(category.title)
-                                .font(.title2.weight(.semibold))
+                            // Do not display category title if only a single category is being displayed
+                            if collection.count > 1 {
+                                Text(category.title)
+                                    .font(.title2.weight(.semibold))
+                            }
                         }
                     }
                 }
@@ -181,6 +189,19 @@ struct Collection: View {
             result = try collection.filter(filter.predicate).sorted(using: sort.sortDescriptor)
         } catch {
             print("Error organizing collection  with provided predicate and sort descriptor: \(error.localizedDescription)")
+        }
+        return result
+    }
+    
+    // Performs a search of the collection. Returns a collection of Media with an album title or artist name containing the specified search term.
+    private static func search(_ collection: [Media], for term: String) -> [Media] {
+        var result: [Media] = []
+        do {
+            result = try collection.filter(
+                #Predicate { $0.title.contains(term) || $0.artist.contains(term) }
+            )
+        } catch {
+            print("Failed to search collection for results matching \(term). \(error.localizedDescription)")
         }
         return result
     }

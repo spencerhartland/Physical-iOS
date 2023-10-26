@@ -16,16 +16,19 @@ struct MediaCollectionView: View {
     private let addMediaButtonSymbolName = "plus"
     private let manualDetailsEntryButtonSymbolName = "character.cursor.ibeam"
     private let barcodeButtonSymbolName = "barcode.viewfinder"
-    private let filterMenuButtonSymbolName = "line.3.horizontal.decrease.circle"
+    private let filterMenuButtonFilterEnabledSymbolName = "line.3.horizontal.decrease.circle.fill"
+    private let filterMenuButtonFilterDisabledSymbolName = "line.3.horizontal.decrease.circle"
     private let sortMenuButtonSymbolName = "arrow.up.arrow.down.circle"
-    private static let appleMusicPreferenceKey = "shouldAskForAppleMusicAuthorization"
     private let appleMusicDisabledAlertTitle = "Apple Music access is disabled!"
     private let enableInSettingsButtonText = "Enable in Settings"
     private let dontAskAgainButtonText = "Don't ask again"
     private let notNowButtonText = "Not now"
     private let appleMusicDisabledAlertMessage = "Physical uses Apple Music to automatically populate information about new additions to your collection."
+    private let checkmarkSymbolName = "checkmark"
     
-    @AppStorage(MediaCollectionView.appleMusicPreferenceKey) var shouldAskForAppleMusicAuthorization: Bool = true
+    @AppStorage(StorageKeys.shouldAskForAppleMusicAuthorization) var shouldAskForAppleMusicAuthorization: Bool = true
+    @AppStorage(StorageKeys.preferredCollectionSortOption) var preferredCollectionSortOption: String = CollectionSorting.recentlyAdded.rawValue
+    
     @Environment(\.openURL) private var openURL
     @Environment(\.modelContext) private var context
     
@@ -34,12 +37,13 @@ struct MediaCollectionView: View {
     @State private var addingMedia = false
     @State private var collectionSortOption: CollectionSorting = .recentlyAdded
     @State private var collectionFilterOption: CollectionFilter = .allMedia
+    @State private var currentSearch: String = ""
     
     @Query private var media: [Media]
     
     var body: some View {
         NavigationStack {
-            Collection(media, sort: collectionSortOption, filter: collectionFilterOption)
+            Collection(media, sort: collectionSortOption, filter: collectionFilterOption, search: currentSearch)
                 .navigationTitle(navTitle)
                 .toolbar {
                     toolbarItems
@@ -62,6 +66,11 @@ struct MediaCollectionView: View {
                 .sheet(isPresented: $addingMedia) {
                     AlbumTitleSearchView(isPresented: $addingMedia)
                 }
+        }
+        .searchable(text: $currentSearch)
+        .onAppear { rememberSortOption() }
+        .onChange(of: collectionSortOption) { oldValue, newValue in
+            memorizeSortOptionIfChanged(oldValue, newValue)
         }
     }
     
@@ -113,14 +122,14 @@ struct MediaCollectionView: View {
                             Text(filter.rawValue)
                         } icon: {
                             if collectionFilterOption == filter {
-                                Image(systemName: "checkmark")
+                                Image(systemName: checkmarkSymbolName)
                             }
                         }
                     }
                 }
             }
         } label: {
-            Image(systemName: filterMenuButtonSymbolName)
+            Image(systemName: collectionFilterOption == .allMedia ? filterMenuButtonFilterDisabledSymbolName : filterMenuButtonFilterEnabledSymbolName)
         }
     }
     
@@ -134,13 +143,25 @@ struct MediaCollectionView: View {
                         Text(sort.rawValue)
                     } icon: {
                         if collectionSortOption == sort {
-                            Image(systemName: "checkmark")
+                            Image(systemName: checkmarkSymbolName)
                         }
                     }
                 }
             }
         } label: {
             Image(systemName: sortMenuButtonSymbolName)
+        }
+    }
+    
+    private func rememberSortOption() {
+        if let preferredSort = CollectionSorting(rawValue: preferredCollectionSortOption) {
+            collectionSortOption = preferredSort
+        }
+    }
+    
+    private func memorizeSortOptionIfChanged(_ oldValue: CollectionSorting, _ newValue: CollectionSorting) {
+        if newValue != oldValue {
+            preferredCollectionSortOption = newValue.rawValue
         }
     }
     

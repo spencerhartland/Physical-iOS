@@ -1,5 +1,5 @@
 //
-//  SocialProfileSection.swift
+//  CollectionSection.swift
 //  Physical
 //
 //  Created by Spencer Hartland on 8/24/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SocialProfileSection: View {
+struct CollectionSection: View {
     let title: String
     let content: [Media]
     let thumbnailsOrnamented: Bool
@@ -50,9 +50,9 @@ struct SocialProfileSection: View {
                         }
                     }
                 }
-                .padding(.horizontal)
                 .scrollTargetLayout()
             }
+            .safeAreaPadding(.horizontal)
             .steppedScrollBehavior(steppedScrolling)
         }
     }
@@ -79,6 +79,6 @@ fileprivate extension View {
         return window.screen.bounds.size
     }()
     
-    return SocialProfileSection("Favorites", content: [])
+    return CollectionSection("Favorites", content: [])
         .environment(\.screenSize, screenSize)
 }

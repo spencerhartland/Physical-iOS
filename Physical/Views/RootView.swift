@@ -8,6 +8,16 @@
 import SwiftUI
 
 struct RootView: View {
+    private let collectionTabItemText = "Collection"
+    private let socialTabItemText = "Social"
+    private let profileTabItemText = "Profile"
+    
+    private let collectionTabItemSymbol = "square.stack.fill"
+    private let socialTabItemSymbol = "at.circle.fill"
+    private let profileTabItemSymbol = "person.crop.circle.fill"
+    
+    @AppStorage(StorageKeys.userID) private var userID: String = ""
+    
     @State private var screenSize: CGSize = {
         guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return .zero
@@ -15,23 +25,37 @@ struct RootView: View {
         
         return window.screen.bounds.size
     }()
+    @State private var shouldRequestSignIn: Bool = true
     
     var body: some View {
         TabView {
             MediaCollectionView()
                 .tabItem {
-                    Label("Collection", systemImage: "square.stack.fill")
+                    Label(collectionTabItemText, systemImage: collectionTabItemSymbol)
                 }
-            Text("Coming soon")
+            noAccountView
                 .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
+                    Label(socialTabItemText, systemImage: socialTabItemSymbol)
                 }
-            SocialProfileView()
+            noAccountView
                 .tabItem {
-                    Label("Profile", systemImage: "person.fill")
+                    Label(profileTabItemText, systemImage: profileTabItemSymbol)
                 }
         }
         .environment(\.screenSize, screenSize)
+        .onAppear {
+            // If there is a user ID in UserDefaults, do not ask to sign in.
+            if !userID.isEmpty {
+                shouldRequestSignIn = false
+            }
+        }
+    }
+    
+    private var noAccountView: some View {
+        NoAccountView()
+            .sheet(isPresented: $shouldRequestSignIn) {
+                OnboardingSheet($shouldRequestSignIn)
+            }
     }
 }
 

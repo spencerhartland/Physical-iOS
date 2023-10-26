@@ -37,7 +37,7 @@ struct SocialProfileCollectionView: View {
     
     var body: some View {
         // Favorites section
-        SocialProfileSection(
+        CollectionSection(
             Section.favorites.rawValue,
             content: favoriteMedia,
             thumbnailWidth: screenSize.width - 24,
@@ -45,21 +45,21 @@ struct SocialProfileCollectionView: View {
         )
         
         // Vinyl records
-        SocialProfileSection(
+        CollectionSection(
             Section.vinylRecords.rawValue,
             content: vinylRecords,
             thumbnailsOrnamented: false
         )
         
         // Compact discs
-        SocialProfileSection(
+        CollectionSection(
             Section.compactDiscs.rawValue,
             content: compactDiscs,
             thumbnailsOrnamented: false
         )
         
         // Compact cassettes
-        SocialProfileSection(
+        CollectionSection(
             Section.compactCassettes.rawValue,
             content: compactCassettes,
             thumbnailsOrnamented: false

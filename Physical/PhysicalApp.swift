@@ -12,7 +12,7 @@ import SwiftData
 struct PhysicalApp: App {
     var body: some Scene {
         WindowGroup {
-            MediaCollectionView()
+            RootView()
         }
         .modelContainer(for: Media.self)
     }

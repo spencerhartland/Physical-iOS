@@ -10,9 +10,7 @@ import SwiftData
 @MainActor
 let previewContainer: ModelContainer = {
     do {
-        let container = try ModelContainer(
-            for: Media.self, ModelConfiguration(inMemory: true)
-        )
+        let container = try ModelContainer(for: Media.self)
         for item in SampleCollection.contents {
             container.mainContext.insert(item)
         }

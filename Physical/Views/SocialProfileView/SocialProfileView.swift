@@ -71,6 +71,7 @@ struct SocialProfileView: View {
                     
                     // Featured section
                     FeaturedMediaView(title: "I Wanna Be Software", artist: "Grimes")
+                        .padding(.top, 24)
                     
                     // Collection / posts toggle
                     Picker(segmentedControlTitle, selection: $profileViewSelection) {
@@ -90,7 +91,7 @@ struct SocialProfileView: View {
             }
             .padding(.bottom, 32)
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea(edges: [.top, . horizontal])
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 //followButton
