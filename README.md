@@ -20,5 +20,5 @@ This is really just a to-do list for myself, but should provide an idea of where
 2. Determine API calls needed for `SocialView` and `SocialProfileView`.
 3. Create table in DynamoDB based on API calls.
 4. Build APIs in Lambda.
-- First, post-log in flow (profile creation, show social views).
+- First, post log-in flow (profile creation, show social views).
 - After that, work on posting simple posts.
