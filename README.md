@@ -13,12 +13,12 @@ Physical also helps you share and discover new music with social features that a
 - UIKit
 
 ## To-do
-1. Build a `User` model.
-    - Persist with SwiftData.
-    - Save to AWS and make available publicly.
-2. Add `SocialProfileView`.
-    - Add highlight / featured
-    - Add user's top genres
-    - Enable editing of favorites' top 5
-    - Add posts
-3. Add `SocialDashboardView`.
+This is really just a to-do list for myself, but should provide an idea of where Physical is at in development.
+1. Build `SocialView`.
+- Use social post views and build a simple list-based UI.
+- Add stories-like "Daily Picks" at the top.
+2. Determine API calls needed for `SocialView` and `SocialProfileView`.
+3. Create table in DynamoDB based on API calls.
+4. Build APIs in Lambda.
+- First, post-log in flow (profile creation, show social views).
+- After that, work on posting simple posts.
