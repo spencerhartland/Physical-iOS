@@ -15,10 +15,14 @@ struct OnboardingSheet: View {
     private var socialProfileFeatureTitle = "Social Profile"
     private var socialProfileFeatureDescription = "Share, discover, and discuss music with friends."
     private var socialProfileFeatureSymbolName = "at.circle.fill"
-    // Share Collection feature
-    private var shareCollectionFeatureTitle = "Shareable Collection"
-    private var shareCollectionFeatureDescription = "Share your digital collection with anyone."
-    private var shareCollectionFeatureSymbolName = "square.and.arrow.up.circle.fill"
+    // Public Collection feature
+    private var publicCollectionFeatureTitle = "Public Collection"
+    private var publicCollectionFeatureDescription = "Share your collection with just a link."
+    private var publicCollectionFeatureSymbolName = "square.and.arrow.up.circle.fill"
+    // Shared Collection feature
+    private var sharedCollectionFeatureTitle = "Shared Collection"
+    private var sharedCollectionFeatureDescription = "Collaboratively manage a shared collection."
+    private var sharedCollectionFeatureSymbolName = "person.2.circle.fill"
     // No account button
     private var noAccountButtonText = "Continue without an account"
     // Account not required footer
@@ -56,11 +60,17 @@ struct OnboardingSheet: View {
                     description: socialProfileFeatureDescription,
                     symbolName: socialProfileFeatureSymbolName
                 )
-                // Share library
+                // Public collection
                 featureCallout(
-                    shareCollectionFeatureTitle,
-                    description: shareCollectionFeatureDescription,
-                    symbolName: shareCollectionFeatureSymbolName
+                    publicCollectionFeatureTitle,
+                    description: publicCollectionFeatureDescription,
+                    symbolName: publicCollectionFeatureSymbolName
+                )
+                // Shared collection
+                featureCallout(
+                    sharedCollectionFeatureTitle,
+                    description: sharedCollectionFeatureDescription,
+                    symbolName: sharedCollectionFeatureSymbolName
                 )
             }
             

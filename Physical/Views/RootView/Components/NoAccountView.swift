@@ -11,7 +11,7 @@ import AuthenticationServices
 struct NoAccountView: View {
     private let noAccountSymbolName = "at.circle"
     private let noAccountTitleText = "Signed out!"
-    private let noAccountSubtitleText = "You must be signed in to access social features. Tap the button below to sign in or create an account.\n\nYou can hide Physical's social features in the system Settings app under Physical > Hide social features."
+    private let noAccountSubtitleText = "You must be signed in to access Physical's social features. Tap the button below to sign in or create an account.\n\nSocial features can be toggled off in Settings under Physical > Show Social and Profile tabs."
     
     @Environment(\.screenSize) private var screenSize: CGSize
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
