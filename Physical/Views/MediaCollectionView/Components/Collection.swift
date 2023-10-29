@@ -12,9 +12,9 @@ import SwiftUI
 enum CollectionFilter: String, Identifiable, CaseIterable {
     case allMedia = "All Media"
     case favoritesOnly = "Favorites"
-    case vinylRecordsOnly = "Vinyl Record"
-    case cdsOnly = "Compact Disc"
-    case cassettesOnly = "Compact Cassette"
+    case vinylRecordsOnly = "Vinyl Records"
+    case cdsOnly = "Compact Discs"
+    case cassettesOnly = "Compact Cassettes"
     case ownedOnly = "Owned"
     case wantedOnly = "Wanted"
     

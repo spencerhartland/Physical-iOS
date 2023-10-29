@@ -16,9 +16,10 @@ struct MediaCollectionView: View {
     private let addMediaButtonSymbolName = "plus"
     private let manualDetailsEntryButtonSymbolName = "character.cursor.ibeam"
     private let barcodeButtonSymbolName = "barcode.viewfinder"
-    private let filterMenuButtonFilterEnabledSymbolName = "line.3.horizontal.decrease.circle.fill"
-    private let filterMenuButtonFilterDisabledSymbolName = "line.3.horizontal.decrease.circle"
-    private let sortMenuButtonSymbolName = "arrow.up.arrow.down.circle"
+    private let filterAndSortMenuButtonFilterEnabledSymbolName = "ellipsis.circle.fill"
+    private let filterAndSortMenuButtonFilterDisabledSymbolName = "ellipsis.circle"
+    private let filterMenuTitle = "Filter"
+    private let sortMenuTitle = "Sort"
     private let appleMusicDisabledAlertTitle = "Apple Music access is disabled!"
     private let enableInSettingsButtonText = "Enable in Settings"
     private let dontAskAgainButtonText = "Don't ask again"
@@ -44,8 +45,11 @@ struct MediaCollectionView: View {
     var body: some View {
         NavigationStack {
             Collection(media, sort: collectionSortOption, filter: collectionFilterOption, search: currentSearch)
-                .navigationTitle(navTitle)
+                .navigationTitle(collectionFilterOption == .allMedia ? navTitle : collectionFilterOption.rawValue)
                 .toolbar {
+                    if collectionFilterOption != .allMedia {
+                        secondaryNavTitle
+                    }
                     toolbarItems
                 }
                 .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
@@ -77,8 +81,13 @@ struct MediaCollectionView: View {
     private var toolbarItems: ToolbarItemGroup<some View> {
         ToolbarItemGroup(placement: .topBarTrailing) {
             addMediaMenu
-            filterMenu
-            sortMenu
+            filterAndSortMenu
+        }
+    }
+    
+    private var secondaryNavTitle: ToolbarItemGroup<some View> {
+        ToolbarItemGroup(placement: .principal) {
+            Text(navTitle)
         }
     }
     
@@ -111,6 +120,16 @@ struct MediaCollectionView: View {
         }
     }
     
+    private var filterAndSortMenu: some View {
+        Menu {
+            sortMenu
+            Divider()
+            filterMenu
+        } label: {
+            Image(systemName: collectionFilterOption == .allMedia ? filterAndSortMenuButtonFilterDisabledSymbolName : filterAndSortMenuButtonFilterEnabledSymbolName)
+        }
+    }
+    
     private var filterMenu: some View {
         Menu {
             ForEach(CollectionFilter.allCases) { filter in
@@ -129,7 +148,7 @@ struct MediaCollectionView: View {
                 }
             }
         } label: {
-            Image(systemName: collectionFilterOption == .allMedia ? filterMenuButtonFilterDisabledSymbolName : filterMenuButtonFilterEnabledSymbolName)
+            Text(filterMenuTitle)
         }
     }
     
@@ -149,7 +168,7 @@ struct MediaCollectionView: View {
                 }
             }
         } label: {
-            Image(systemName: sortMenuButtonSymbolName)
+            Text(sortMenuTitle)
         }
     }
     
