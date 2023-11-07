@@ -47,9 +47,6 @@ struct MediaCollectionView: View {
             Collection(media, sort: collectionSortOption, filter: collectionFilterOption, search: currentSearch)
                 .navigationTitle(collectionFilterOption == .allMedia ? navTitle : collectionFilterOption.rawValue)
                 .toolbar {
-                    if collectionFilterOption != .allMedia {
-                        secondaryNavTitle
-                    }
                     toolbarItems
                 }
                 .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
@@ -85,12 +82,6 @@ struct MediaCollectionView: View {
         }
     }
     
-    private var secondaryNavTitle: ToolbarItemGroup<some View> {
-        ToolbarItemGroup(placement: .principal) {
-            Text(navTitle)
-        }
-    }
-    
     private var addMediaMenu: some View {
         Menu {
             Button {
@@ -123,7 +114,6 @@ struct MediaCollectionView: View {
     private var filterAndSortMenu: some View {
         Menu {
             sortMenu
-            Divider()
             filterMenu
         } label: {
             Image(systemName: collectionFilterOption == .allMedia ? filterAndSortMenuButtonFilterDisabledSymbolName : filterAndSortMenuButtonFilterEnabledSymbolName)
