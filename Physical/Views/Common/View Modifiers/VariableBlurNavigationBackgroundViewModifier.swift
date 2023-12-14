@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct VariableBlurNavigationBackgroundViewModifier: ViewModifier {
+    private let blurPrimaryColor = Color(UIColor.secondarySystemBackground)
+    
     @State private var screenSize: CGSize = {
         guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return .zero
@@ -27,9 +29,9 @@ struct VariableBlurNavigationBackgroundViewModifier: ViewModifier {
                 .mask {
                     LinearGradient(
                         stops: [
-                            .init(color: .white.opacity(0.85), location: 0.33),
-                            .init(color: .white.opacity(0.66), location: 0.7),
-                            .init(color: .white.opacity(0.33), location: 0.85),
+                            .init(color: blurPrimaryColor.opacity(0.66), location: 0.33),
+                            .init(color: blurPrimaryColor.opacity(0.33), location: 0.66),
+                            .init(color: blurPrimaryColor.opacity(0.165), location: 0.85),
                             .init(color: .clear, location: 1.0)
                         ],
                         startPoint: .top,
