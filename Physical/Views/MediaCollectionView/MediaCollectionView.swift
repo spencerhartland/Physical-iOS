@@ -35,10 +35,12 @@ struct MediaCollectionView: View {
     
     @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
     @State private var musicAuthorizationDenied = false
-    @State private var addingMedia = false
+    @State private var addingMediaUsingManualEntry = false
+    @State private var addingMediaUsingBarcodeScanning = false
     @State private var collectionSortOption: CollectionSorting = .recentlyAdded
     @State private var collectionFilterOption: CollectionFilter = .allMedia
     @State private var currentSearch: String = ""
+    @State private var detectedBarcode: String = ""
     
     @Query private var media: [Media]
     
@@ -64,8 +66,11 @@ struct MediaCollectionView: View {
                 } message: {
                     Text(appleMusicDisabledAlertMessage)
                 }
-                .sheet(isPresented: $addingMedia) {
-                    AlbumTitleSearchView(isPresented: $addingMedia)
+                .sheet(isPresented: $addingMediaUsingManualEntry) {
+                    AlbumTitleSearchView(isPresented: $addingMediaUsingManualEntry)
+                }
+                .popover(isPresented: $addingMediaUsingBarcodeScanning) {
+                    BarcodeScanningView($detectedBarcode)
                 }
         }
         .searchable(text: $currentSearch)
@@ -88,7 +93,7 @@ struct MediaCollectionView: View {
                 if shouldAskForAppleMusicAuthorization {
                     checkForMusicAuthorization()
                 }
-                addingMedia.toggle()
+                addingMediaUsingManualEntry.toggle()
             } label: {
                 Label {
                     Text(manualDetailsEntryText)
@@ -98,7 +103,10 @@ struct MediaCollectionView: View {
             }
             
             Button {
-                // Scan barcode
+                if shouldAskForAppleMusicAuthorization {
+                    checkForMusicAuthorization()
+                }
+                addingMediaUsingBarcodeScanning.toggle()
             } label: {
                 Label {
                     Text(barcodeDetailsEntryText)
