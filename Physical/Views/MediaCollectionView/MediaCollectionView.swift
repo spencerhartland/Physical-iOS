@@ -40,7 +40,6 @@ struct MediaCollectionView: View {
     @State private var collectionSortOption: CollectionSorting = .recentlyAdded
     @State private var collectionFilterOption: CollectionFilter = .allMedia
     @State private var currentSearch: String = ""
-    @State private var detectedBarcode: String = ""
     
     @Query private var media: [Media]
     
@@ -69,8 +68,8 @@ struct MediaCollectionView: View {
                 .sheet(isPresented: $addingMediaUsingManualEntry) {
                     AlbumTitleSearchView(isPresented: $addingMediaUsingManualEntry)
                 }
-                .popover(isPresented: $addingMediaUsingBarcodeScanning) {
-                    BarcodeScanningView($detectedBarcode)
+                .navigationDestination(isPresented: $addingMediaUsingBarcodeScanning) {
+                    BarcodeScanAlbumSearchView(isPresented: $addingMediaUsingBarcodeScanning)
                 }
         }
         .searchable(text: $currentSearch)

@@ -42,6 +42,7 @@ struct MediaDetailsEntryView: View {
     
     // Model context
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.screenSize) private var screenSize
     
     // The media being added to the collection
     @Bindable var newMedia: Media
@@ -56,13 +57,6 @@ struct MediaDetailsEntryView: View {
     @State private var mediaTypeSymbol = Image(.vinylRecord)
     @State private var newImage: UIImage? = nil
     @State private var trackTitleText: String = ""
-    @State private var screenSize: CGSize = {
-        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .zero
-        }
-        
-        return window.screen.bounds.size
-    }()
     
     init(newMedia: Bindable<Media>, isPresented: Binding<Bool>) {
         self._newMedia = newMedia
@@ -81,6 +75,7 @@ struct MediaDetailsEntryView: View {
             }
         }
         .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
+        .toolbar(.hidden, for: .tabBar)
         .navigationTitle(navTitle)
         .environment(\.editMode, $editMode)
         .background {

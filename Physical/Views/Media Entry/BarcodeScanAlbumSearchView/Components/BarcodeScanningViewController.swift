@@ -9,8 +9,7 @@ import AVFoundation
 import SwiftUI
 import UIKit
 
-/// `BarcodeScanningViewController` is a view controller for recognizing regular one-dimensional barcodes.
-/// This view controller accomplishes this using `AVCaptureSession` and `AVCaptureVideoPreviewLayer`.
+/// `BarcodeScanningViewController` is a view controller for scanning one-dimensional barcodes using `AVFoundation`.
 class BarcodeScanningViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     
     // MARK: - Object lifecycle
@@ -129,58 +128,49 @@ class BarcodeScanningViewController: UIViewController, AVCaptureMetadataOutputOb
                 // Provide haptic feedback when the barcode scanning view controller detects a barcode.
                 AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
                 
-                // Highlight the detected barcode
-                var barcodeCorners = readableObject.corners
-                if !barcodeCorners.isEmpty {
-                    let barcodePath = UIBezierPath()
-                    let firstCorner = barcodeCorners.removeFirst()
-                    barcodePath.move(to: firstCorner)
-                    for corner in barcodeCorners {
-                        barcodePath.addLine(to: corner)
-                    }
-                    barcodePath.close()
-                    
-                    highlightBarcode(with: barcodePath, to: previewLayer)
-                }
-                print("Barcode scanned: \(detectedBarcode)")
-                
                 // Remember the recognized barcode string.
                 self.detectedBarcode = detectedBarcode
             }
             
+            // Highlight the detected barcode
+            var barcodeBounds = CGRect(origin: previewLayer.position, size: .zero)
+            var barcodeCorners = readableObject.corners
+            if !barcodeCorners.isEmpty {
+                let barcodePath = UIBezierPath()
+                let firstCorner = barcodeCorners.removeFirst()
+                barcodePath.move(to: firstCorner)
+                for corner in barcodeCorners {
+                    barcodePath.addLine(to: corner)
+                }
+                barcodePath.close()
+                barcodeBounds = barcodePath.bounds
+                barcodeBounds.size.height = 1
+                
+                highlightBarcode(with: barcodeBounds, to: previewLayer)
+            }
+            
         } else {
             barcodeShapeLayer.removeFromSuperlayer()
-            self.detectedBarcode = ""
         }
     }
     
     // MARK: - Highlight detected barcode
     
     /// Highlights the recognized barcode.
-    private func highlightBarcode(with barcodePath: UIBezierPath, to parentLayer: CALayer) {
+    private func highlightBarcode(with barcodeBounds: CGRect, to parentLayer: CALayer) {
         // Reset shape layer
         barcodeShapeLayer.removeFromSuperlayer()
         
         // Style the line
-        barcodeShapeLayer.path = barcodePath.cgPath
-        barcodeShapeLayer.strokeColor = UIColor.white.cgColor
-        barcodeShapeLayer.lineWidth = 1.0
+        barcodeShapeLayer.path = UIBezierPath(rect: barcodeBounds).cgPath
+        barcodeShapeLayer.fillColor = UIColor.systemYellow.cgColor
         
         // Add bounds and position
-        let barcodeBounds = barcodePath.bounds
         barcodeShapeLayer.bounds = barcodeBounds
         barcodeShapeLayer.position = CGPoint(x: barcodeBounds.midX, y: barcodeBounds.midY)
         barcodeShapeLayer.masksToBounds = true
         
         // Add shape layer as sublayer of parent layer
         parentLayer.addSublayer(barcodeShapeLayer)
-        
-        // Add animation
-        let opacityAnimation = CABasicAnimation(keyPath: "opacity")
-        opacityAnimation.autoreverses = true
-        opacityAnimation.duration = 0.3
-        opacityAnimation.repeatCount = 5
-        opacityAnimation.toValue = 0.0
-        barcodeShapeLayer.add(opacityAnimation, forKey: opacityAnimation.keyPath)
     }
 }

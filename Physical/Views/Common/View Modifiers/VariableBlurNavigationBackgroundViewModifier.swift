@@ -10,13 +10,7 @@ import SwiftUI
 struct VariableBlurNavigationBackgroundViewModifier: ViewModifier {
     private let blurPrimaryColor = Color(UIColor.secondarySystemBackground)
     
-    @State private var screenSize: CGSize = {
-        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .zero
-        }
-        
-        return window.screen.bounds.size
-    }()
+    @Environment(\.screenSize) private var screenSize
     
     func body(content: Content) -> some View {
         let height = screenSize.height * 0.15
@@ -50,7 +44,15 @@ extension View {
 }
 
 #Preview {
-    NavigationStack {
+    @State var screenSize: CGSize = {
+        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            return .zero
+        }
+        
+        return window.screen.bounds.size
+    }()
+    
+    return NavigationStack {
         List {
             Text("Item 1")
             Text("Item 2")
@@ -66,4 +68,5 @@ extension View {
         .ignoresSafeArea()
         .variableBlurNavigationBackground()
     }
+    .environment(\.screenSize, screenSize)
 }

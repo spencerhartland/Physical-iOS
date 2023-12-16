@@ -25,18 +25,12 @@ struct MediaDetailView: View {
     private let compactDiscSymbol = "opticaldisc.fill"
     private let horizontalDetailsSeparatorSymbol = "circle.fill"
     
+    @Environment(\.screenSize) private var screenSize
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     @Bindable var media: Media
     @State private var isEditing: Bool = false
-    @State private var screenSize: CGSize = {
-        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .zero
-        }
-        
-        return window.screen.bounds.size
-    }()
     
     var body: some View {
         List {

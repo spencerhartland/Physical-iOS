@@ -47,7 +47,7 @@ struct AlbumTitleSearchView: View {
                     Section {
                         ForEach(searchResults) { album in
                             Button {
-                                updateMediaWithInfo(from: album)
+                                newMedia.updateWithInfo(from: album)
                                 doneSearching = true
                             } label: {
                                 SearchResultListItem(for: album)
@@ -112,55 +112,5 @@ struct AlbumTitleSearchView: View {
     @MainActor
     private func resetSearchResults() {
         self.searchResults = []
-    }
-    
-    @MainActor
-    private func updateMediaWithInfo(from album: Album) {
-        Task {
-            let albumRelatedData = await fetchRelatedData(from: album)
-            if let data = albumRelatedData {
-                self.updateMediaWithDetailedInfo(genre: data.0, tracks: data.1)
-            }
-        }
-        newMedia.title = album.title
-        newMedia.artist = album.artistName
-        newMedia.releaseDate = album.releaseDate ?? .now
-        if let url = getArtworkURLString(from: album.artwork) {
-            newMedia.albumArtworkURL = url
-        }
-    }
-    
-    @MainActor
-    private func updateMediaWithDetailedInfo(genre: String, tracks: [String]) {
-        newMedia.genre = genre
-        newMedia.tracks = tracks
-    }
-    
-    private func fetchRelatedData(from album: Album) async -> (String, [String])? {
-        do {
-            let detailedAlbum = try await album.with([.tracks, .genres])
-            guard let tracks = detailedAlbum.tracks,
-                  let genres = detailedAlbum.genres,
-                  let primaryGenre = genres.first else {
-                print("Error fetching detailed album.")
-                return nil
-            }
-            var tracksArray = [String]()
-            for track in tracks {
-                tracksArray.append(track.title)
-            }
-            return (primaryGenre.name, tracksArray)
-        } catch {
-            print("Error fetching detailed album: \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
-    private func getArtworkURLString(from artwork: Artwork?) -> String? {
-        guard let artwork = artwork,
-              let url = artwork.url(width: 1080, height: 1080) else {
-            return nil
-        }
-        return url.absoluteString
     }
 }

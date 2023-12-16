@@ -59,6 +59,10 @@
 		00DBFDB12AD9EB2400ABF8C2 /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DBFDB02AD9EB2400ABF8C2 /* SocialView.swift */; };
 		00DBFDB32AD9ECBB00ABF8C2 /* NoAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DBFDB22AD9ECBB00ABF8C2 /* NoAccountView.swift */; };
 		00DEC2692A613F3800353643 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DEC2682A613F3800353643 /* ImagePicker.swift */; };
+		00EE2D5E2B2C0377006D7DA9 /* BarcodeScanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D5D2B2C0377006D7DA9 /* BarcodeScanningView.swift */; };
+		00EE2D602B2C03F9006D7DA9 /* BarcodeScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D5F2B2C03F9006D7DA9 /* BarcodeScanningViewController.swift */; };
+		00EE2D622B2C20D4006D7DA9 /* BarcodeSearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D612B2C20D3006D7DA9 /* BarcodeSearchResultView.swift */; };
+		00EE2D662B2C3F1D006D7DA9 /* BarcodeScanAlbumSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D652B2C3F1D006D7DA9 /* BarcodeScanAlbumSearchView.swift */; };
 		00F1F10E2A8056850045C76B /* OwnershipPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1F10D2A8056850045C76B /* OwnershipPicker.swift */; };
 		00F5FBB82A69110600FCAA61 /* MediaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5FBB72A69110600FCAA61 /* MediaDetailView.swift */; };
 		00F5FBBA2A69156C00FCAA61 /* Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F5FBB92A69156C00FCAA61 /* Motion.swift */; };
@@ -133,6 +137,10 @@
 		00DBFDB02AD9EB2400ABF8C2 /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
 		00DBFDB22AD9ECBB00ABF8C2 /* NoAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoAccountView.swift; sourceTree = "<group>"; };
 		00DEC2682A613F3800353643 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		00EE2D5D2B2C0377006D7DA9 /* BarcodeScanningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanningView.swift; sourceTree = "<group>"; };
+		00EE2D5F2B2C03F9006D7DA9 /* BarcodeScanningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanningViewController.swift; sourceTree = "<group>"; };
+		00EE2D612B2C20D3006D7DA9 /* BarcodeSearchResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeSearchResultView.swift; sourceTree = "<group>"; };
+		00EE2D652B2C3F1D006D7DA9 /* BarcodeScanAlbumSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanAlbumSearchView.swift; sourceTree = "<group>"; };
 		00F1F10D2A8056850045C76B /* OwnershipPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnershipPicker.swift; sourceTree = "<group>"; };
 		00F5FBB72A69110600FCAA61 /* MediaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailView.swift; sourceTree = "<group>"; };
 		00F5FBB92A69156C00FCAA61 /* Motion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Motion.swift; sourceTree = "<group>"; };
@@ -344,8 +352,7 @@
 				000E57C12A89654D00BA2B1D /* SocialProfileView */,
 				00F8107E2A669C3F00D0EAEA /* MediaCollectionView */,
 				00F5FBB52A6910D500FCAA61 /* MediaDetailView */,
-				00F8107C2A669BBF00D0EAEA /* MediaDetailsEntryView */,
-				00F8107A2A669B9200D0EAEA /* AlbumTitleSearchView */,
+				00EE2D672B2D642D006D7DA9 /* Media Entry */,
 				00656F742A7D7E8900C44176 /* MediaImageCarousel */,
 				009A57C72A60905B000EF6F8 /* Common */,
 			);
@@ -408,6 +415,35 @@
 			children = (
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		00EE2D5A2B2C030D006D7DA9 /* BarcodeScanAlbumSearchView */ = {
+			isa = PBXGroup;
+			children = (
+				00EE2D652B2C3F1D006D7DA9 /* BarcodeScanAlbumSearchView.swift */,
+				00EE2D5C2B2C0342006D7DA9 /* Components */,
+			);
+			path = BarcodeScanAlbumSearchView;
+			sourceTree = "<group>";
+		};
+		00EE2D5C2B2C0342006D7DA9 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				00EE2D5D2B2C0377006D7DA9 /* BarcodeScanningView.swift */,
+				00EE2D5F2B2C03F9006D7DA9 /* BarcodeScanningViewController.swift */,
+				00EE2D612B2C20D3006D7DA9 /* BarcodeSearchResultView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		00EE2D672B2D642D006D7DA9 /* Media Entry */ = {
+			isa = PBXGroup;
+			children = (
+				00F8107A2A669B9200D0EAEA /* AlbumTitleSearchView */,
+				00F8107C2A669BBF00D0EAEA /* MediaDetailsEntryView */,
+				00EE2D5A2B2C030D006D7DA9 /* BarcodeScanAlbumSearchView */,
+			);
+			path = "Media Entry";
 			sourceTree = "<group>";
 		};
 		00F5FBB52A6910D500FCAA61 /* MediaDetailView */ = {
@@ -599,6 +635,8 @@
 				008B64802A6A165F00586C69 /* MusicGenres.swift in Sources */,
 				005CDDD22A8F67EF00CE9A1F /* FeaturedMediaView.swift in Sources */,
 				0004E6A02A981F8700D671C8 /* ScreenSize.swift in Sources */,
+				00EE2D5E2B2C0377006D7DA9 /* BarcodeScanningView.swift in Sources */,
+				00EE2D622B2C20D4006D7DA9 /* BarcodeSearchResultView.swift in Sources */,
 				00DBFDAD2AD9E6BC00ABF8C2 /* StorageKeys.swift in Sources */,
 				007C0FB82A8C1BA700AD9C2D /* VariableBlurImageBackgroundViewModifier.swift in Sources */,
 				00CFE3B42A6531BB004BE57E /* SearchResultListItem.swift in Sources */,
@@ -607,6 +645,7 @@
 				00A8139A2A7B1BA300596620 /* ImageCache.swift in Sources */,
 				005F4AF02A9C6784004E8E39 /* SocialPostBottomBar.swift in Sources */,
 				007C0FC72A8D399A00AD9C2D /* PreviewSampleData.swift in Sources */,
+				00EE2D662B2C3F1D006D7DA9 /* BarcodeScanAlbumSearchView.swift in Sources */,
 				00F5FBBC2A691DA000FCAA61 /* FloatingViewModifier.swift in Sources */,
 				00718B752AFC5BCC0063F161 /* UserInputRequiredView.swift in Sources */,
 				007C0FBC2A8C41B400AD9C2D /* VariableBlurNavigationBackgroundViewModifier.swift in Sources */,
@@ -620,6 +659,7 @@
 				00DBFDB12AD9EB2400ABF8C2 /* SocialView.swift in Sources */,
 				0069F2A02AE131820084147E /* AuthenticationRequest.swift in Sources */,
 				000E57C32A89657500BA2B1D /* SocialProfileView.swift in Sources */,
+				00EE2D602B2C03F9006D7DA9 /* BarcodeScanningViewController.swift in Sources */,
 				0088FEC72A5A09BC00FEAF8B /* Media.swift in Sources */,
 				0058BF592A9DD8BF002696A0 /* SocialListPostView.swift in Sources */,
 				0004E69C2A98178400D671C8 /* SocialProfileCollectionView.swift in Sources */,

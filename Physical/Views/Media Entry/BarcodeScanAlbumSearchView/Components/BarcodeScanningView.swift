@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MusicKit
 
 struct BarcodeScanningView: UIViewControllerRepresentable {
     // MARK: - Object lifecycle
@@ -16,7 +17,7 @@ struct BarcodeScanningView: UIViewControllerRepresentable {
     
     // MARK: - Properties
     
-    @Binding var detectedBarcode: String
+    @Binding private var detectedBarcode: String
     
     // MARK: - View controller representable
     
@@ -27,10 +28,4 @@ struct BarcodeScanningView: UIViewControllerRepresentable {
     func updateUIViewController(_ viewController: UIViewController, context: Context) {
         // The underlying view controller doesn’t need to be updated in any way.
     }
-}
-
-#Preview {
-    @State var detectedBarcode: String = ""
-    
-    return BarcodeScanningView($detectedBarcode)
 }

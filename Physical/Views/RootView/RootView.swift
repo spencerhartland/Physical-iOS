@@ -17,7 +17,7 @@ struct RootView: View {
     private let profileTabItemSymbol = "person.crop.circle.fill"
     
     @AppStorage(StorageKeys.userID) private var userID: String = ""
-    
+    @State private var shouldRequestSignIn: Bool = true
     @State private var screenSize: CGSize = {
         guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return .zero
@@ -25,7 +25,6 @@ struct RootView: View {
         
         return window.screen.bounds.size
     }()
-    @State private var shouldRequestSignIn: Bool = true
     
     var body: some View {
         TabView {
@@ -46,7 +45,7 @@ struct RootView: View {
         .onAppear {
             // If there is a user ID in UserDefaults, do not ask to sign in.
             if !userID.isEmpty {
-                shouldRequestSignIn = false
+                // UNDO COMMENT shouldRequestSignIn = false
             }
         }
     }
