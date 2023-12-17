@@ -68,7 +68,7 @@ struct MediaCollectionView: View {
                 .sheet(isPresented: $addingMediaUsingManualEntry) {
                     AlbumTitleSearchView(isPresented: $addingMediaUsingManualEntry)
                 }
-                .navigationDestination(isPresented: $addingMediaUsingBarcodeScanning) {
+                .sheet(isPresented: $addingMediaUsingBarcodeScanning) {
                     BarcodeScanAlbumSearchView(isPresented: $addingMediaUsingBarcodeScanning)
                 }
         }

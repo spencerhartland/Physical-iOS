@@ -30,7 +30,7 @@ final class Media {
             self.rawCondition = newValue.rawValue
         }
     }
-    let dateAdded: Date
+    var dateAdded: Date
     var releaseDate: Date
     var title: String
     var artist: String
@@ -100,6 +100,24 @@ final class Media {
         case good = "Good"
         case fair = "Fair"
         case poor = "Poor"
+    }
+    
+    @MainActor
+    public func resetInfo() {
+        self.rawType = MediaType.vinylRecord.rawValue
+        self.rawCondition = MediaCondition.nearMint.rawValue
+        self.dateAdded = .now
+        self.releaseDate = .now
+        self.title = ""
+        self.artist = ""
+        self.tracks = []
+        self.displaysOfficialArtwork = true
+        self.albumArtworkURL = ""
+        self.imageKeys = []
+        self.notes = ""
+        self.genre = ""
+        self.isFavorite = false
+        self.isOwned = true
     }
     
     @MainActor

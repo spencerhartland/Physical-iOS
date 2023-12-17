@@ -9,70 +9,44 @@ import SwiftUI
 import MusicKit
 
 struct BarcodeSearchResultView: View {
-    private let searchResultCaptionText = "Tap to continue"
+    private let albumTitlePlaceholderValue = "Placeholder album title"
+    private let albumArtistPlaceholderValue = "Placeholder album artist"
+    private let interactionSymbolName = "chevron.forward"
+    private let noResultsTitleText = "No results"
+    private let noResultsDescriptionText = "Tap to add this media manually"
     
-    let album: Album
+    @Environment(\.screenSize) private var screenSize
     
-    init(for result: Album) {
+    let album: Album?
+    @Binding private var searchReturnedNoResults: Bool
+    
+    init(for result: Album?, completionFlag: Binding<Bool>) {
         self.album = result
+        self._searchReturnedNoResults = completionFlag
     }
     
     var body: some View {
-        VStack {
-            HStack(spacing: 8) {
-                AlbumArt(artwork: album.artwork)
-                VStack(alignment: .leading) {
-                    Text(album.title)
-                        .lineLimit(1)
-                        .font(.headline)
-                        .foregroundStyle(.primary)
-                    Text(album.artistName)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-            }
-            .padding(8)
-            .background {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .foregroundStyle(.thickMaterial)
-            }
-            Text(searchResultCaptionText)
-                .font(.caption)
-                .foregroundStyle(.tertiary)
-        }
-        .padding()
-    }
-    
-    // MARK: - Album art
-    
-    private struct AlbumArt: View {
-        private let roundedRect = RoundedRectangle(cornerRadius: 8.0)
-        private let noAlbumArtSymbol = "music.note"
-        
-        @Environment(\.screenSize) private var screenSize
-        
-        let artwork: Artwork?
-        
-        var body: some View {
-            if let artwork = artwork {
-                let artworkSize = screenSize.width / 6
-                ArtworkImage(artwork, width: artworkSize, height: artworkSize)
-                    .clipShape(roundedRect)
-                    .shadow(radius: 2)
-                    .overlay {
-                        roundedRect.stroke(lineWidth: 0.25)
-                    }
-            } else {
-                roundedRect
+        HStack(spacing: 8) {
+            AlbumArtView(album?.artwork ?? nil, size: screenSize.width / 6)
+            VStack(alignment: .leading) {
+                Text(searchReturnedNoResults ? noResultsTitleText : album?.title ?? albumTitlePlaceholderValue)
+                    .lineLimit(1)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                Text(searchReturnedNoResults ? noResultsDescriptionText : album?.artistName ?? albumArtistPlaceholderValue)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .overlay {
-                        Image(systemName: noAlbumArtSymbol)
-                            .resizable()
-                            .padding(4)
-                            .foregroundStyle(.primary)
-                    }
             }
+            .redacted(reason: (album == nil && !searchReturnedNoResults) ? .placeholder : [])
+            Spacer()
+            Image(systemName: interactionSymbolName)
+                .foregroundStyle(.tertiary)
+                .padding(8)
+        }
+        .padding(8)
+        .background {
+            RoundedRectangle(cornerRadius: 16.0)
+                .foregroundStyle(Color(UIColor.secondarySystemBackground))
         }
     }
 }

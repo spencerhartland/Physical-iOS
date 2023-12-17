@@ -17,6 +17,7 @@ struct BarcodeScanAlbumSearchView: View {
     private let captionAwaitingScanText = "Scan the barcode on a vinyl record, CD, or cassette to search Apple Music."
     private let captionSearchingText = "Searching..."
     private let captionNoResultsFoundText = "No results found on Apple Music matching the scanned UPC."
+    private let footerText = "Barcode scanning works on the one-dimensional barcodes of most vinyl records, CDs, and cassettes. Not all UPCs yield results from Apple Music."
     
     @Binding var isPresented: Bool
     
@@ -24,39 +25,43 @@ struct BarcodeScanAlbumSearchView: View {
     
     @State private var detectedBarcode: String = ""
     @State private var detectedAlbum: Album?
+    @State private var searchReturnedNoResults: Bool = false
     @State private var flashlightActive: Bool = false
     @State private var doneScanning: Bool = false
     
     var body: some View {
         NavigationStack {
             ZStack {
-                BarcodeScanningView($detectedBarcode)
-                    .ignoresSafeArea()
                 VStack {
-                    barcodeScanningTooltip
-                    Spacer()
-                    if let detectedAlbum {
-                        Button {
-                            doneScanning = true
-                        } label: {
-                            BarcodeSearchResultView(for: detectedAlbum)
+                    BarcodeScanningView($detectedBarcode)
+                        .clipShape(Rectangle())
+                        .overlay {
+                            VStack {
+                                Spacer()
+                                barcodeScanningTooltip
+                            }
                         }
-                        .transition(.move(edge: .bottom))
+                    VStack(alignment: .center, spacing: 16) {
+                        NavigationLink {
+                            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $isPresented)
+                        } label: {
+                            BarcodeSearchResultView(for: detectedAlbum, completionFlag: $searchReturnedNoResults)
+                        }
+                        Text(footerText)
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .multilineTextAlignment(.center)
                     }
+                    .padding()
                 }
             }
-            .navigationDestination(isPresented: $doneScanning) {
-                MediaDetailsEntryView(newMedia: $newMedia, isPresented: $isPresented)
-            }
-            .toolbarBackground(.hidden, for: .navigationBar)
-            .toolbar(.hidden, for: .tabBar)
+            .navigationTitle("Add Media")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     flashlightToggle
                 }
             }
-            .variableBlurNavigationBackground()
         }
         .onChange(of: detectedBarcode) { oldValue, newValue in
             if newValue != oldValue {
@@ -90,6 +95,7 @@ struct BarcodeScanAlbumSearchView: View {
             }
         } label: {
             Image(systemName: flashlightActive ? flashlightOnSymbolName : flashlightOffSymbolName)
+                .foregroundStyle(flashlightActive ? .yellow : .primary)
         }
     }
     
@@ -103,6 +109,8 @@ struct BarcodeScanAlbumSearchView: View {
                     let albumsResponse = try await albumsRequest.response()
                     if let firstAlbum = albumsResponse.items.first {
                         await self.handleDetectedAlbum(firstAlbum)
+                    } else {
+                        await self.handleNoResults()
                     }
                 } catch {
                     print("Encountered error while trying to find albums with upc = \"\(detectedBarcode)\".")
@@ -114,9 +122,15 @@ struct BarcodeScanAlbumSearchView: View {
     @MainActor
     private func handleDetectedAlbum(_ detectedAlbum: Album) {
         newMedia.updateWithInfo(from: detectedAlbum)
-        withAnimation(.bouncy) {
-            self.detectedAlbum = detectedAlbum
-        }
+        self.searchReturnedNoResults = false
+        self.detectedAlbum = detectedAlbum
+    }
+    
+    @MainActor
+    private func handleNoResults() {
+        newMedia.resetInfo()
+        self.searchReturnedNoResults = true
+        self.detectedAlbum = nil
     }
     
     // MARK: - Torch control
