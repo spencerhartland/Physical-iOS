@@ -14,10 +14,8 @@ struct BarcodeScanAlbumSearchView: View {
     private let flashlightOffSymbolName = "flashlight.off.fill"
     private let tooltipText = "Scan the barcode"
     private let tooltipSymbolName = "barcode.viewfinder"
-    private let captionAwaitingScanText = "Scan the barcode on a vinyl record, CD, or cassette to search Apple Music."
-    private let captionSearchingText = "Searching..."
-    private let captionNoResultsFoundText = "No results found on Apple Music matching the scanned UPC."
     private let footerText = "Barcode scanning works on the one-dimensional barcodes of most vinyl records, CDs, and cassettes. Not all UPCs yield results from Apple Music."
+    private let navigationTitle = "Add Media"
     
     @Binding var isPresented: Bool
     
@@ -55,7 +53,7 @@ struct BarcodeScanAlbumSearchView: View {
                     .padding()
                 }
             }
-            .navigationTitle("Add Media")
+            .navigationTitle(navigationTitle)
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
