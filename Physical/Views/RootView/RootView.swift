@@ -32,29 +32,28 @@ struct RootView: View {
                 .tabItem {
                     Label(collectionTabItemText, systemImage: collectionTabItemSymbol)
                 }
-            noAccountView
+            SocialView(for: $userID)
                 .tabItem {
                     Label(socialTabItemText, systemImage: socialTabItemSymbol)
                 }
-            noAccountView
+                .sheet(isPresented: $shouldRequestSignIn) {
+                    OnboardingSheet($shouldRequestSignIn)
+                }
+            SocialProfileView(for: $userID)
                 .tabItem {
                     Label(profileTabItemText, systemImage: profileTabItemSymbol)
+                }
+                .sheet(isPresented: $shouldRequestSignIn) {
+                    OnboardingSheet($shouldRequestSignIn)
                 }
         }
         .environment(\.screenSize, screenSize)
         .onAppear {
             // If there is a user ID in UserDefaults, do not ask to sign in.
             if !userID.isEmpty {
-                // UNDO COMMENT shouldRequestSignIn = false
+                shouldRequestSignIn = false
             }
         }
-    }
-    
-    private var noAccountView: some View {
-        NoAccountView()
-            .sheet(isPresented: $shouldRequestSignIn) {
-                OnboardingSheet($shouldRequestSignIn)
-            }
     }
 }
 

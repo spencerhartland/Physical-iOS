@@ -21,16 +21,32 @@ struct SocialProfileView: View {
     private let editProfileButtonSymbol = "pencil.circle.fill"
     private let profilePhotoPlaceholderSymbol = "camera"
     
+    @Binding private var userID: String
+    
     @State private var profileViewSelection: ProfileViewSelection = .collection
     
     @Namespace private var animationNamespace
     @Environment(\.screenSize) private var screenSize: CGSize
     
+    init(for user: Binding<String>) {
+        self._userID = user
+    }
+    
     var body: some View {
+        if userID.isEmpty {
+            NoAccountView()
+        } else {
+            profileView
+        }
+    }
+    
+    // MARK: - UI Elements
+    
+    private var profileView: some View {
         let coverPhotoHeight = screenSize.height * 0.225
         let profilePhotoSize = screenSize.width * 0.2
         
-        ScrollView(.vertical, showsIndicators: false) {
+        return ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 0) {
                 ZStack(alignment: .top) {
                     coverPhoto(height: coverPhotoHeight)
@@ -176,7 +192,7 @@ struct SocialProfileView: View {
     }()
     
     return NavigationStack {
-        SocialProfileView()
+        SocialProfileView(for: .constant("12345678"))
             .modelContainer(previewContainer)
     }
     .environment(\.screenSize, screenSize)

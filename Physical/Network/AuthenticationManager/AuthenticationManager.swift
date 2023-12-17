@@ -48,7 +48,7 @@ final class AuthenticationManager {
             return
         }
         
-        // Make the request to Apple ID servers
+        // Send request to Physical API for verification with Apple ID servers
         guard let request = try? AuthenticationRequest(using: authCode, identityToken: identityToken, grantType: .authorizationCode),
               let (_, response) = try? await URLSession.shared.data(for: request.urlRequest())
         else {
