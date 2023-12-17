@@ -9,6 +9,9 @@ import SwiftUI
 import MusicKit
 
 struct SearchResultListItem: View {
+    private let albumArtSize = 44.0
+    private let albumArtCornerRadius = 4.0
+    
     let album: Album
     
     init(for album: Album) {
@@ -17,7 +20,7 @@ struct SearchResultListItem: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            AlbumArt(artwork: album.artwork)
+            AlbumArtView(album.artwork, size: albumArtSize, cornerRadius: albumArtCornerRadius)
             VStack(alignment: .leading) {
                 Text(album.title)
                     .lineLimit(1)
@@ -26,33 +29,6 @@ struct SearchResultListItem: View {
                 Text(album.artistName)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-            }
-        }
-    }
-    
-    private struct AlbumArt: View {
-        private let roundedRect = RoundedRectangle(cornerRadius: 4.0)
-        private let noAlbumArtSymbol = "music.note"
-        
-        let artwork: Artwork?
-        
-        var body: some View {
-            if let artwork = artwork {
-                ArtworkImage(artwork, width: 44, height: 44)
-                    .clipShape(roundedRect)
-                    .shadow(radius: 2)
-                    .overlay {
-                        roundedRect.stroke(lineWidth: 0.25)
-                    }
-            } else {
-                roundedRect
-                    .foregroundStyle(.secondary)
-                    .overlay {
-                        Image(systemName: noAlbumArtSymbol)
-                            .resizable()
-                            .padding(4)
-                            .foregroundStyle(.primary)
-                    }
             }
         }
     }
