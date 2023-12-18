@@ -37,7 +37,7 @@ final class AuthenticationManager {
     /// }
     /// ```
     func authenticate(with authorization: ASAuthorization, completion: (Result<Void, AuthenticationError>) -> Void) async {
-        // Get auth code from authorization
+        // Get auth code and ID token from authorization
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
               let authCodeData = credential.authorizationCode,
               let identityTokenData = credential.identityToken,

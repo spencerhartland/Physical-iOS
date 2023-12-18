@@ -10,7 +10,7 @@ import UIKit
 
 final class ImageManager {
     private let scheme = "https"
-    private let host = "api.spencerhartland.com"
+    private let host = "physical.spencerhartland.com"
     private let bucketName = "physical-ios"
     private let cache = ImageCache.shared
     
