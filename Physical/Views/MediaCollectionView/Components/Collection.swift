@@ -83,10 +83,16 @@ struct Category: Identifiable {
 }
 
 struct Collection: View {
+    private let collectionEmptySymbolName = "music.quarternote.3"
+    private let collectionEmptyTitle = "No Media"
+    private let collectionEmptyDecription = "Add media to build your digital collection.\nTap the plus button to get started."
+    
     var collection: [Category]
     var sort: CollectionSorting
     var filter: CollectionFilter
     var search: String
+    
+    @State private var collectionIsEmpty: Bool
     
     init(
         _ collection: [Media],
@@ -103,32 +109,39 @@ struct Collection: View {
         let searched = search.isEmpty ? organized : Collection.search(organized, for: search)
         // Split the collection content up into categories if appropriate based on sort option.
         self.collection = Collection.categorize(searched, sort: sort)
+        // The collection property always has at least one category, so this makes checking
+        // if the collection is empty much easier.
+        self.collectionIsEmpty = collection.isEmpty
     }
     
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 128))], alignment: .leading, spacing: 16) {
-                ForEach(collection) { category in
-                    if !category.content.isEmpty {
-                        Section {
-                            ForEach(category.content) { media in
-                                NavigationLink {
-                                    MediaDetailView(media: media)
-                                } label: {
-                                    MediaThumbnail(for: media, ornamented: (sort == .byMediaType) ? false : true)
+        if collectionIsEmpty {
+            ContentUnavailableView(collectionEmptyTitle, systemImage: collectionEmptySymbolName, description: Text(collectionEmptyDecription))
+        } else {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 128))], alignment: .leading, spacing: 16) {
+                    ForEach(collection) { category in
+                        if !category.content.isEmpty {
+                            Section {
+                                ForEach(category.content) { media in
+                                    NavigationLink {
+                                        MediaDetailView(media: media)
+                                    } label: {
+                                        MediaThumbnail(for: media, ornamented: (sort == .byMediaType) ? false : true)
+                                    }
                                 }
-                            }
-                        } header: {
-                            // Do not display category title if only a single category is being displayed
-                            if collection.count > 1 {
-                                Text(category.title)
-                                    .font(.title2.weight(.semibold))
+                            } header: {
+                                // Do not display category title if only a single category is being displayed
+                                if collection.count > 1 {
+                                    Text(category.title)
+                                        .font(.title2.weight(.semibold))
+                                }
                             }
                         }
                     }
                 }
+                .padding()
             }
-            .padding()
         }
     }
     
