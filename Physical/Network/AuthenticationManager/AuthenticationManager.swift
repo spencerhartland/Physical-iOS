@@ -11,8 +11,6 @@ import Security
 
 /// Manages user authentication and session.
 final class AuthenticationManager {
-    private let authServer = "physical.spencerhartland.com"
-    
     static let shared = AuthenticationManager()
     
     /// Sends an authentication request to the `/auth` endpoint.
@@ -78,7 +76,7 @@ final class AuthenticationManager {
     func addCredentialsToKeychain(_ credentials: Credentials) throws {
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
                                     kSecAttrAccount as String: credentials.username,
-                                    kSecAttrServer as String: authServer,
+                                    kSecAttrServer as String: PhysicalAPI.host,
                                     kSecValueData as String: credentials.refreshToken.data(using: .utf8)!]
         let status = SecItemAdd(query as CFDictionary, nil)
         guard status == errSecSuccess else { throw KeychainError.unhandledError(status: status) }
@@ -93,7 +91,7 @@ final class AuthenticationManager {
     func loadCredentialsFromKeychain() throws -> Credentials {
         // Create the query
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
-                                    kSecAttrServer as String: authServer,
+                                    kSecAttrServer as String: PhysicalAPI.host,
                                     kSecMatchLimit as String: kSecMatchLimitOne,
                                     kSecReturnAttributes as String: true,
                                     kSecReturnData as String: true]

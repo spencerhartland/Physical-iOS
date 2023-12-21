@@ -35,6 +35,10 @@
 		0069F2A02AE131820084147E /* AuthenticationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0069F29F2AE131820084147E /* AuthenticationRequest.swift */; };
 		00718B732AFC36B00063F161 /* OnboardingSignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00718B722AFC36B00063F161 /* OnboardingSignUpView.swift */; };
 		00718B752AFC5BCC0063F161 /* UserInputRequiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00718B742AFC5BCC0063F161 /* UserInputRequiredView.swift */; };
+		00783FC82B3430BF00E4AE45 /* UserAccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00783FC72B3430BF00E4AE45 /* UserAccountManager.swift */; };
+		00783FCA2B34312B00E4AE45 /* PhysicalAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00783FC92B34312B00E4AE45 /* PhysicalAPI.swift */; };
+		00783FCD2B34338A00E4AE45 /* UserAccountRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00783FCC2B34338A00E4AE45 /* UserAccountRequest.swift */; };
+		00783FCF2B34362F00E4AE45 /* UserAccountError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00783FCE2B34362F00E4AE45 /* UserAccountError.swift */; };
 		007C0FB82A8C1BA700AD9C2D /* VariableBlurImageBackgroundViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 007C0FB72A8C1BA700AD9C2D /* VariableBlurImageBackgroundViewModifier.swift */; };
 		007C0FBC2A8C41B400AD9C2D /* VariableBlurNavigationBackgroundViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 007C0FBB2A8C41B400AD9C2D /* VariableBlurNavigationBackgroundViewModifier.swift */; };
 		007C0FC52A8D363600AD9C2D /* SampleCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 007C0FC42A8D363600AD9C2D /* SampleCollection.swift */; };
@@ -114,6 +118,10 @@
 		006A3F812AFB348100A80FC6 /* PhysicalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhysicalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00718B722AFC36B00063F161 /* OnboardingSignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSignUpView.swift; sourceTree = "<group>"; };
 		00718B742AFC5BCC0063F161 /* UserInputRequiredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserInputRequiredView.swift; path = Physical/Views/Common/UserInputRequiredView.swift; sourceTree = SOURCE_ROOT; };
+		00783FC72B3430BF00E4AE45 /* UserAccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountManager.swift; sourceTree = "<group>"; };
+		00783FC92B34312B00E4AE45 /* PhysicalAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalAPI.swift; sourceTree = "<group>"; };
+		00783FCC2B34338A00E4AE45 /* UserAccountRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountRequest.swift; sourceTree = "<group>"; };
+		00783FCE2B34362F00E4AE45 /* UserAccountError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountError.swift; sourceTree = "<group>"; };
 		007C0FB72A8C1BA700AD9C2D /* VariableBlurImageBackgroundViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlurImageBackgroundViewModifier.swift; sourceTree = "<group>"; };
 		007C0FBB2A8C41B400AD9C2D /* VariableBlurNavigationBackgroundViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableBlurNavigationBackgroundViewModifier.swift; sourceTree = "<group>"; };
 		007C0FC42A8D363600AD9C2D /* SampleCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCollection.swift; sourceTree = "<group>"; };
@@ -323,6 +331,24 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		00783FC62B3430AC00E4AE45 /* UserAccountManager */ = {
+			isa = PBXGroup;
+			children = (
+				00783FC72B3430BF00E4AE45 /* UserAccountManager.swift */,
+				00783FCB2B34336C00E4AE45 /* Support */,
+			);
+			path = UserAccountManager;
+			sourceTree = "<group>";
+		};
+		00783FCB2B34336C00E4AE45 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				00783FCC2B34338A00E4AE45 /* UserAccountRequest.swift */,
+				00783FCE2B34362F00E4AE45 /* UserAccountError.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		007C0FC32A8D360C00AD9C2D /* Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -386,10 +412,12 @@
 		00BBEECD2A7C55880078F0B1 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				00783FC92B34312B00E4AE45 /* PhysicalAPI.swift */,
 				00BBEED02A7C56180078F0B1 /* NetworkError.swift */,
 				00BBEED22A7C61E10078F0B1 /* HTTPSRequest.swift */,
 				00BBEECE2A7C55950078F0B1 /* ImageManager */,
 				0069F29B2AE0BA950084147E /* AuthenticationManager */,
+				00783FC62B3430AC00E4AE45 /* UserAccountManager */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -661,14 +689,17 @@
 				00F5FBBC2A691DA000FCAA61 /* FloatingViewModifier.swift in Sources */,
 				00718B752AFC5BCC0063F161 /* UserInputRequiredView.swift in Sources */,
 				007C0FBC2A8C41B400AD9C2D /* VariableBlurNavigationBackgroundViewModifier.swift in Sources */,
+				00783FCF2B34362F00E4AE45 /* UserAccountError.swift in Sources */,
 				009C01402A6A437E0039CEA2 /* MediaNotesEntryView.swift in Sources */,
 				003DB82F2A7B4E2B004192C2 /* ImageRequest.swift in Sources */,
 				0004E69E2A9817F700D671C8 /* CollectionSection.swift in Sources */,
 				00316A762ABAB4F200F2B83D /* User.swift in Sources */,
 				00388C252AE4E25D00526910 /* AuthenticationError.swift in Sources */,
+				00783FCD2B34338A00E4AE45 /* UserAccountRequest.swift in Sources */,
 				00718B732AFC36B00063F161 /* OnboardingSignUpView.swift in Sources */,
 				00932C4A2A6E6543004AFE1D /* CroppedImagePicker.swift in Sources */,
 				00DBFDB12AD9EB2400ABF8C2 /* SocialView.swift in Sources */,
+				00783FC82B3430BF00E4AE45 /* UserAccountManager.swift in Sources */,
 				0069F2A02AE131820084147E /* AuthenticationRequest.swift in Sources */,
 				000E57C32A89657500BA2B1D /* SocialProfileView.swift in Sources */,
 				00EE2D602B2C03F9006D7DA9 /* BarcodeScanningViewController.swift in Sources */,
@@ -680,6 +711,7 @@
 				0004E6A72A99EF0E00D671C8 /* SocialSimplePostView.swift in Sources */,
 				00BBEED12A7C56180078F0B1 /* NetworkError.swift in Sources */,
 				00F810712A66779800D0EAEA /* MediaImageCarousel.swift in Sources */,
+				00783FCA2B34312B00E4AE45 /* PhysicalAPI.swift in Sources */,
 				00F5FBBA2A69156C00FCAA61 /* Motion.swift in Sources */,
 				007C0FC52A8D363600AD9C2D /* SampleCollection.swift in Sources */,
 			);

@@ -9,11 +9,6 @@ import Foundation
 
 extension AuthenticationManager {
     final class AuthenticationRequest: HTTPSRequest {
-        private let authAPIHost = "physical.spencerhartland.com"
-        private let authAPIPath = "/auth"
-        private let authAPIHeaders = [
-            HTTPHeader(field: .contentType, value: "application/json")
-        ]
         private let grantTypeKey = "grantType"
         private let authCodeKey = "authorizationCode"
         private let refreshTokenKey = "refreshToken"
@@ -30,10 +25,10 @@ extension AuthenticationManager {
             }
             
             super.init(
-                host: authAPIHost,
-                path: authAPIPath,
+                host: PhysicalAPI.host,
+                path: PhysicalAPI.authEndpointPath,
                 method: .POST,
-                headers: authAPIHeaders,
+                headers: PhysicalAPI.standardHeaders,
                 body: authData
             )
         }
