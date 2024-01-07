@@ -29,11 +29,16 @@ final class User: Codable {
     /// The unique identifiers of the user's authored posts.
     var posts: [String]
     
-    
-    init(with userID: String, username: String, displayName: String, collection: String) {
+    /// Creates an instance of `User`.
+    ///
+    /// - Parameters:
+    ///   - userID: The unique user identifier assigned to the user by Apple.
+    ///   - username: The unique username chosen by the user.
+    ///   - collection: The unique identifier of the user's collection.
+    init(with userID: String, username: String, collection: String) {
         self.userID = userID
         self.username = username
-        self.displayName = displayName
+        self.displayName = ""
         self.biography = ""
         self.followers = []
         self.following = []

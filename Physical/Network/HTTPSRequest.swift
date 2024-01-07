@@ -27,6 +27,7 @@ class HTTPSRequest {
     
     let host: String
     let path: String
+    let queryItems: [URLQueryItem]?
     let method: HTTPMethod
     let headers: [HTTPHeader]
     let body: Data?
@@ -36,13 +37,15 @@ class HTTPSRequest {
         components.scheme = scheme
         components.host = host
         components.path = path
+        components.queryItems = queryItems
         
         return components.url
     }()
     
-    init(host: String, path: String, method: HTTPMethod, headers: [HTTPHeader], body: Data? = nil) {
+    init(host: String, path: String, queryItems: [URLQueryItem]? = nil, method: HTTPMethod, headers: [HTTPHeader], body: Data? = nil) {
         self.host = host
         self.path = path
+        self.queryItems = queryItems
         self.method = method
         self.headers = headers
         self.body = body
@@ -50,7 +53,7 @@ class HTTPSRequest {
     
     func urlRequest() throws -> URLRequest {
         if let url {
-            print(url.absoluteString)
+            //print(url.absoluteString)
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             for header in headers {
@@ -58,7 +61,7 @@ class HTTPSRequest {
             }
             request.httpBody = body
             
-            print(String(data: body!, encoding: .utf8)!)
+            //print(String(data: body!, encoding: .utf8)!)
             
             return request
         }

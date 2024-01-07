@@ -17,7 +17,7 @@ struct RootView: View {
     private let profileTabItemSymbol = "person.crop.circle.fill"
     
     @AppStorage(StorageKeys.userID) private var userID: String = ""
-    @State private var shouldRequestSignIn: Bool = true
+    @State private var signInSheetPresented: Bool = true
     @State private var screenSize: CGSize = {
         guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return .zero
@@ -36,22 +36,22 @@ struct RootView: View {
                 .tabItem {
                     Label(socialTabItemText, systemImage: socialTabItemSymbol)
                 }
-                .sheet(isPresented: $shouldRequestSignIn) {
-                    OnboardingSheet($shouldRequestSignIn)
+                .sheet(isPresented: $signInSheetPresented) {
+                    OnboardingSheet($signInSheetPresented)
                 }
             SocialProfileView(for: $userID)
                 .tabItem {
                     Label(profileTabItemText, systemImage: profileTabItemSymbol)
                 }
-                .sheet(isPresented: $shouldRequestSignIn) {
-                    OnboardingSheet($shouldRequestSignIn)
+                .sheet(isPresented: $signInSheetPresented) {
+                    OnboardingSheet($signInSheetPresented)
                 }
         }
         .environment(\.screenSize, screenSize)
         .onAppear {
             // If there is a user ID in UserDefaults, do not ask to sign in.
             if !userID.isEmpty {
-                shouldRequestSignIn = false
+                signInSheetPresented = false
             }
         }
     }

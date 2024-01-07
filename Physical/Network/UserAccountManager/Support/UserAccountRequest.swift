@@ -8,23 +8,32 @@
 import Foundation
 
 extension UserAccountManager {
+    final class UserIDFetchRequest: HTTPSRequest {
+        private let usernameKey = "username"
+        
+        init(for username: String) throws {
+            super.init(
+                host: PhysicalAPI.host,
+                path: PhysicalAPI.userIDEndpointPath,
+                queryItems: [ URLQueryItem(name: usernameKey, value: username) ],
+                method: .GET,
+                headers: PhysicalAPI.standardHeaders
+            )
+        }
+    }
+    
     final class UserAccountFetchRequest: HTTPSRequest {
         private let userIDKey = "userID"
         
-        init(for userID: String) throws {
-            let requestData = [
-                userIDKey: userID
-            ]
-            guard let encodedRequestData = try? JSONEncoder().encode(requestData) else {
-                throw UserAccountError.requestDataEncodeError
-            }
-            
+        init(with userID: String) throws {
             super.init(
                 host: PhysicalAPI.host,
                 path: PhysicalAPI.userEndpointPath,
+                queryItems: [
+                    URLQueryItem(name: userIDKey, value: userID)
+                ],
                 method: .GET,
-                headers: PhysicalAPI.standardHeaders,
-                body: encodedRequestData
+                headers: PhysicalAPI.standardHeaders
             )
         }
     }

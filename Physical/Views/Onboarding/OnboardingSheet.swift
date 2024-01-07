@@ -31,79 +31,86 @@ struct OnboardingSheet: View {
     @Environment(\.screenSize) private var screenSize: CGSize
     @Environment(\.colorScheme) private var colorScheme
     
-    @Binding var shouldRequestSignIn: Bool
+    @Binding var signInSheetPresented: Bool
+    @State private var signInSuccessful: Bool = false
     
     init(_ shouldRequestSignIn: Binding<Bool>) {
-        self._shouldRequestSignIn = shouldRequestSignIn
+        self._signInSheetPresented = shouldRequestSignIn
     }
     
     var body: some View {
-        VStack {
-            Spacer()
-            
-            appIcon(screenSize.width / 4)
-                .padding(.bottom)
-            Text(welcomeText)
-                .font(.title.bold())
-                .padding(.bottom)
-            Text(introText)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .font(.callout)
-            
-            Spacer()
-            
-            VStack(alignment: .leading) {
-                // Social Profile
-                featureCallout(
-                    socialProfileFeatureTitle,
-                    description: socialProfileFeatureDescription,
-                    symbolName: socialProfileFeatureSymbolName
-                )
-                // Public collection
-                featureCallout(
-                    publicCollectionFeatureTitle,
-                    description: publicCollectionFeatureDescription,
-                    symbolName: publicCollectionFeatureSymbolName
-                )
-                // Shared collection
-                featureCallout(
-                    sharedCollectionFeatureTitle,
-                    description: sharedCollectionFeatureDescription,
-                    symbolName: sharedCollectionFeatureSymbolName
-                )
-            }
-            
-            Spacer()
-            
-            SignInWithAppleButton { request in
-                request.requestedScopes = [.email]
-            } onCompletion: { result in
-                switch result {
-                case .success(let authorization):
-                    handleAuthorizationSuccess(authorization)
-                case .failure(let error):
-                    handleAuthorizationFailure(error)
+        NavigationStack {
+            VStack {
+                Spacer()
+                
+                appIcon(screenSize.width / 4)
+                    .padding(.bottom)
+                Text(welcomeText)
+                    .font(.title.bold())
+                    .padding(.bottom)
+                Text(introText)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .font(.callout)
+                
+                Spacer()
+                
+                VStack(alignment: .leading) {
+                    // Social Profile
+                    featureCallout(
+                        socialProfileFeatureTitle,
+                        description: socialProfileFeatureDescription,
+                        symbolName: socialProfileFeatureSymbolName
+                    )
+                    // Public collection
+                    featureCallout(
+                        publicCollectionFeatureTitle,
+                        description: publicCollectionFeatureDescription,
+                        symbolName: publicCollectionFeatureSymbolName
+                    )
+                    // Shared collection
+                    featureCallout(
+                        sharedCollectionFeatureTitle,
+                        description: sharedCollectionFeatureDescription,
+                        symbolName: sharedCollectionFeatureSymbolName
+                    )
                 }
-            }
-            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-            .frame(height: screenSize.height / 16)
-            
-            Button {
-                shouldRequestSignIn = false
-            } label: {
-                Text(noAccountButtonText)
-                    .font(.body.bold())
-            }
-            .padding(.top)
-            
-            Text(accountNotRequiredFooterText)
-                .font(.footnote)
-                .foregroundStyle(.tertiary)
-                .multilineTextAlignment(.center)
+                
+                Spacer()
+                
+                SignInWithAppleButton { request in
+                    request.requestedScopes = [.email]
+                } onCompletion: { result in
+                    switch result {
+                    case .success(let authorization):
+                        handleAuthorizationSuccess(authorization)
+                    case .failure(let error):
+                        handleAuthorizationFailure(error)
+                    }
+                }
+                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                .frame(height: screenSize.height / 16)
+                
+                Button {
+                    signInSheetPresented = false
+                } label: {
+                    Text(noAccountButtonText)
+                        .font(.body.bold())
+                }
                 .padding(.top)
+                
+                Text(accountNotRequiredFooterText)
+                    .font(.footnote)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.top)
+            }
+            .padding([.top, .horizontal])
+            .navigationDestination(isPresented: $signInSuccessful) {
+                OnboardingSignUpView($signInSheetPresented)
+                    .navigationBarBackButtonHidden()
+            }
         }
-        .padding([.top, .horizontal])
     }
     
     private func appIcon(_ size: CGFloat) -> some View {
@@ -151,37 +158,17 @@ struct OnboardingSheet: View {
             await AuthenticationManager.shared.authenticate(with: authorization) { result in
                 switch result {
                 case .success:
-                    print("Success!")
+                    signInSuccessful = true
                 case .failure(let error):
                     print(error.localizedDescription)
                     // TODO: Let the user know that auth failed
                 }
             }
         }
-        // Dismiss onboarding sheet
-        shouldRequestSignIn = false
     }
     
     private func handleAuthorizationFailure(_ error: Error) {
         // TODO: handle this
         print(error.localizedDescription)
     }
-}
-
-#Preview {
-    @State var screenSize: CGSize = {
-        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .zero
-        }
-        
-        return window.screen.bounds.size
-    }()
-    
-    let authManager = AuthenticationManager()
-    
-    return Text("Preview")
-        .sheet(isPresented: .constant(true)) {
-            OnboardingSheet(.constant(true))
-        }
-        .environment(\.screenSize, screenSize)
 }

@@ -5,40 +5,59 @@
 //  Created by Spencer Hartland on 12/21/23.
 //
 
+import SwiftUI
 import Foundation
 
 final class UserAccountManager {
-    func createAccount(for user: User, _ completion: @escaping (Result<Void, Error>) -> Void) async {
-        do {
-            let request = try UserAccountCreationRequest(user)
-            let (data, response) = try await URLSession.shared.data(for: request.urlRequest())
-            
-            let httpResponse = response as! HTTPURLResponse
-            if httpResponse.statusCode == 200 {
-                completion(.success(Void()))
-            }
-            
-            completion(.failure(UserAccountError.creationRequestError))
-        } catch {
-            completion(.failure(error))
+    private let userIDKey = "userID"
+    
+    @AppStorage(StorageKeys.userID) private var userID: String = ""
+    
+    /// Creates a user account with information about the specified `User`.
+    func createAccount(for user: User) async throws {
+        let request = try UserAccountCreationRequest(user)
+        let (_, response) = try await URLSession.shared.data(for: request.urlRequest())
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw UserAccountError.creationRequestError
         }
+        
+        return
     }
     
-    func fetchAccount(for userID: String, _ completion: @escaping (Result<User, Error>) -> Void) async {
-        do {
-            let request = try UserAccountFetchRequest(for: userID)
-            let (data, response) = try await URLSession.shared.data(for: request.urlRequest())
-            
-            let httpResponse = response as! HTTPURLResponse
-            let user = try JSONDecoder().decode(User.self, from: data)
-            
-            if httpResponse.statusCode == 200 {
-                completion(.success(user))
-            }
-            
-            completion(.failure(UserAccountError.fetchRequestError))
-        } catch {
-            completion(.failure(error))
+    /// Fetches the username of the user with the specified user ID.
+    func fetchUserID(for username: String) async throws -> String {
+        let request = try UserIDFetchRequest(for: userID)
+        let (data, response) = try await URLSession.shared.data(for: request.urlRequest())
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw UserAccountError.fetchRequestError
         }
+        
+        let userIDResponse = try JSONDecoder().decode(UserIDResponse.self, from: data)
+        return userIDResponse.userID
+    }
+    
+    /// Fetches the account of the currently authenticated user using the stored user ID.
+    func fetchAccount() async throws -> User {
+        // Get user account.
+        let user = try await self.fetchAccount(with: self.userID)
+        return user
+    }
+    
+    /// Fetches the account of the currently authenticated user using the specified username.
+    func fetchAccount(with userID: String) async throws -> User {
+        let request = try UserAccountFetchRequest(with: userID)
+        let (data, response) = try await URLSession.shared.data(for: request.urlRequest())
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200 else {
+            throw UserAccountError.fetchRequestError
+        }
+        
+        let user = try JSONDecoder().decode(User.self, from: data)
+        return user
     }
 }
