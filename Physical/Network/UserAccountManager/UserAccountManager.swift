@@ -9,6 +9,8 @@ import SwiftUI
 import Foundation
 
 final class UserAccountManager {
+    static let shared = UserAccountManager()
+    
     private let userIDKey = "userID"
     
     @AppStorage(StorageKeys.userID) private var userID: String = ""
@@ -47,7 +49,7 @@ final class UserAccountManager {
         return user
     }
     
-    /// Fetches the account of the currently authenticated user using the specified username.
+    /// Fetches the account of the currently authenticated user using the specified user ID.
     func fetchAccount(with userID: String) async throws -> User {
         let request = try UserAccountFetchRequest(with: userID)
         let (data, response) = try await URLSession.shared.data(for: request.urlRequest())

@@ -30,8 +30,6 @@ struct OnboardingSignUpView: View {
     @State private var waiting: Bool = false
     @State private var userAccountCreationFailed: Bool = false
     
-    private let userAccountManager = UserAccountManager()
-    
     init(_ signInSheetPresented: Binding<Bool>) {
         self._signInSheetPresented = signInSheetPresented
     }
@@ -114,7 +112,7 @@ struct OnboardingSignUpView: View {
     
     // Checks if the provided `username` is taken and updates `usernameIsAvailable`.
     private func checkAvailability(of username: String) async -> Bool {
-        if (try? await userAccountManager.fetchUserID(for: username)) != nil {
+        if (try? await UserAccountManager.shared.fetchUserID(for: username)) != nil {
             usernameIsAvailable = false
             return false
         } else {
@@ -130,7 +128,7 @@ struct OnboardingSignUpView: View {
     private func createUserAccount() async {
         let newUser = createUser()
         do {
-            try await userAccountManager.createAccount(for: newUser)
+            try await UserAccountManager.shared.createAccount(for: newUser)
             handleAccountCreationSuccess()
         } catch {
             handleAccountCreationFailure(error)
