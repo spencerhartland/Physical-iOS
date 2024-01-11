@@ -15,34 +15,47 @@ private enum ProfileViewSelection: String, Hashable, CaseIterable {
 struct SocialProfileView: View {
     // Text constants
     private let segmentedControlTitle = "View collection or view posts"
+    private let fetchingInProgressTitleText = "Please wait"
+    private let fetchingInProgressDescriptionText = "Fetching the user profile."
     
     // SF Symbols
     private let followButtonSymbol = "plus.circle.fill"
     private let editProfileButtonSymbol = "pencil.circle.fill"
     private let profilePhotoPlaceholderSymbol = "camera"
+    private let fetchingInProgressSymbol = "person.crop.circle.fill"
     
-    @Binding private var userID: String
+    @Binding var userID: String
     
+    @State private var user: User? = nil
     @State private var profileViewSelection: ProfileViewSelection = .collection
     
     @Namespace private var animationNamespace
     @Environment(\.screenSize) private var screenSize: CGSize
     
-    init(for user: Binding<String>) {
-        self._userID = user
+    init(for userID: Binding<String>) {
+        self._userID = userID
     }
     
     var body: some View {
-        if userID.isEmpty {
-            NoAccountView()
-        } else {
-            profileView
+        NavigationStack {
+            if userID.isEmpty {
+                NoAccountView()
+            } else if let user {
+                profileView(for: user)
+            } else {
+                fetchingInProgressView
+            }
+        }
+        .onAppear {
+            if !userID.isEmpty {
+                fetchSocialProfile()
+            }
         }
     }
     
-    // MARK: - UI Elements
+    // MARK: - Profile view
     
-    private var profileView: some View {
+    private func profileView(for user: User) -> some View {
         let coverPhotoHeight = screenSize.height * 0.225
         let profilePhotoSize = screenSize.width * 0.2
         
@@ -56,28 +69,28 @@ struct SocialProfileView: View {
                 
                 VStack(spacing: 0) {
                     // Display name
-                    Text("Spencer")
+                    Text(user.displayName)
                         .font(.title3.bold())
                         .padding(.top, 8)
                     // Username
-                    Text("@spencer")
+                    Text("@\(user.username)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     
                     // Biography
-                    Text("imminent annihilation sounds so dope")
+                    Text(user.biography)
                         .font(.callout)
                         .padding(.top, 12)
                     
                     // Followers / following info
                     HStack {
                         HStack(spacing: 4) {
-                            Text("10")
+                            Text("\(user.following.count)")
                             Text("Following")
                                 .foregroundStyle(.secondary)
                         }
                         HStack(spacing: 4) {
-                            Text("10,000")
+                            Text("\(user.followers.count)")
                             Text("Followers")
                                 .foregroundStyle(.secondary)
                         }
@@ -180,20 +193,29 @@ struct SocialProfileView: View {
         }
         .frame(width: size, height: size)
     }
-}
-
-#Preview {
-    @State var screenSize: CGSize = {
-        guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .zero
-        }
-        
-        return window.screen.bounds.size
-    }()
     
-    return NavigationStack {
-        SocialProfileView(for: .constant("12345678"))
-            .modelContainer(previewContainer)
+    // MARK: - Fetching in progress view
+    private var fetchingInProgressView: some View {
+        ContentUnavailableView(fetchingInProgressTitleText, systemImage: fetchingInProgressSymbol, description: Text(fetchingInProgressDescriptionText))
+            .symbolEffect(.pulse.wholeSymbol)
     }
-    .environment(\.screenSize, screenSize)
+    
+    // MARK: - User fetch logic
+    // Fetches the social profile associated with the current userID and triggers a UI update.
+    private func fetchSocialProfile() {
+        Task {
+            do {
+                let fetchedUser = try await UserAccountManager.shared.fetchAccount(with: self.userID)
+                await updateProfile(with: fetchedUser)
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    // Updates the user property on the main thread.
+    @MainActor
+    private func updateProfile(with user: User) {
+        self.user = user
+    }
 }
