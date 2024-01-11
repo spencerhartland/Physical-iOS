@@ -15,4 +15,4 @@ Physical also helps you share and discover new music with social features that a
 ## API
 The Physical API exposes AWS services to power the social features of Physical.
 
-The API source code and documentation is also on [GitHub](https://github.com/spencerhartland/Physical-API).
+The API source code and documentation is available [here](https://github.com/spencerhartland/Physical-API).
