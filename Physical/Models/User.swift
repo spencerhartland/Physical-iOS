@@ -28,6 +28,10 @@ final class User: Codable {
     var collection: String
     /// The unique identifiers of the user's authored posts.
     var posts: [String]
+    /// The URL for the user's chosen cover photo.
+    var coverPhotoURL: String
+    /// The URL for the user's chosen profile photo.
+    var profilePhotoURL: String
     
     /// Creates an instance of `User`.
     ///
@@ -45,13 +49,15 @@ final class User: Codable {
         self.featured = ""
         self.collection = collection
         self.posts = []
+        self.coverPhotoURL = ""
+        self.profilePhotoURL = ""
     }
     
     // MARK: - Codable conformance
     
     // Keys used to encode and decode properties
     enum CodingKeys: CodingKey {
-        case userID, username, displayName, biography, followers, following, featured, collection, posts
+        case userID, username, displayName, biography, followers, following, featured, collection, posts, coverPhotoURL, profilePhotoURL
     }
     
     // Decodable conformance initializer
@@ -66,6 +72,8 @@ final class User: Codable {
         self.featured = try container.decode(String.self, forKey: .featured)
         self.collection = try container.decode(String.self, forKey: .collection)
         self.posts = try container.decode([String].self, forKey: .posts)
+        self.coverPhotoURL = try container.decode(String.self, forKey: .coverPhotoURL)
+        self.profilePhotoURL = try container.decode(String.self, forKey: .profilePhotoURL)
     }
     
     // Encodable conformance method
@@ -80,5 +88,7 @@ final class User: Codable {
         try container.encode(self.featured, forKey: .featured)
         try container.encode(self.collection, forKey: .collection)
         try container.encode(self.posts, forKey: .posts)
+        try container.encode(self.coverPhotoURL, forKey: .coverPhotoURL)
+        try container.encode(self.profilePhotoURL, forKey: .profilePhotoURL)
     }
 }

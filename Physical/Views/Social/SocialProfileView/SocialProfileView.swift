@@ -14,14 +14,18 @@ private enum ProfileViewSelection: String, Hashable, CaseIterable {
 
 struct SocialProfileView: View {
     // Text constants
+    private let followingCountText = "following"
+    private let followerCountText = "follower"
     private let segmentedControlTitle = "View collection or view posts"
     private let fetchingInProgressTitleText = "Please wait"
-    private let fetchingInProgressDescriptionText = "Fetching the user profile."
+    private let fetchingInProgressDescriptionText = "Fetching profile..."
+    private let segmentedControlCollectionTitle = "Collection"
+    private let segmentedControlPostsTitle = "Posts"
     
     // SF Symbols
     private let followButtonSymbol = "plus.circle.fill"
-    private let editProfileButtonSymbol = "pencil.circle.fill"
-    private let profilePhotoPlaceholderSymbol = "camera"
+    private let editProfileButtonSymbol = "gear"
+    private let profilePhotoPlaceholderSymbol = "person.crop.circle.dashed"
     private let fetchingInProgressSymbol = "person.crop.circle.fill"
     
     @Binding var userID: String
@@ -29,7 +33,6 @@ struct SocialProfileView: View {
     @State private var user: User? = nil
     @State private var profileViewSelection: ProfileViewSelection = .collection
     
-    @Namespace private var animationNamespace
     @Environment(\.screenSize) private var screenSize: CGSize
     
     init(for userID: Binding<String>) {
@@ -62,8 +65,8 @@ struct SocialProfileView: View {
         return ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 0) {
                 ZStack(alignment: .top) {
-                    coverPhoto(height: coverPhotoHeight)
-                    profilePhoto(ofSize: profilePhotoSize)
+                    coverPhoto(user.coverPhotoURL, height: coverPhotoHeight)
+                    profilePhoto(user.profilePhotoURL, ofSize: profilePhotoSize)
                         .padding(.top, coverPhotoHeight - (profilePhotoSize / 2))
                 }
                 
@@ -86,12 +89,12 @@ struct SocialProfileView: View {
                     HStack {
                         HStack(spacing: 4) {
                             Text("\(user.following.count)")
-                            Text("Following")
+                            Text(followingCountText)
                                 .foregroundStyle(.secondary)
                         }
                         HStack(spacing: 4) {
                             Text("\(user.followers.count)")
-                            Text("Followers")
+                            Text(followerCountText + (user.followers.count == 1 ? "" : "s"))
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -104,8 +107,8 @@ struct SocialProfileView: View {
                     
                     // Collection / posts toggle
                     Picker(segmentedControlTitle, selection: $profileViewSelection) {
-                        Text("Collection").tag(ProfileViewSelection.collection)
-                        Text("Posts").tag(ProfileViewSelection.posts)
+                        Text(segmentedControlCollectionTitle).tag(ProfileViewSelection.collection)
+                        Text(segmentedControlPostsTitle).tag(ProfileViewSelection.posts)
                     }
                     .pickerStyle(.segmented)
                     .padding(.top, 24)
@@ -148,8 +151,8 @@ struct SocialProfileView: View {
         }
     }
     
-    private func coverPhoto(height: CGFloat) -> some View {
-        AsyncImage(url: URL(string: "https://fp-corporatewebsite-prod-umbraco.azurewebsites.net/api/media/getCroppedImage?imagePath=/media/l1thbnh0/1895-apple-park-01.jpg&width=2000&height=2000&crop=false")) { image in
+    private func coverPhoto(_ urlString: String, height: CGFloat) -> some View {
+        AsyncImage(url: URL(string: urlString)) { image in
             image
                 .resizable()
                 .overlay {
@@ -172,11 +175,11 @@ struct SocialProfileView: View {
         .frame(height: height)
     }
     
-    private func profilePhoto(ofSize size: CGFloat) -> some View {
+    private func profilePhoto(_ urlString: String, ofSize size: CGFloat) -> some View {
         ZStack {
             Circle()
                 .foregroundStyle(Color(UIColor.systemBackground))
-            AsyncImage(url: URL(string: "")) { image in
+            AsyncImage(url: URL(string: urlString)) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
