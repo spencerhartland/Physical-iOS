@@ -32,6 +32,7 @@ struct SocialProfileView: View {
     
     @State private var user: User? = nil
     @State private var profileViewSelection: ProfileViewSelection = .collection
+    @State private var editingProfile: Bool = false
     
     @Environment(\.screenSize) private var screenSize: CGSize
     
@@ -45,6 +46,9 @@ struct SocialProfileView: View {
                 NoAccountView()
             } else if let user {
                 profileView(for: user)
+                    .navigationDestination(isPresented: $editingProfile) {
+                        SocialProfileSettingsView(user: user)
+                    }
             } else {
                 fetchingInProgressView
             }
@@ -144,7 +148,7 @@ struct SocialProfileView: View {
     
     private var editProfileButton: some View {
         Button {
-            // do something...
+            editingProfile.toggle()
         } label: {
             Image(systemName: editProfileButtonSymbol)
                 .resizable()
