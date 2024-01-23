@@ -11,6 +11,7 @@ struct PhysicalAPI {
     static let host = "physical.spencerhartland.com"
     static let authEndpointPath = "/auth"
     static let userEndpointPath = "/user"
+    static let userIDEndpointPath = "/userID"
     static let standardHeaders = [
         HTTPHeader(field: .contentType, value: "application/json")
     ]
