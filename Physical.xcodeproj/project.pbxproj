@@ -253,16 +253,8 @@
 			isa = PBXGroup;
 			children = (
 				0004E6A12A981FFE00D671C8 /* RootView.swift */,
-				005390BE2AED4BC700E686BB /* Components */,
 			);
 			path = RootView;
-			sourceTree = "<group>";
-		};
-		005390BE2AED4BC700E686BB /* Components */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		005CDDD02A8F67D300CE9A1F /* Components */ = {
