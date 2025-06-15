@@ -213,7 +213,7 @@ struct SocialProfileView: View {
         Task {
             do {
                 let fetchedUser = try await UserAccountManager.shared.fetchAccount(with: self.userID)
-                await updateProfile(with: fetchedUser)
+                updateProfile(with: fetchedUser)
             } catch {
                 print(error)
             }

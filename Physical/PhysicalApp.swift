@@ -14,6 +14,6 @@ struct PhysicalApp: App {
         WindowGroup {
             RootView()
         }
-        .modelContainer(for: [User.self, Media.self])
+        .modelContainer(for: [User.self, Media.self], isAutosaveEnabled: true)
     }
 }

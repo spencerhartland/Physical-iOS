@@ -15,23 +15,19 @@ struct MediaNotesEntryView: View {
     @Binding var notes: String
     
     var body: some View {
-        List {
-            Section {
-                TextEditor(text: $notes)
-            } header: {
-                Text(notesHeaderText)
-            }
-        }
-        .navigationTitle(navTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                Button {
-                    self.notes = ""
-                } label: {
-                    Image(systemName: clearButtonSymbol)
+        TextEditor(text: $notes)
+            .padding([.top, .bottom], 10)
+            .padding([.leading, .trailing], 28)
+            .navigationTitle(navTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button {
+                        self.notes = ""
+                    } label: {
+                        Image(systemName: clearButtonSymbol)
+                    }
                 }
             }
-        }
     }
 }

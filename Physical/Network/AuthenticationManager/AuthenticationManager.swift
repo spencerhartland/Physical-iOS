@@ -48,7 +48,7 @@ final class AuthenticationManager {
         
         // Send request to Physical API for verification with Apple ID servers
         guard let request = try? AuthenticationRequest(using: authCode, identityToken: identityToken, grantType: .authorizationCode),
-              let (_, response) = try? await URLSession.shared.data(for: request.urlRequest())
+              let (data, response) = try? await URLSession.shared.data(for: request.urlRequest())
         else {
             completion(.failure(AuthenticationError.couldNotCompleteRequest))
             return
@@ -58,6 +58,23 @@ final class AuthenticationManager {
         guard let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200
         else {
+            
+            // Decode the content
+            do {
+                // Try to decode as JSON
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("JSON Response:")
+                    print(json)
+                } else {
+                    // Fallback if not JSON
+                    let stringResponse = String(data: data, encoding: .utf8) ?? "Unable to decode response as string"
+                    print("String Response:")
+                    print(stringResponse)
+                }
+            } catch {
+                print("Error decoding response: \(error.localizedDescription)")
+            }
+            
             completion(.failure(AuthenticationError.authenticationFailure))
             return
         }

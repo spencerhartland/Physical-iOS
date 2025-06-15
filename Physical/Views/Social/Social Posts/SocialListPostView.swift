@@ -55,7 +55,7 @@ struct SocialListPostView: View {
 }
 
 #Preview {
-    @State var screenSize: CGSize = {
+    @Previewable @State var screenSize: CGSize = {
         guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return .zero
         }

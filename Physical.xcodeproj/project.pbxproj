@@ -36,6 +36,8 @@
 		005F4AF02A9C6784004E8E39 /* SocialPostBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005F4AEF2A9C6784004E8E39 /* SocialPostBottomBar.swift */; };
 		0069F29E2AE0BAE30084147E /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0069F29D2AE0BAE30084147E /* AuthenticationManager.swift */; };
 		0069F2A02AE131820084147E /* AuthenticationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0069F29F2AE131820084147E /* AuthenticationRequest.swift */; };
+		006EAB572D4ECD41005036DF /* ShinyViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006EAB562D4ECD3C005036DF /* ShinyViewExtension.swift */; };
+		006EAB592D4ECD82005036DF /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006EAB582D4ECD80005036DF /* Gradient.swift */; };
 		00718B732AFC36B00063F161 /* OnboardingSignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00718B722AFC36B00063F161 /* OnboardingSignUpView.swift */; };
 		00718B752AFC5BCC0063F161 /* UserInputRequiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00718B742AFC5BCC0063F161 /* UserInputRequiredView.swift */; };
 		00783FC82B3430BF00E4AE45 /* UserAccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00783FC72B3430BF00E4AE45 /* UserAccountManager.swift */; };
@@ -50,7 +52,8 @@
 		008B64822A6A1E8A00586C69 /* GenreSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B64812A6A1E8A00586C69 /* GenreSelectionView.swift */; };
 		00932C4A2A6E6543004AFE1D /* CroppedImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00932C492A6E6543004AFE1D /* CroppedImagePicker.swift */; };
 		00968EEF2B2E646B00CE0150 /* AlbumArtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00968EEE2B2E646B00CE0150 /* AlbumArtView.swift */; };
-		009A57C92A609346000EF6F8 /* AlbumTitleSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */; };
+		009794582D9C8FB700839146 /* testView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009794572D9C8FB700839146 /* testView.swift */; };
+		009A57C92A609346000EF6F8 /* AddMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57C82A609346000EF6F8 /* AddMediaView.swift */; };
 		009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */; };
 		009C01402A6A437E0039CEA2 /* MediaNotesEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009C013F2A6A437E0039CEA2 /* MediaNotesEntryView.swift */; };
 		00A8139A2A7B1BA300596620 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A813992A7B1BA300596620 /* ImageCache.swift */; };
@@ -66,6 +69,9 @@
 		00DBFDB12AD9EB2400ABF8C2 /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DBFDB02AD9EB2400ABF8C2 /* SocialView.swift */; };
 		00DBFDB32AD9ECBB00ABF8C2 /* NoAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DBFDB22AD9ECBB00ABF8C2 /* NoAccountView.swift */; };
 		00DEC2692A613F3800353643 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DEC2682A613F3800353643 /* ImagePicker.swift */; };
+		00E4D2DB2D9DD436000E89F5 /* MediaAddedNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4D2DA2D9DD436000E89F5 /* MediaAddedNotificationView.swift */; };
+		00E4D2DE2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4D2DD2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift */; };
+		00EA18722DF8E5BD00CB2E78 /* Physical App Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 00EA18712DF8E5BD00CB2E78 /* Physical App Icon.icon */; };
 		00EE2D5E2B2C0377006D7DA9 /* BarcodeScanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D5D2B2C0377006D7DA9 /* BarcodeScanningView.swift */; };
 		00EE2D602B2C03F9006D7DA9 /* BarcodeScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D5F2B2C03F9006D7DA9 /* BarcodeScanningViewController.swift */; };
 		00EE2D622B2C20D4006D7DA9 /* BarcodeSearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D612B2C20D3006D7DA9 /* BarcodeSearchResultView.swift */; };
@@ -110,6 +116,8 @@
 		006405A32AD9240800275213 /* Physical.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Physical.entitlements; sourceTree = "<group>"; };
 		0069F29D2AE0BAE30084147E /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		0069F29F2AE131820084147E /* AuthenticationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationRequest.swift; sourceTree = "<group>"; };
+		006EAB562D4ECD3C005036DF /* ShinyViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinyViewExtension.swift; sourceTree = "<group>"; };
+		006EAB582D4ECD80005036DF /* Gradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gradient.swift; sourceTree = "<group>"; };
 		00718B722AFC36B00063F161 /* OnboardingSignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSignUpView.swift; sourceTree = "<group>"; };
 		00718B742AFC5BCC0063F161 /* UserInputRequiredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserInputRequiredView.swift; path = Physical/Views/Common/UserInputRequiredView.swift; sourceTree = SOURCE_ROOT; };
 		00783FC72B3430BF00E4AE45 /* UserAccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountManager.swift; sourceTree = "<group>"; };
@@ -124,7 +132,8 @@
 		008B64812A6A1E8A00586C69 /* GenreSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreSelectionView.swift; sourceTree = "<group>"; };
 		00932C492A6E6543004AFE1D /* CroppedImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroppedImagePicker.swift; sourceTree = "<group>"; };
 		00968EEE2B2E646B00CE0150 /* AlbumArtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumArtView.swift; sourceTree = "<group>"; };
-		009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumTitleSearchView.swift; sourceTree = "<group>"; };
+		009794572D9C8FB700839146 /* testView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testView.swift; sourceTree = "<group>"; };
+		009A57C82A609346000EF6F8 /* AddMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMediaView.swift; sourceTree = "<group>"; };
 		009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItemLabel.swift; sourceTree = "<group>"; };
 		009C013F2A6A437E0039CEA2 /* MediaNotesEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaNotesEntryView.swift; sourceTree = "<group>"; };
 		00A813992A7B1BA300596620 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
@@ -140,6 +149,9 @@
 		00DBFDB02AD9EB2400ABF8C2 /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
 		00DBFDB22AD9ECBB00ABF8C2 /* NoAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoAccountView.swift; sourceTree = "<group>"; };
 		00DEC2682A613F3800353643 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		00E4D2DA2D9DD436000E89F5 /* MediaAddedNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAddedNotificationView.swift; sourceTree = "<group>"; };
+		00E4D2DD2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumArtBackgroundView.swift; sourceTree = "<group>"; };
+		00EA18712DF8E5BD00CB2E78 /* Physical App Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Physical App Icon.icon"; sourceTree = "<group>"; };
 		00EE2D5D2B2C0377006D7DA9 /* BarcodeScanningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanningView.swift; sourceTree = "<group>"; };
 		00EE2D5F2B2C03F9006D7DA9 /* BarcodeScanningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanningViewController.swift; sourceTree = "<group>"; };
 		00EE2D612B2C20D3006D7DA9 /* BarcodeSearchResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeSearchResultView.swift; sourceTree = "<group>"; };
@@ -170,6 +182,7 @@
 				007C0FBB2A8C41B400AD9C2D /* VariableBlurNavigationBackgroundViewModifier.swift */,
 				00F5FBBB2A691DA000FCAA61 /* FloatingViewModifier.swift */,
 				00CFE3B72A65E261004BE57E /* ReflectionViewModifier.swift */,
+				006EAB562D4ECD3C005036DF /* ShinyViewExtension.swift */,
 			);
 			path = "View Modifiers";
 			sourceTree = "<group>";
@@ -236,6 +249,7 @@
 				0088FEC92A5A0A0600FEAF8B /* Views */,
 				007C0FC32A8D360C00AD9C2D /* Support */,
 				003662032A563754009FCEA8 /* Assets.xcassets */,
+				00EA18712DF8E5BD00CB2E78 /* Physical App Icon.icon */,
 				003662052A563754009FCEA8 /* Preview Content */,
 			);
 			path = Physical;
@@ -346,6 +360,7 @@
 		007C0FC32A8D360C00AD9C2D /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				006EAB582D4ECD80005036DF /* Gradient.swift */,
 				007C0FC42A8D363600AD9C2D /* SampleCollection.swift */,
 				007C0FC62A8D399A00AD9C2D /* PreviewSampleData.swift */,
 				0004E69F2A981F8700D671C8 /* ScreenSize.swift */,
@@ -398,6 +413,7 @@
 				00718B742AFC5BCC0063F161 /* UserInputRequiredView.swift */,
 				0027ECDA2A5B99C2001090E4 /* DataEntry.swift */,
 				00F810852A669DD700D0EAEA /* MediaThumbnail.swift */,
+				009794572D9C8FB700839146 /* testView.swift */,
 				003BC1DA2A6F455900E16A9F /* HapticsViewExtension.swift */,
 				00968EEE2B2E646B00CE0150 /* AlbumArtView.swift */,
 				009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */,
@@ -452,6 +468,14 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		00E4D2DC2D9F7F8A000E89F5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				00E4D2DD2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		00EE2D5A2B2C030D006D7DA9 /* BarcodeScanAlbumSearchView */ = {
 			isa = PBXGroup;
 			children = (
@@ -474,7 +498,7 @@
 		00EE2D672B2D642D006D7DA9 /* Media Entry */ = {
 			isa = PBXGroup;
 			children = (
-				00F8107A2A669B9200D0EAEA /* AlbumTitleSearchView */,
+				00F8107A2A669B9200D0EAEA /* AddMediaView */,
 				00F8107C2A669BBF00D0EAEA /* MediaDetailsEntryView */,
 				00EE2D5A2B2C030D006D7DA9 /* BarcodeScanAlbumSearchView */,
 			);
@@ -485,23 +509,25 @@
 			isa = PBXGroup;
 			children = (
 				00F5FBB72A69110600FCAA61 /* MediaDetailView.swift */,
+				00E4D2DC2D9F7F8A000E89F5 /* Components */,
 			);
 			path = MediaDetailView;
 			sourceTree = "<group>";
 		};
-		00F8107A2A669B9200D0EAEA /* AlbumTitleSearchView */ = {
+		00F8107A2A669B9200D0EAEA /* AddMediaView */ = {
 			isa = PBXGroup;
 			children = (
-				009A57C82A609346000EF6F8 /* AlbumTitleSearchView.swift */,
+				009A57C82A609346000EF6F8 /* AddMediaView.swift */,
 				00F8107B2A669BA300D0EAEA /* Components */,
 			);
-			path = AlbumTitleSearchView;
+			path = AddMediaView;
 			sourceTree = "<group>";
 		};
 		00F8107B2A669BA300D0EAEA /* Components */ = {
 			isa = PBXGroup;
 			children = (
 				00CFE3B32A6531BB004BE57E /* SearchResultListItem.swift */,
+				00E4D2DA2D9DD436000E89F5 /* MediaAddedNotificationView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -588,6 +614,8 @@
 				Base,
 			);
 			mainGroup = 003661F32A56374E009FCEA8;
+			packageReferences = (
+			);
 			productRefGroup = 003661FD2A56374E009FCEA8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -602,6 +630,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00EA18722DF8E5BD00CB2E78 /* Physical App Icon.icon in Resources */,
 				00A8139F2A7B36AB00596620 /* README.md in Resources */,
 				003662072A563754009FCEA8 /* Preview Assets.xcassets in Resources */,
 				003662042A563754009FCEA8 /* Assets.xcassets in Resources */,
@@ -616,13 +645,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				003BC1DB2A6F455900E16A9F /* HapticsViewExtension.swift in Sources */,
-				009A57C92A609346000EF6F8 /* AlbumTitleSearchView.swift in Sources */,
+				009A57C92A609346000EF6F8 /* AddMediaView.swift in Sources */,
 				0069F29E2AE0BAE30084147E /* AuthenticationManager.swift in Sources */,
 				00F810862A669DD700D0EAEA /* MediaThumbnail.swift in Sources */,
 				00316A792ABAB7F200F2B83D /* OnboardingSheet.swift in Sources */,
 				00DBFDB32AD9ECBB00ABF8C2 /* NoAccountView.swift in Sources */,
 				0027ECDB2A5B99C2001090E4 /* DataEntry.swift in Sources */,
 				0004E6A42A9833C600D671C8 /* SocialProfilePostsView.swift in Sources */,
+				00E4D2DB2D9DD436000E89F5 /* MediaAddedNotificationView.swift in Sources */,
 				00F5FBB82A69110600FCAA61 /* MediaDetailView.swift in Sources */,
 				00F1F10E2A8056850045C76B /* OwnershipPicker.swift in Sources */,
 				0004E6A22A981FFE00D671C8 /* RootView.swift in Sources */,
@@ -631,6 +661,7 @@
 				0027ECD92A5B98E3001090E4 /* MediaDetailsEntryView.swift in Sources */,
 				00968EEF2B2E646B00CE0150 /* AlbumArtView.swift in Sources */,
 				009A57CB2A609BB6000EF6F8 /* ListItemLabel.swift in Sources */,
+				006EAB572D4ECD41005036DF /* ShinyViewExtension.swift in Sources */,
 				00388C272AE84DA300526910 /* KeychainError.swift in Sources */,
 				0004E6AD2A9BE41000D671C8 /* CompactMediaView.swift in Sources */,
 				00BBEED32A7C61E10078F0B1 /* HTTPSRequest.swift in Sources */,
@@ -643,6 +674,7 @@
 				002BDCE22B50C54800AAABDA /* SocialProfileSettingsView.swift in Sources */,
 				00EE2D5E2B2C0377006D7DA9 /* BarcodeScanningView.swift in Sources */,
 				00EE2D622B2C20D4006D7DA9 /* BarcodeSearchResultView.swift in Sources */,
+				009794582D9C8FB700839146 /* testView.swift in Sources */,
 				00DBFDAD2AD9E6BC00ABF8C2 /* StorageKeys.swift in Sources */,
 				007C0FB82A8C1BA700AD9C2D /* VariableBlurImageBackgroundViewModifier.swift in Sources */,
 				00CFE3B42A6531BB004BE57E /* SearchResultListItem.swift in Sources */,
@@ -664,8 +696,10 @@
 				00388C252AE4E25D00526910 /* AuthenticationError.swift in Sources */,
 				00783FCD2B34338A00E4AE45 /* UserAccountRequest.swift in Sources */,
 				00718B732AFC36B00063F161 /* OnboardingSignUpView.swift in Sources */,
+				00E4D2DE2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift in Sources */,
 				00932C4A2A6E6543004AFE1D /* CroppedImagePicker.swift in Sources */,
 				00DBFDB12AD9EB2400ABF8C2 /* SocialView.swift in Sources */,
+				006EAB592D4ECD82005036DF /* Gradient.swift in Sources */,
 				00783FC82B3430BF00E4AE45 /* UserAccountManager.swift in Sources */,
 				0069F2A02AE131820084147E /* AuthenticationRequest.swift in Sources */,
 				000E57C32A89657500BA2B1D /* SocialProfileView.swift in Sources */,
@@ -809,9 +843,10 @@
 		0036620B2A563754009FCEA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Physical App Icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Physical/Physical.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Physical/Preview Content\"";
@@ -819,6 +854,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Physical/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Physical;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Physical uses Apple Music to automatically populate information about new additions to your collection.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Physical uses your camera to scan barcodes and take photos of items in your collection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -826,6 +862,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -833,6 +870,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spencerhartland.Physical;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -846,9 +884,10 @@
 		0036620C2A563754009FCEA8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Physical App Icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Physical/Physical.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Physical/Preview Content\"";
@@ -856,6 +895,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Physical/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Physical;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Physical uses Apple Music to automatically populate information about new additions to your collection.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Physical uses your camera to scan barcodes and take photos of items in your collection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -863,6 +903,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -870,6 +911,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spencerhartland.Physical;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

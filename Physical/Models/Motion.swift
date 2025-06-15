@@ -10,20 +10,23 @@ import SwiftData
 import SwiftUI
 
 @Observable
-final class Motion {
-    private let xMultiplier = 0.1
-    private let yOffset = -0.1
-    private let yMultiplier = 0.1
-    private let zMultiplier = 0.01
-    private let frequency = 1.0 / 50.0 // 50 times per second
+final class Motion: ObservableObject {
+    static var main = Motion()
+    
+    private var roll: Double = 0.0
+    private var pitch: Double = 0.0
+    private var yaw: Double = 0.0
+    
     private var manager = CMMotionManager()
-    var roll: Double = 0.0
-    var pitch: Double = 0.0
-    var yaw: Double = 0.0
+    private let xMultiplier = 0.25
+    private let yOffset = -0.25
+    private let yMultiplier = 0.25
+    private let zMultiplier = 0.025
+    /// The interval between device motion updates, in seconds.
+    private let updateInterval = 0.05 // 50ms
     
-    private var counter: Int = 0
-    
-    func startUpdates() {
+    init() {
+        manager.deviceMotionUpdateInterval = updateInterval
         manager.startDeviceMotionUpdates(to: .main) { data, error in
             if let error = error {
                 print("Error occurred while starting device motion updates: \(error.localizedDescription)")
@@ -35,22 +38,39 @@ final class Motion {
                 return
             }
             
-            // Radians
-            let rollRads = data.attitude.roll * self.xMultiplier
-            let pitchRads = (data.attitude.pitch * self.yMultiplier) + self.yOffset
-            let yawRads = data.attitude.yaw * self.zMultiplier
-            
-            // Degreees
-            let rollDegs = self.degrees(from: rollRads)
-            let pitchDegs = self.degrees(from: pitchRads)
-            let yawDegs = self.degrees(from: yawRads)
-            
             withAnimation {
-                self.roll = self.limit(rollDegs, min: -2.0, max: 2.0)
-                self.pitch = self.limit(pitchDegs, min: -1.0, max: 1.0)
-                self.yaw = self.limit(yawDegs, min: -0.33, max: 0.33)
+                self.roll = data.attitude.roll
+                self.pitch = data.attitude.pitch
+                self.yaw = data.attitude.yaw
             }
         }
+    }
+    
+    public func roll(limited: Bool = false) -> Double {
+        if !limited {
+            return roll
+        }
+        
+        let result = degrees(from: roll * xMultiplier)
+        return limit(result, min: -2.0, max: 2.0)
+    }
+    
+    public func pitch(limited: Bool = false) -> Double {
+        if !limited {
+            return pitch
+        }
+        
+        let result = degrees(from: (pitch * yMultiplier) + yOffset)
+        return limit(result, min: -1.0, max: 1.0)
+    }
+    
+    public func yaw(limited: Bool = false) -> Double {
+        if !limited {
+            return yaw
+        }
+        
+        let result = degrees(from: yaw * zMultiplier)
+        return limit(result, min: -0.33, max: 0.33)
     }
     
     private func limit(_ degrees: Double, min: Double, max: Double) -> Double {

@@ -11,7 +11,7 @@ import SwiftData
 @Model
 final class User: Codable {
     /// The unique user identifier assigned to the user by Apple.
-    let userID: String
+    var userID: String
     /// The unique username chosen by the user.
     var username: String
     /// The user's chosen display name.

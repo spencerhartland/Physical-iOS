@@ -10,7 +10,7 @@ import PhotosUI
 
 struct MediaDetailsEntryView: View {
     // String constants
-    private let navTitle = "Media Details"
+    private let navTitle = "Details"
     private let albumDetailsSectionHeaderText = "Album details"
     private let mediaInfoSectionHeaderText = "Physical media"
     private let albumTitleText = "Title"
@@ -48,7 +48,7 @@ struct MediaDetailsEntryView: View {
     @Bindable var newMedia: Media
     
     // View state
-    @Binding var addingMedia: Bool
+    @Binding var editingMediaDetails: Bool
     @State private var presentCamera = false
     @State private var presentPhotosPicker = false
     @FocusState private var focusInTrackField: Bool
@@ -60,28 +60,30 @@ struct MediaDetailsEntryView: View {
     
     init(newMedia: Bindable<Media>, isPresented: Binding<Bool>) {
         self._newMedia = newMedia
-        self._addingMedia = isPresented
+        self._editingMediaDetails = isPresented
     }
     
     var body: some View {
         NavigationStack {
-            List {
-                mediaImagesSection
-                ownershipPickerSection
-                physicalMediaDetailsSection
-                albumDetailsSection
-                tracksSection
-                notesSection
+            ZStack {
+                Color(UIColor.secondarySystemBackground)
+                    .ignoresSafeArea()
+                
+                List {
+                    mediaImagesSection
+                    ownershipPickerSection
+                    physicalMediaDetailsSection
+                    albumDetailsSection
+                    tracksSection
+                    notesSection
+                }
+                .listRowBackground(Color(UIColor.systemBackground))
             }
         }
         .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
         .toolbar(.hidden, for: .tabBar)
         .navigationTitle(navTitle)
         .environment(\.editMode, $editMode)
-        .background {
-            Color(UIColor.systemGroupedBackground)
-                .ignoresSafeArea()
-        }
         .onChange(of: newMedia.type) { _, newValue in
             // Change icon based upon the chosen physical media type
             switch newValue {
@@ -119,7 +121,7 @@ struct MediaDetailsEntryView: View {
             Button(finishEditingButton) {
                 uploadCachedImages()
                 modelContext.insert(newMedia)
-                addingMedia = false
+                editingMediaDetails = false
             }
         }
     }

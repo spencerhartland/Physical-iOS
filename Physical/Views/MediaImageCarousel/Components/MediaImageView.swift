@@ -47,11 +47,9 @@ struct MediaImageView: View {
                 mediaImagePlaceholder
             }
         }
-        .floating(roll: motion.roll, pitch: motion.pitch, yaw: motion.yaw, screenSize: screenSize)
-        .reflection(roll: motion.roll, pitch: motion.pitch, yaw: motion.yaw, screenSize: screenSize)
-        .onAppear {
-            motion.startUpdates()
-        }
+        .shiny(.glossy(.clear))
+        .floating(screenSize: screenSize)
+        .reflection(screenSize: screenSize)
         .task {
             do {
                 if let url {

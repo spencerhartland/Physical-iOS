@@ -84,12 +84,14 @@ struct MediaThumbnail: View {
     private var albumInfo: some View {
         VStack(alignment: .leading) {
             Text(media.title)
-                .font(.headline)
+                .font(.caption)
+                .fontWeight(.semibold)
                 .foregroundStyle(.primary)
                 .lineLimit(1)
             Text(media.artist)
-                .font(.subheadline)
+                .font(.caption2)
                 .foregroundStyle(.secondary)
+                .lineLimit(1)
         }
     }
     

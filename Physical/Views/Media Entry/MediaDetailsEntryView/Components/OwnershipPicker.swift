@@ -38,7 +38,7 @@ struct OwnershipPicker: View {
 }
 
 #Preview {
-    @State var selection = true
+    @Previewable @State var selection = true
     
     return List {
         Section {

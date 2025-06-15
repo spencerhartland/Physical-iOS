@@ -15,11 +15,9 @@ struct BarcodeScanAlbumSearchView: View {
     private let tooltipText = "Scan the barcode"
     private let tooltipSymbolName = "barcode.viewfinder"
     private let footerText = "Barcode scanning works on the one-dimensional barcodes of most vinyl records, CDs, and cassettes. Not all UPCs yield results from Apple Music."
-    private let navigationTitle = "Add Media"
     
-    @Binding var isPresented: Bool
-    
-    @Bindable private var newMedia: Media = Media()
+    @Binding var scanningBarcode: Bool
+    @Bindable var newMedia: Media
     
     @State private var detectedBarcode: String = ""
     @State private var detectedAlbum: Album?
@@ -27,12 +25,18 @@ struct BarcodeScanAlbumSearchView: View {
     @State private var flashlightActive: Bool = false
     @State private var doneScanning: Bool = false
     
+    init(newMedia: Bindable<Media>, isPresented: Binding<Bool>) {
+        self._newMedia = newMedia
+        self._scanningBarcode = isPresented
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack {
                     BarcodeScanningView($detectedBarcode)
                         .clipShape(Rectangle())
+                        .ignoresSafeArea(edges: .top)
                         .overlay {
                             VStack {
                                 Spacer()
@@ -41,7 +45,7 @@ struct BarcodeScanAlbumSearchView: View {
                         }
                     VStack(alignment: .center, spacing: 16) {
                         NavigationLink {
-                            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $isPresented)
+                            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $scanningBarcode)
                         } label: {
                             BarcodeSearchResultView(for: detectedAlbum, completionFlag: $searchReturnedNoResults)
                         }
@@ -53,14 +57,15 @@ struct BarcodeScanAlbumSearchView: View {
                     .padding()
                 }
             }
-            .navigationTitle(navigationTitle)
-            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     flashlightToggle
                 }
             }
+            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+            .navigationBarBackButtonHidden()
         }
+        .buttonStyle(.bordered)
         .onChange(of: detectedBarcode) { oldValue, newValue in
             if newValue != oldValue {
                 handleDetectedBarcode(newValue)
@@ -93,8 +98,10 @@ struct BarcodeScanAlbumSearchView: View {
             }
         } label: {
             Image(systemName: flashlightActive ? flashlightOnSymbolName : flashlightOffSymbolName)
-                .foregroundStyle(flashlightActive ? .yellow : .primary)
         }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
+        .tint(flashlightActive ? .lightGreen : .primary)
     }
     
     // MARK: - Barcode detection handling
@@ -106,9 +113,9 @@ struct BarcodeScanAlbumSearchView: View {
                     let albumsRequest = MusicCatalogResourceRequest<Album>(matching: \.upc, equalTo: detectedBarcode)
                     let albumsResponse = try await albumsRequest.response()
                     if let firstAlbum = albumsResponse.items.first {
-                        await self.handleDetectedAlbum(firstAlbum)
+                        self.handleDetectedAlbum(firstAlbum)
                     } else {
-                        await self.handleNoResults()
+                        self.handleNoResults()
                     }
                 } catch {
                     print("Encountered error while trying to find albums with upc = \"\(detectedBarcode)\".")
