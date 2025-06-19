@@ -8,16 +8,6 @@
 import SwiftUI
 
 struct RootView: View {
-    private let collectionTabItemText = "Collection"
-    private let addMediaTabItemText = "Add to Collection"
-    private let socialTabItemText = "Social"
-    private let profileTabItemText = "Profile"
-    
-    private let collectionTabItemSymbol = "square.stack.fill"
-    private let addMediaTabItemSymbol = "square.badge.plus.fill"
-    private let socialTabItemSymbol = "at"
-    private let profileTabItemSymbol = "person.crop.circle.fill"
-    
     @AppStorage(StorageKeys.userID) private var userID: String = ""
     @State private var signInSheetPresented: Bool = true
     @State private var screenSize: CGSize = {
@@ -33,33 +23,27 @@ struct RootView: View {
         TabView(selection: $selectedTab) {
             MediaCollectionView($selectedTab)
                 .tabItem {
-                    Label(collectionTabItemText, systemImage: collectionTabItemSymbol)
+                    Label("Collection", systemImage: "square.stack.fill")
                 }
                 .tag(0)
             
-            AddMediaView($selectedTab)
+            SocialView(for: $userID)
                 .tabItem {
-                    Label(addMediaTabItemText, systemImage: addMediaTabItemSymbol)
+                    Label("Social", systemImage: "at.circle.fill")
+                }
+                .sheet(isPresented: $signInSheetPresented) {
+                    OnboardingSheet($signInSheetPresented)
                 }
                 .tag(1)
             
-            SocialView(for: $userID)
+            SocialProfileView(for: $userID)
                 .tabItem {
-                    Label(socialTabItemText, systemImage: socialTabItemSymbol)
+                    Label("Profile", systemImage: "person.crop.circle.fill")
                 }
                 .sheet(isPresented: $signInSheetPresented) {
                     OnboardingSheet($signInSheetPresented)
                 }
                 .tag(2)
-            
-            SocialProfileView(for: $userID)
-                .tabItem {
-                    Label(profileTabItemText, systemImage: profileTabItemSymbol)
-                }
-                .sheet(isPresented: $signInSheetPresented) {
-                    OnboardingSheet($signInSheetPresented)
-                }
-                .tag(3)
         }
         .environment(\.screenSize, screenSize)
         .onAppear {

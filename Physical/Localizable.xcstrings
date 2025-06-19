@@ -1,0 +1,130 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "@" : {
+
+    },
+    "@%@" : {
+
+    },
+    "%@" : {
+
+    },
+    "%@ · %@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
+    "1" : {
+
+    },
+    "Add Media" : {
+
+    },
+    "Add media to build your digital collection." : {
+
+    },
+    "Added to Collection" : {
+
+    },
+    "Album Title" : {
+
+    },
+    "Apple Music access is disabled!" : {
+
+    },
+    "Back" : {
+
+    },
+    "Collection" : {
+
+    },
+    "Continue" : {
+
+    },
+    "Cover Photo" : {
+
+    },
+    "Don't ask again" : {
+
+    },
+    "Edit details" : {
+
+    },
+    "Enable in Settings" : {
+
+    },
+    "Favorite" : {
+
+    },
+    "Filter" : {
+
+    },
+    "Filter and Sort" : {
+
+    },
+    "Hello, World!" : {
+
+    },
+    "More" : {
+
+    },
+    "No Media" : {
+
+    },
+    "Not now" : {
+
+    },
+    "Notes" : {
+
+    },
+    "Physical uses Apple Music to automatically populate information about new additions to your collection." : {
+
+    },
+    "Profile" : {
+
+    },
+    "Profile Photo" : {
+
+    },
+    "Released" : {
+
+    },
+    "Remove from Collection" : {
+
+    },
+    "Scan" : {
+
+    },
+    "Search for an album on Apple Music or enter the title and continue to manually add details." : {
+
+    },
+    "Search Results" : {
+
+    },
+    "Share" : {
+
+    },
+    "Social" : {
+
+    },
+    "Sort" : {
+
+    },
+    "This is a list post!" : {
+
+    },
+    "This is a simple post!" : {
+
+    }
+  },
+  "version" : "1.1"
+}

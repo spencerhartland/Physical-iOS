@@ -8,26 +8,6 @@
 import SwiftUI
 
 struct MediaDetailView: View {
-    private let moreMenuTitle = "More"
-    private let favoriteMenuItemText = "Favorite"
-    private let editMenuItemText = "Edit details"
-    private let shareMenuItemText = "Share"
-    private let deleteMenuItemText = "Remove from Collection"
-    private let releaseDateText = "Released on"
-    private let dateAddedText = "Added to Collection on"
-    private let conditionStringFormatSpecifier = "Condition: %@"
-    private let notesSectionHeaderText = "Notes"
-    
-    private let moreMenuSymbol = "ellipsis"
-    private let notFavoriteMenuItemSymbol = "heart"
-    private let favoriteMenuItemSymbol = "heart.fill"
-    private let editMenuItemSymbol = "square.and.pencil"
-    private let shareMenuItemSymbol = "square.and.arrow.up"
-    private let deleteMenuItemSymbol = "trash"
-    private let compactDiscSymbol = "opticaldisc.fill"
-    private let horizontalDetailsSeparatorSymbol = "circle.fill"
-    private let notesSectionSymbol = "note.text"
-    
     @Environment(\.screenSize) private var screenSize
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
@@ -40,65 +20,43 @@ struct MediaDetailView: View {
     }
     
     var body: some View {
-        ZStack {
-            Color(UIColor.secondarySystemBackground)
-                .ignoresSafeArea()
+        List {
+            // Album details
+            Section {
+                tracklist
+            } header: {
+                albumArtWithDetails
+            } footer: {
+                tracklistFooter
+            }
             
-            List {
-                // Album details
-                Section {
-                    tracklist
-                } header: {
-                    albumArtWithDetails
+            // Notes
+            if !media.notes.isEmpty { notes }
+        }
+        .listStyle(.grouped)
+        .scrollContentBackground(.hidden)
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Label("Back", systemImage: "chevron.backward")
+                        .labelStyle(.iconOnly)
                 }
-                .listRowBackground(Color(UIColor.secondarySystemBackground))
-                
-                // More info
-                Section {
-                    tracklistFooter
-                } header: {
-                    Label("Info", systemImage: "info.square")
-                        .labelStyle(.titleAndIcon)
-                        .textCase(nil)
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.primary)
-                }
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color(UIColor.secondarySystemBackground))
-                
-                // Notes
-                if !media.notes.isEmpty { notes }
+                .tint(nil)
+                .fontWeight(.medium)
             }
-            .listStyle(.grouped)
-            .scrollContentBackground(.hidden)
-            .background(Color(UIColor.systemGroupedBackground))
-            .toolbarBackground(.hidden, for: .navigationBar)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                            .frame(width: 18, height: 18)
-                    }
-                    .tint(nil)
-                    .foregroundStyle(Color.darkGreen)
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.circle)
-                    .fontWeight(.medium)
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    moreMenu
-                }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                moreMenu
             }
-            .navigationBarBackButtonHidden()
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(isPresented: $isEditing) {
-                @Bindable var newMedia = media
-                MediaDetailsEntryView(newMedia: $newMedia, isPresented: $isEditing)
-            }
+        }
+        .navigationBarBackButtonHidden()
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $isEditing) {
+            @Bindable var newMedia = media
+            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $isEditing)
         }
     }
     
@@ -107,42 +65,43 @@ struct MediaDetailView: View {
             Button {
                 media.isFavorite.toggle()
             } label: {
-                Label(favoriteMenuItemText, systemImage: media.isFavorite ? favoriteMenuItemSymbol : notFavoriteMenuItemSymbol)
+                Label(
+                    "Favorite",
+                    systemImage: media.isFavorite ? "heart.fill" : "heart"
+                )
             }
             Divider()
             Button {
                 self.isEditing = true
             } label: {
-                Label(editMenuItemText, systemImage: editMenuItemSymbol)
+                Label("Edit details", systemImage: "square.and.pencil")
             }
             Button {
-                // Generate image to share
+                // TODO: Generate image to share
             } label: {
-                Label(shareMenuItemText, systemImage: shareMenuItemSymbol)
+                Label("Share", systemImage: "square.and.arrow.up")
             }
             Divider()
             Button(role: .destructive) {
                 modelContext.delete(media)
                 dismiss()
             } label: {
-                Label(deleteMenuItemText, systemImage: deleteMenuItemSymbol)
+                Label("Remove from Collection", systemImage: "trash")
                     .tint(.red)
             }
         } label: {
-            Label(moreMenuTitle, systemImage: moreMenuSymbol)
+            Label("More", systemImage: "ellipsis")
                 .labelStyle(.iconOnly)
                 .frame(width: 18, height: 18)
                 .foregroundStyle(Color.darkGreen)
         }
         .menuStyle(.button)
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.circle)
         .tint(nil)
     }
     
     private var albumArtWithDetails: some View {
         VStack {
-            MediaImageCarousel(size: screenSize, albumArtworkURL: media.albumArtworkURL, imageKeys: media.imageKeys)
+            MediaImageCarousel(size: screenSize, albumArtworkURL: media.albumArtworkURL, imageKeys: media.imageKeys, mediaType: media.type)
             VStack {
                 // Title
                 Text(media.title)
@@ -152,78 +111,64 @@ struct MediaDetailView: View {
                     .lineLimit(2)
                 // Artist
                 Text(media.artist)
-                    .font(.title3)
+                    .font(.title2)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
             .padding(.bottom, 8)
             // Details
-            HStack {
-                HStack(spacing: 4) {
-                    mediaTypeSymbol
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 12)
-                    Text(media.type.rawValue)
-                }
-                Image(systemName: horizontalDetailsSeparatorSymbol)
-                    .font(.system(size: 3))
-                Text(media.releaseDate, format: .dateTime.year())
-                Image(systemName: horizontalDetailsSeparatorSymbol)
-                    .font(.system(size: 3))
-                Text(media.genre)
-            }
-            .font(.system(.caption, weight: .medium))
-            .foregroundStyle(.secondary)
-            .padding(.bottom, 16)
+            Text("\(media.genre) · \(media.releaseDate, format: .dateTime.year()) · \(media.condition.rawValue)")
+                .font(.system(.caption, weight: .medium))
+                .foregroundStyle(.secondary)
+                .padding(.bottom, 16)
         }
         .textCase(.none)
         .foregroundStyle(.primary)
     }
     
     private var tracklistFooter: some View {
-        Grid(alignment: .topLeading, horizontalSpacing: 32, verticalSpacing: 16) {
-            GridRow {
-                VStack(alignment: .leading) {
-                    Text("Released")
-                        .font(.subheadline)
-                        .fontWeight(.regular)
-                        .foregroundStyle(.secondary)
-                    Text("\(media.releaseDate, format: .dateTime.month().day().year())")
-                }
-                
-                VStack(alignment: .leading) {
-                    Text("Added to Collection")
-                        .font(.subheadline)
-                        .fontWeight(.regular)
-                        .foregroundStyle(.secondary)
-                    Text("\(media.dateAdded, format: .dateTime.month().day().year())")
-                }
+        HStack(spacing: 32) {
+            VStack(alignment: .leading) {
+                Text("Released")
+                    .font(.subheadline)
+                    .fontWeight(.regular)
+                    .foregroundStyle(.secondary)
+                Text("\(media.releaseDate, format: .dateTime.month().day().year())")
+                    .font(.body)
             }
             
-            GridRow {
-                VStack(alignment: .leading) {
-                    Text("Condition")
-                        .font(.subheadline)
-                        .fontWeight(.regular)
-                        .foregroundStyle(.secondary)
-                    Text(media.condition.rawValue)
-                }
-                
-                Spacer()
+            VStack(alignment: .leading) {
+                Text("Added to Collection")
+                    .font(.subheadline)
+                    .fontWeight(.regular)
+                    .foregroundStyle(.secondary)
+                Text("\(media.dateAdded, format: .dateTime.month().day().year())")
+                    .font(.body)
             }
         }
+        .padding(.vertical)
     }
     
     private var tracklist: some View {
-        ForEach(Array(media.tracks.enumerated()), id: \.element) { trackNum, trackTitle in
-            HStack(spacing: 16) {
-                Text("\(trackNum + 1)")
-                    .foregroundStyle(.secondary)
-                Text(trackTitle)
-                    .lineLimit(1)
+        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
+            ForEach(Array(media.tracks.enumerated()), id: \.element) { trackIndex, trackTitle in
+                GridRow {
+                    Text("\(trackIndex + 1)")
+                        .foregroundStyle(.secondary)
+                        .gridColumnAlignment(.trailing)
+                    HStack {
+                        Text(trackTitle)
+                            .foregroundStyle(.primary)
+                            .gridColumnAlignment(.leading)
+                        Spacer()
+                    }
+                }
+                
+                if let lastTrack = media.tracks.last,
+                   trackTitle != lastTrack {
+                    Divider()
+                }
             }
-            .padding([.vertical, .leading], 6)
         }
     }
     
@@ -231,7 +176,7 @@ struct MediaDetailView: View {
         Section {
             Text(media.notes)
         } header: {
-            Label(notesSectionHeaderText, systemImage: notesSectionSymbol)
+            Label("Notes", systemImage: "note.text")
                 .labelStyle(.titleAndIcon)
                 .textCase(nil)
                 .font(.headline)
@@ -239,17 +184,5 @@ struct MediaDetailView: View {
                 .foregroundStyle(.primary)
         }
         .listRowSeparator(.hidden)
-        .listRowBackground(Color(UIColor.systemGroupedBackground))
-    }
-    
-    private var mediaTypeSymbol: Image {
-        switch media.type {
-        case .vinylRecord:
-            return Image(.vinylRecord)
-        case .compactDisc:
-            return Image(systemName: compactDiscSymbol)
-        case .compactCassette:
-            return Image(.compactCassette)
-        }
     }
 }

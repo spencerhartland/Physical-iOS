@@ -10,23 +10,11 @@ import UIKit
 import MusicKit
 
 struct AddMediaView: View {
-    private let navTitle = "Add Media"
-    private let searchFieldTitle = "Enter title"
-    private let albumTitlePrompts = ["Art Angels", "Visions", "Syro", "Drukqs", "Post", "Homogenic", "Utopia", "KiCk i"]
-    private let albumTitleFooterText = "Search for an album on Apple Music or enter the title and continue to manually add details."
-    private let searchResultsHeaderSymbolName = "magnifyingglass"
-    private let searchResultsHeaderText = "Search Results"
-    private let continueButtonText = "Continue"
-    
     @State private var newMedia = Media()
     @State private var searchResults: MusicItemCollection<Album> = []
     @State private var editingMediaDetails = false
     @State private var scanningBarcode = false
     @State private var shouldShowMediaAddedNotification = false
-    
-    // Animating prompts
-    @State private var prompt = 0
-    private let searchPromptTimer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
     
     @FocusState private var searchFieldFocused: Bool
     @Binding var rootViewSelectedTab: Int
@@ -43,17 +31,12 @@ struct AddMediaView: View {
                 
                 List {
                     Section {
-                        TextField(albumTitlePrompts[prompt], text: $newMedia.title)
+                        TextField("Album Title", text: $newMedia.title)
                             .focused($searchFieldFocused)
                             .listRowBackground(Color(UIColor.tertiarySystemFill))
-                    } header: {
-                        Text(searchFieldTitle)
-                            .textCase(nil)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
                     } footer: {
                         if searchResults.isEmpty {
-                            Text(albumTitleFooterText)
+                            Text("Search for an album on Apple Music or enter the title and continue to manually add details.")
                         }
                     }
                     
@@ -70,7 +53,7 @@ struct AddMediaView: View {
                                 .listRowBackground(Color(UIColor.systemBackground))
                             }
                         } header: {
-                            Label(searchResultsHeaderText, systemImage: searchResultsHeaderSymbolName)
+                            Label("Search Results", systemImage: "magnifyingglass")
                                 .labelStyle(.titleAndIcon)
                                 .textCase(nil)
                                 .font(.subheadline)
@@ -80,7 +63,7 @@ struct AddMediaView: View {
                 }
                 .scrollContentBackground(.hidden)
             }
-            .navigationTitle(navTitle)
+            .navigationTitle("Add Media")
             .navigationDestination(isPresented: $editingMediaDetails) {
                 @Bindable var newMedia = newMedia
                 MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
@@ -88,37 +71,6 @@ struct AddMediaView: View {
             .navigationDestination(isPresented: $scanningBarcode) {
                 @Bindable var newMedia = newMedia
                 BarcodeScanAlbumSearchView(newMedia: $newMedia, isPresented: $scanningBarcode)
-            }
-            .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    // Barcode scanning
-                    Button {
-                        scanningBarcode = true
-                    } label: {
-                        Label("Scan", systemImage: "barcode.viewfinder")
-                            .labelStyle(.titleAndIcon)
-                    }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.capsule)
-                    .tint(.lightGreen)
-                    .foregroundStyle(Color.darkGreen)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    
-                    // Manual entry
-                    Button(continueButtonText) {
-                        searchFieldFocused = false
-                        editingMediaDetails = true
-                    }
-                    .disabled(newMedia.title.isEmpty)
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.capsule)
-                    .tint(.lightGreen)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .transition(.opacity)
-                    .animation(.easeInOut, value: newMedia.title.isEmpty)
-                }
             }
             .onChange(of: editingMediaDetails) {
                 if !editingMediaDetails {
@@ -137,17 +89,36 @@ struct AddMediaView: View {
                     self.requestSearchResults(newMedia.title)
                 }
             }
-            .onReceive(searchPromptTimer) { _ in
-                withAnimation(.smooth) {
-                    self.prompt = self.prompt < albumTitlePrompts.count - 1 ? self.prompt + 1 : 0
-                }
-            }
         }
         .safeAreaInset(edge: .bottom) {
             if shouldShowMediaAddedNotification {
                 MediaAddedNotificationView()
                     .padding(.bottom, 48)
                     .transition(.push(from: .bottom))
+            }
+        }
+        .toolbar {
+            ToolbarItem {
+                // Barcode scanning
+                Button {
+                    scanningBarcode = true
+                } label: {
+                    Label("Scan", systemImage: "barcode.viewfinder")
+                        .labelStyle(.iconOnly)
+                }
+            }
+            
+            if !newMedia.title.isEmpty {
+                if #available(iOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
+                ToolbarItem {
+                    Button("Continue") {
+                        searchFieldFocused = false
+                        editingMediaDetails = true
+                    }
+                }
             }
         }
     }

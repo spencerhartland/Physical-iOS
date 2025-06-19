@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -23,8 +23,6 @@
 		0035804C2B47F03100163284 /* UsernameResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0035804B2B47F03100163284 /* UsernameResponse.swift */; };
 		003662002A56374E009FCEA8 /* PhysicalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003661FF2A56374E009FCEA8 /* PhysicalApp.swift */; };
 		003662022A56374E009FCEA8 /* MediaCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003662012A56374E009FCEA8 /* MediaCollectionView.swift */; };
-		003662042A563754009FCEA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662032A563754009FCEA8 /* Assets.xcassets */; };
-		003662072A563754009FCEA8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662062A563754009FCEA8 /* Preview Assets.xcassets */; };
 		00388C252AE4E25D00526910 /* AuthenticationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00388C242AE4E25D00526910 /* AuthenticationError.swift */; };
 		00388C272AE84DA300526910 /* KeychainError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00388C262AE84DA300526910 /* KeychainError.swift */; };
 		00388C292AEA1B6700526910 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00388C282AEA1B6700526910 /* Credentials.swift */; };
@@ -58,7 +56,10 @@
 		009C01402A6A437E0039CEA2 /* MediaNotesEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009C013F2A6A437E0039CEA2 /* MediaNotesEntryView.swift */; };
 		00A8139A2A7B1BA300596620 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A813992A7B1BA300596620 /* ImageCache.swift */; };
 		00A8139D2A7B2E8E00596620 /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A8139C2A7B2E8E00596620 /* ImageManager.swift */; };
-		00A8139F2A7B36AB00596620 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00A8139E2A7B36AB00596620 /* README.md */; };
+		00A9355E2E00B8DB00FFFD85 /* PhysicalMediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 00A9355D2E00B8DB00FFFD85 /* PhysicalMediaKit */; };
+		00A9355F2E00B95300FFFD85 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 003662032A563754009FCEA8 /* Assets.xcassets */; };
+		00A935602E00B95900FFFD85 /* Physical.icon in Resources */ = {isa = PBXBuildFile; fileRef = 00EA18712DF8E5BD00CB2E78 /* Physical.icon */; };
+		00B791D92E03769100054345 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 00B791D82E03769100054345 /* Localizable.xcstrings */; };
 		00BBEED12A7C56180078F0B1 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBEED02A7C56180078F0B1 /* NetworkError.swift */; };
 		00BBEED32A7C61E10078F0B1 /* HTTPSRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBEED22A7C61E10078F0B1 /* HTTPSRequest.swift */; };
 		00C57DB72A6C88A7000DDBD3 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C57DB62A6C88A7000DDBD3 /* Collection.swift */; };
@@ -70,8 +71,6 @@
 		00DBFDB32AD9ECBB00ABF8C2 /* NoAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DBFDB22AD9ECBB00ABF8C2 /* NoAccountView.swift */; };
 		00DEC2692A613F3800353643 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DEC2682A613F3800353643 /* ImagePicker.swift */; };
 		00E4D2DB2D9DD436000E89F5 /* MediaAddedNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4D2DA2D9DD436000E89F5 /* MediaAddedNotificationView.swift */; };
-		00E4D2DE2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4D2DD2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift */; };
-		00EA18722DF8E5BD00CB2E78 /* Physical App Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 00EA18712DF8E5BD00CB2E78 /* Physical App Icon.icon */; };
 		00EE2D5E2B2C0377006D7DA9 /* BarcodeScanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D5D2B2C0377006D7DA9 /* BarcodeScanningView.swift */; };
 		00EE2D602B2C03F9006D7DA9 /* BarcodeScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D5F2B2C03F9006D7DA9 /* BarcodeScanningViewController.swift */; };
 		00EE2D622B2C20D4006D7DA9 /* BarcodeSearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE2D612B2C20D3006D7DA9 /* BarcodeSearchResultView.swift */; };
@@ -103,7 +102,6 @@
 		003661FF2A56374E009FCEA8 /* PhysicalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalApp.swift; sourceTree = "<group>"; };
 		003662012A56374E009FCEA8 /* MediaCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCollectionView.swift; sourceTree = "<group>"; };
 		003662032A563754009FCEA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		003662062A563754009FCEA8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		00388C242AE4E25D00526910 /* AuthenticationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationError.swift; sourceTree = "<group>"; };
 		00388C262AE84DA300526910 /* KeychainError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainError.swift; sourceTree = "<group>"; };
 		00388C282AEA1B6700526910 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
@@ -139,6 +137,7 @@
 		00A813992A7B1BA300596620 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		00A8139C2A7B2E8E00596620 /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		00A8139E2A7B36AB00596620 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		00B791D82E03769100054345 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		00BBEED02A7C56180078F0B1 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		00BBEED22A7C61E10078F0B1 /* HTTPSRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPSRequest.swift; sourceTree = "<group>"; };
 		00C57DB62A6C88A7000DDBD3 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
@@ -150,8 +149,7 @@
 		00DBFDB22AD9ECBB00ABF8C2 /* NoAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoAccountView.swift; sourceTree = "<group>"; };
 		00DEC2682A613F3800353643 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		00E4D2DA2D9DD436000E89F5 /* MediaAddedNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAddedNotificationView.swift; sourceTree = "<group>"; };
-		00E4D2DD2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumArtBackgroundView.swift; sourceTree = "<group>"; };
-		00EA18712DF8E5BD00CB2E78 /* Physical App Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Physical App Icon.icon"; sourceTree = "<group>"; };
+		00EA18712DF8E5BD00CB2E78 /* Physical.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Physical.icon; sourceTree = "<group>"; };
 		00EE2D5D2B2C0377006D7DA9 /* BarcodeScanningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanningView.swift; sourceTree = "<group>"; };
 		00EE2D5F2B2C03F9006D7DA9 /* BarcodeScanningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanningViewController.swift; sourceTree = "<group>"; };
 		00EE2D612B2C20D3006D7DA9 /* BarcodeSearchResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeSearchResultView.swift; sourceTree = "<group>"; };
@@ -169,6 +167,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00A9355E2E00B8DB00FFFD85 /* PhysicalMediaKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,18 +248,10 @@
 				0088FEC92A5A0A0600FEAF8B /* Views */,
 				007C0FC32A8D360C00AD9C2D /* Support */,
 				003662032A563754009FCEA8 /* Assets.xcassets */,
-				00EA18712DF8E5BD00CB2E78 /* Physical App Icon.icon */,
-				003662052A563754009FCEA8 /* Preview Content */,
+				00B791D82E03769100054345 /* Localizable.xcstrings */,
+				00EA18712DF8E5BD00CB2E78 /* Physical.icon */,
 			);
 			path = Physical;
-			sourceTree = "<group>";
-		};
-		003662052A563754009FCEA8 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				003662062A563754009FCEA8 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		005390BD2AED4BB900E686BB /* RootView */ = {
@@ -388,8 +379,8 @@
 				00968EF02B2EB05A00CE0150 /* Social */,
 				00F8107E2A669C3F00D0EAEA /* MediaCollectionView */,
 				00F5FBB52A6910D500FCAA61 /* MediaDetailView */,
-				00EE2D672B2D642D006D7DA9 /* Media Entry */,
 				00656F742A7D7E8900C44176 /* MediaImageCarousel */,
+				00EE2D672B2D642D006D7DA9 /* Media Entry */,
 				009A57C72A60905B000EF6F8 /* Common */,
 			);
 			path = Views;
@@ -468,14 +459,6 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
-		00E4D2DC2D9F7F8A000E89F5 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				00E4D2DD2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
 		00EE2D5A2B2C030D006D7DA9 /* BarcodeScanAlbumSearchView */ = {
 			isa = PBXGroup;
 			children = (
@@ -509,7 +492,6 @@
 			isa = PBXGroup;
 			children = (
 				00F5FBB72A69110600FCAA61 /* MediaDetailView.swift */,
-				00E4D2DC2D9F7F8A000E89F5 /* Components */,
 			);
 			path = MediaDetailView;
 			sourceTree = "<group>";
@@ -598,7 +580,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					003661FB2A56374E009FCEA8 = {
 						CreatedOnToolsVersion = 15.0;
@@ -615,6 +597,7 @@
 			);
 			mainGroup = 003661F32A56374E009FCEA8;
 			packageReferences = (
+				00A9355C2E00B8DB00FFFD85 /* XCLocalSwiftPackageReference "../PhysicalMediaKit" */,
 			);
 			productRefGroup = 003661FD2A56374E009FCEA8 /* Products */;
 			projectDirPath = "";
@@ -630,10 +613,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00EA18722DF8E5BD00CB2E78 /* Physical App Icon.icon in Resources */,
-				00A8139F2A7B36AB00596620 /* README.md in Resources */,
-				003662072A563754009FCEA8 /* Preview Assets.xcassets in Resources */,
-				003662042A563754009FCEA8 /* Assets.xcassets in Resources */,
+				00A935602E00B95900FFFD85 /* Physical.icon in Resources */,
+				00A9355F2E00B95300FFFD85 /* Assets.xcassets in Resources */,
+				00B791D92E03769100054345 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -696,7 +678,6 @@
 				00388C252AE4E25D00526910 /* AuthenticationError.swift in Sources */,
 				00783FCD2B34338A00E4AE45 /* UserAccountRequest.swift in Sources */,
 				00718B732AFC36B00063F161 /* OnboardingSignUpView.swift in Sources */,
-				00E4D2DE2DA0DDC3000E89F5 /* AlbumArtBackgroundView.swift in Sources */,
 				00932C4A2A6E6543004AFE1D /* CroppedImagePicker.swift in Sources */,
 				00DBFDB12AD9EB2400ABF8C2 /* SocialView.swift in Sources */,
 				006EAB592D4ECD82005036DF /* Gradient.swift in Sources */,
@@ -756,6 +737,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4M48D4QJHN;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -779,7 +761,9 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -819,6 +803,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4M48D4QJHN;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -835,7 +820,9 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -843,18 +830,22 @@
 		0036620B2A563754009FCEA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Physical App Icon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = Physical;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Physical/Physical.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Physical/Preview Content\"";
-				DEVELOPMENT_TEAM = 4M48D4QJHN;
+				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Physical/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Physical/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Physical;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Physical uses Apple Music to automatically populate information about new additions to your collection.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Physical uses your camera to scan barcodes and take photos of items in your collection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -884,18 +875,22 @@
 		0036620C2A563754009FCEA8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Physical App Icon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = Physical;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Physical/Physical.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Physical/Preview Content\"";
-				DEVELOPMENT_TEAM = 4M48D4QJHN;
+				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Physical/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Physical/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Physical;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Physical uses Apple Music to automatically populate information about new additions to your collection.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Physical uses your camera to scan barcodes and take photos of items in your collection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -944,6 +939,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		00A9355C2E00B8DB00FFFD85 /* XCLocalSwiftPackageReference "../PhysicalMediaKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../PhysicalMediaKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		00A9355D2E00B8DB00FFFD85 /* PhysicalMediaKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PhysicalMediaKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 003661F42A56374E009FCEA8 /* Project object */;
 }

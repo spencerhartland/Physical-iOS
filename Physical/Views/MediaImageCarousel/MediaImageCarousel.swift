@@ -6,22 +6,33 @@
 //
 
 import SwiftUI
+import PhysicalMediaKit
 
 struct MediaImageCarousel: View {
     var screenSize: CGSize
     var albumArtworkURL: String?
     var imageKeys: [String]
+    var mediaType: Media.MediaType
     
-    init(size: CGSize, albumArtworkURL: String?, imageKeys: [String]) {
+    init(size: CGSize, albumArtworkURL: String?, imageKeys: [String], mediaType: Media.MediaType) {
         self.screenSize = size
         self.albumArtworkURL = albumArtworkURL
         self.imageKeys = imageKeys
+        self.mediaType = mediaType
     }
     
     var body: some View {
         TabView {
-            if let albumArtworkURL {
-                MediaImageView(url: albumArtworkURL, size: screenSize)
+            if let albumArtworkURL,
+               let imageURL = URL(string: albumArtworkURL) {
+                switch mediaType {
+                case .vinylRecord:
+                    PhysicalMedia.vinylRecord(albumArtURL: imageURL, vinylColor: .init(red: 138/255, green: 169/255, blue: 181/255), vinylOpacity: 0.9)
+                case .compactDisc:
+                    PhysicalMedia.compactDisc(albumArtURL: imageURL)
+                case .compactCassette:
+                    PhysicalMedia.compactCassette(albumArtURL: imageURL, cassetteColor: .black, cassetteOpacity: 1.0)
+                }
             }
             ForEach(imageKeys, id: \.self) { key in
                 MediaImageView(key: key, size: screenSize)

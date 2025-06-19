@@ -165,7 +165,8 @@ struct MediaDetailsEntryView: View {
                 MediaImageCarousel(
                     size: screenSize,
                     albumArtworkURL: newMedia.displaysOfficialArtwork ? newMedia.albumArtworkURL : nil,
-                    imageKeys: newMedia.imageKeys
+                    imageKeys: newMedia.imageKeys,
+                    mediaType: newMedia.type
                 )
             }
         }

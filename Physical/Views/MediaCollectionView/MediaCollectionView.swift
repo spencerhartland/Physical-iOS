@@ -10,22 +10,6 @@ import SwiftData
 import MusicKit
 
 struct MediaCollectionView: View {
-    private let navTitle = "Collection"
-    private let filterAndSortMenuButtonSymbolName = "ellipsis"
-    private let filterMenuTitle = "Filter"
-    private let sortMenuTitle = "Sort"
-    private let appleMusicDisabledAlertTitle = "Apple Music access is disabled!"
-    private let enableInSettingsButtonText = "Enable in Settings"
-    private let dontAskAgainButtonText = "Don't ask again"
-    private let notNowButtonText = "Not now"
-    private let appleMusicDisabledAlertMessage = "Physical uses Apple Music to automatically populate information about new additions to your collection."
-    private let checkmarkSymbolName = "checkmark"
-    private let collectionEmptySymbolName = "music.quarternote.3"
-    private let collectionEmptyTitle = "No Media"
-    private let collectionEmptyDecription = "Add media to build your digital collection."
-    private let collectionEmptyAddMediaButtonSymbolName = "plus"
-    private let collectionEmptyAddMediaButtonTitle = "Add Media"
-    
     @AppStorage(StorageKeys.shouldAskForAppleMusicAuthorization) var shouldAskForAppleMusicAuthorization: Bool = true
     @AppStorage(StorageKeys.preferredCollectionSortOption) var preferredCollectionSortOption: String = CollectionSorting.recentlyAdded.rawValue
     
@@ -49,34 +33,46 @@ struct MediaCollectionView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(UIColor.secondarySystemBackground)
-                    .ignoresSafeArea()
-                
                 if media.isEmpty {
                     collectionIsEmptyView
                 } else {
                     Collection(media, sort: collectionSortOption, filter: collectionFilterOption, search: currentSearch)
                 }
             }
-            .navigationTitle(collectionFilterOption == .allMedia ? navTitle : collectionFilterOption.rawValue)
+            .navigationTitle(collectionFilterOption == .allMedia ? "Collection" : collectionFilterOption.rawValue)
             .toolbarTitleDisplayMode(.large)
             .toolbar {
-                filterAndSortMenu
+                ToolbarItem {
+                    filterAndSortMenu
+                }
+                
+                if #available(iOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
+                ToolbarItem {
+                    NavigationLink {
+                        AddMediaView(.constant(1))
+                    } label: {
+                        Label("Add Media", systemImage: "plus")
+                            .labelStyle(.iconOnly)
+                    }
+                }
             }
-            .alert(appleMusicDisabledAlertTitle, isPresented: $musicAuthorizationDenied) {
-                Button(enableInSettingsButtonText) {
+            .alert("Apple Music access is disabled!", isPresented: $musicAuthorizationDenied) {
+                Button("Enable in Settings") {
                     if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                         openURL(settingsURL)
                     }
                 }
-                Button(dontAskAgainButtonText) {
+                Button("Don't ask again") {
                     shouldAskForAppleMusicAuthorization = false
                 }
-                Button(notNowButtonText, role: .cancel) {
+                Button("Not now", role: .cancel) {
                     return
                 }
             } message: {
-                Text(appleMusicDisabledAlertMessage)
+                Text("Physical uses Apple Music to automatically populate information about new additions to your collection.")
             }
         }
         .searchable(text: $currentSearch)
@@ -93,15 +89,13 @@ struct MediaCollectionView: View {
             filterMenu
                 .tint(.darkGreen)
         } label: {
-            Label("Filter and Sort", systemImage: filterAndSortMenuButtonSymbolName)
+            Label("Filter and Sort", systemImage: "ellipsis")
                 .labelStyle(.iconOnly)
                 .frame(width: 18, height: 18)
         }
         .menuStyle(.button)
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.circle)
         .tint(collectionFilterOption == .allMedia ? nil : Color.lightGreen)
-        .foregroundStyle(collectionFilterOption == .allMedia ? Color.darkGreen : Color.darkGreen)
+        .foregroundStyle(Color.darkGreen)
     }
     
     private var filterMenu: some View {
@@ -115,14 +109,14 @@ struct MediaCollectionView: View {
                             Text(filter.rawValue)
                         } icon: {
                             if collectionFilterOption == filter {
-                                Image(systemName: checkmarkSymbolName)
+                                Image(systemName: "checkmark")
                             }
                         }
                     }
                 }
             }
         } label: {
-            Text(filterMenuTitle)
+            Text("Filter")
         }
     }
     
@@ -136,31 +130,28 @@ struct MediaCollectionView: View {
                         Text(sort.rawValue)
                     } icon: {
                         if collectionSortOption == sort {
-                            Image(systemName: checkmarkSymbolName)
+                            Image(systemName: "checkmark")
                         }
                     }
                 }
             }
         } label: {
-            Text(sortMenuTitle)
+            Text("Sort")
         }
     }
     
     private var collectionIsEmptyView: some View {
         ContentUnavailableView {
-            Label(collectionEmptyTitle, systemImage: collectionEmptySymbolName)
+            Label("No Media", systemImage: "music.quarternote.3")
         } description: {
-            Text(collectionEmptyDecription)
+            Text("Add media to build your digital collection.")
         } actions: {
             Button {
                 selectedTab = 1
             } label: {
-                Label(
-                    collectionEmptyAddMediaButtonTitle,
-                    systemImage: collectionEmptyAddMediaButtonSymbolName
-                )
-                .labelStyle(.titleAndIcon)
-                .padding(4)
+                Label("Add Media", systemImage: "plus")
+                    .labelStyle(.titleAndIcon)
+                    .padding(4)
             }
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
