@@ -1,11 +1,11 @@
+![Physical – MediaDetailView](https://github.com/spencerhartland/Physical-iOS/blob/main/Screenshots/Physical-MediaDetailView.png)
+
 # Physical
 Physical is a digital catalogue of your music on physical media. Build your catalogue by adding the vinyl records, CDs, and cassettes you already own with help from Apple Music to fill in all the details. Plan new additions by adding the music you want and add new finds on the fly by scanning an item's barcode.
 
-Physical also helps you share and discover new music with social features that allow you to browse friends' collections and post your favorite tracks or albums. This is social media designed for music lovers.
-
-![Physical – MediaDetailView](https://github.com/spencerhartland/Physical-iOS/blob/main/Screenshots/Physical-MediaDetailView.png)
-
 ![Physical – Media Entry](https://github.com/spencerhartland/Physical-iOS/blob/main/Screenshots/Physical-Media-Entry.png)
+
+Physical also helps you share and discover new music with social features that allow you to browse friends' collections and post your favorite tracks or albums. This is social media designed for music lovers.
 
 ## Technologies and frameworks
 - SwiftData
