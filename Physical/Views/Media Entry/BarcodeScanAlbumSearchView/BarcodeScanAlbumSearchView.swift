@@ -16,56 +16,44 @@ struct BarcodeScanAlbumSearchView: View {
     private let tooltipSymbolName = "barcode.viewfinder"
     private let footerText = "Barcode scanning works on the one-dimensional barcodes of most vinyl records, CDs, and cassettes. Not all UPCs yield results from Apple Music."
     
-    @Binding var scanningBarcode: Bool
-    @Bindable var newMedia: Media
-    
     @State private var detectedBarcode: String = ""
     @State private var detectedAlbum: Album?
     @State private var searchReturnedNoResults: Bool = false
     @State private var flashlightActive: Bool = false
     @State private var doneScanning: Bool = false
-    
-    init(newMedia: Bindable<Media>, isPresented: Binding<Bool>) {
-        self._newMedia = newMedia
-        self._scanningBarcode = isPresented
-    }
+    @State private var newMedia = Media()
+    @State private var editingMediaDetails: Bool = false
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                VStack {
-                    BarcodeScanningView($detectedBarcode)
-                        .clipShape(Rectangle())
-                        .ignoresSafeArea(edges: .top)
-                        .overlay {
-                            VStack {
-                                Spacer()
-                                barcodeScanningTooltip
-                            }
+        ZStack {
+            VStack {
+                BarcodeScanningView($detectedBarcode)
+                    .clipShape(Rectangle())
+                    .ignoresSafeArea(edges: .top)
+                    .overlay {
+                        VStack {
+                            Spacer()
+                            barcodeScanningTooltip
                         }
-                    VStack(alignment: .center, spacing: 16) {
-                        NavigationLink {
-                            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $scanningBarcode)
-                        } label: {
-                            BarcodeSearchResultView(for: detectedAlbum, completionFlag: $searchReturnedNoResults)
-                        }
-                        Text(footerText)
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                            .multilineTextAlignment(.center)
                     }
-                    .padding()
+                VStack(alignment: .center, spacing: 16) {
+                    Button {
+                        editingMediaDetails = true
+                    } label: {
+                        BarcodeSearchResultView(for: detectedAlbum, completionFlag: $searchReturnedNoResults)
+                    }
+                    Text(footerText)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .multilineTextAlignment(.center)
                 }
+                .padding()
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    flashlightToggle
-                }
-            }
-            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
-            .navigationBarBackButtonHidden()
         }
-        .buttonStyle(.bordered)
+        .navigationDestination(isPresented: $editingMediaDetails) {
+            @Bindable var newMedia = newMedia
+            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
+        }
         .onChange(of: detectedBarcode) { oldValue, newValue in
             if newValue != oldValue {
                 handleDetectedBarcode(newValue)
@@ -73,6 +61,28 @@ struct BarcodeScanAlbumSearchView: View {
         }
         .onChange(of: flashlightActive) { _, newValue in
             setTorchState(on: newValue)
+        }
+        .onChange(of: editingMediaDetails) {
+            if !editingMediaDetails {
+                newMedia = Media()
+                // TODO: Show some confirmation that media was added.
+            }
+        }
+        .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+        .toolbarVisibility(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if #available(iOS 26.0, *) {
+                    flashlightToggle
+                        .tint(flashlightActive ? .darkGreen : nil)
+                } else {
+                    flashlightToggle
+                        .buttonStyle(.borderedProminent)
+                        .buttonBorderShape(.capsule)
+                        .tint(Color(UIColor.systemBackground))
+                        .foregroundStyle(flashlightActive ? Color.darkGreen : .primary)
+                }
+            }
         }
     }
     
@@ -97,11 +107,14 @@ struct BarcodeScanAlbumSearchView: View {
                 flashlightActive.toggle()
             }
         } label: {
-            Image(systemName: flashlightActive ? flashlightOnSymbolName : flashlightOffSymbolName)
+            if flashlightActive {
+                Label("Turn flashlight off", systemImage: flashlightOnSymbolName)
+                    .labelStyle(.iconOnly)
+            } else {
+                Label("Turn flashlight on", systemImage: flashlightOffSymbolName)
+                    .labelStyle(.iconOnly)
+            }
         }
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.capsule)
-        .tint(flashlightActive ? .lightGreen : .primary)
     }
     
     // MARK: - Barcode detection handling

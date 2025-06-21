@@ -42,8 +42,17 @@ struct MediaCollectionView: View {
             .navigationTitle(collectionFilterOption == .allMedia ? "Collection" : collectionFilterOption.rawValue)
             .toolbarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem {
+                ToolbarItem(placement: .topBarLeading) {
                     filterAndSortMenu
+                }
+                
+                ToolbarItem {
+                    NavigationLink {
+                        BarcodeScanAlbumSearchView()
+                    } label: {
+                        Label("Scan barcode", systemImage: "barcode.viewfinder")
+                            .labelStyle(.iconOnly)
+                    }
                 }
                 
                 if #available(iOS 26.0, *) {
@@ -52,9 +61,9 @@ struct MediaCollectionView: View {
                 
                 ToolbarItem {
                     NavigationLink {
-                        AddMediaView(.constant(1))
+                        AddMediaView()
                     } label: {
-                        Label("Add Media", systemImage: "plus")
+                        Label("Add media", systemImage: "plus")
                             .labelStyle(.iconOnly)
                     }
                 }

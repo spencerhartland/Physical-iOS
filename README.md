@@ -3,8 +3,6 @@ Physical is a digital catalogue of your music on physical media. Build your cata
 
 Physical also helps you share and discover new music with social features that allow you to browse friends' collections and post your favorite tracks or albums. This is social media designed for music lovers.
 
-[Learn more](http://spencerhartland.com/physical.html)
-
 ## Technologies and frameworks
 - SwiftData
 - AWS (S3, DynamoDB, API Gateway, Lambda)

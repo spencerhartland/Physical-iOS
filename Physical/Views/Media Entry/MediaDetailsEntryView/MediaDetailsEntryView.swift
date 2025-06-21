@@ -21,8 +21,6 @@ struct MediaDetailsEntryView: View {
     private let takePhotoMenuItemText = "Take Photo"
     private let photoLibarayMenuItemText = "Photo Library"
     private let addImageText = "Add image"
-    private let tracksSectionHeaderText = "Tracks"
-    private let addTrackText = "Track title"
     private let tracklistEditButtonText = "Edit tracklist"
     private let tracklistCancelButtonText = "Cancel"
     private let finishEditingButton = "Done"
@@ -64,21 +62,19 @@ struct MediaDetailsEntryView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color(UIColor.secondarySystemBackground)
-                    .ignoresSafeArea()
-                
-                List {
-                    mediaImagesSection
-                    ownershipPickerSection
-                    physicalMediaDetailsSection
-                    albumDetailsSection
-                    tracksSection
-                    notesSection
-                }
-                .listRowBackground(Color(UIColor.systemBackground))
+        ZStack {
+            Color(UIColor.secondarySystemBackground)
+                .ignoresSafeArea()
+            
+            List {
+                mediaImagesSection
+                ownershipPickerSection
+                physicalMediaDetailsSection
+                albumDetailsSection
+                tracklistSection
+                notesSection
             }
+            .listRowBackground(Color(UIColor.systemBackground))
         }
         .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
         .toolbar(.hidden, for: .tabBar)
@@ -229,56 +225,9 @@ struct MediaDetailsEntryView: View {
         }
     }
     
-    private var tracksSection: some View {
-        Section {
-            if !newMedia.tracks.isEmpty {
-                ForEach(Array(newMedia.tracks.enumerated()), id: \.element) { trackNum, trackTitle in
-                    HStack {
-                        Text("\(trackNum + 1)")
-                            .foregroundStyle(.secondary)
-                            .font(.headline)
-                        Text(trackTitle)
-                            .lineLimit(1)
-                    }
-                }
-                .onDelete(perform: removeTrack)
-                .onMove(perform: moveTrack)
-            }
-            
-            TextField(addTrackText, text: $trackTitleText)
-                .focused($focusInTrackField)
-        } header: {
-            Text(tracksSectionHeaderText)
-        } footer: {
-            HStack {
-                Spacer()
-                tracklistEditButton
-                Spacer()
-            }
-            .padding(.top)
-        }
-    }
-    
-    private var tracklistEditButton: some View {
-        HStack {
-            Spacer()
-            Button {
-                editMode = editMode == .active ? EditMode.inactive : EditMode.active
-            } label: {
-                HStack {
-                    Image(systemName: editMode == .active ? stopEditingSymbol : beginEditingSymbol)
-                    if editMode == .active {
-                        Text(tracklistCancelButtonText)
-                    } else {
-                        Text(tracklistEditButtonText)
-                    }
-                }
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            }
-            .buttonStyle(.bordered)
-            .disabled($newMedia.tracks.isEmpty)
-            Spacer()
+    private var tracklistSection: some View {
+        Tracklist($newMedia.tracks, editMode: $editMode, isEditable: true) {
+            Text("Tracklist")
         }
     }
     
@@ -287,23 +236,6 @@ struct MediaDetailsEntryView: View {
             MediaNotesEntryView(notes: $newMedia.notes)
         } label: {
             ListItemLabel(color: .yellow, symbolName: "note.text", labelText: "Notes")
-        }
-    }
-    
-    // MARK: - Track list editing logic
-    
-    private func removeTrack(at offsets: IndexSet) {
-        newMedia.tracks.remove(atOffsets: offsets)
-        endEditingIfTracklistEmpty()
-    }
-    
-    private func moveTrack(source: IndexSet, destination: Int) {
-        newMedia.tracks.move(fromOffsets: source, toOffset: destination)
-    }
-    
-    private func endEditingIfTracklistEmpty() {
-        if newMedia.tracks.isEmpty && editMode == .active {
-            editMode = .inactive
         }
     }
     

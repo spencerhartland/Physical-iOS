@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -28,6 +28,7 @@
 		00388C292AEA1B6700526910 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00388C282AEA1B6700526910 /* Credentials.swift */; };
 		003BC1DB2A6F455900E16A9F /* HapticsViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003BC1DA2A6F455900E16A9F /* HapticsViewExtension.swift */; };
 		003DB82F2A7B4E2B004192C2 /* ImageRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DB82E2A7B4E2B004192C2 /* ImageRequest.swift */; };
+		0040F1EB2E05CF4E002A1336 /* Tracklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040F1EA2E05CF4E002A1336 /* Tracklist.swift */; };
 		004A97002B58D8B70033BF69 /* PhysicalAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004A96FF2B58D8B70033BF69 /* PhysicalAPI.swift */; };
 		0058BF592A9DD8BF002696A0 /* SocialListPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0058BF582A9DD8BE002696A0 /* SocialListPostView.swift */; };
 		005CDDD22A8F67EF00CE9A1F /* FeaturedMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005CDDD12A8F67EF00CE9A1F /* FeaturedMediaView.swift */; };
@@ -107,6 +108,7 @@
 		00388C282AEA1B6700526910 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		003BC1DA2A6F455900E16A9F /* HapticsViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsViewExtension.swift; sourceTree = "<group>"; };
 		003DB82E2A7B4E2B004192C2 /* ImageRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageRequest.swift; sourceTree = "<group>"; };
+		0040F1EA2E05CF4E002A1336 /* Tracklist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracklist.swift; sourceTree = "<group>"; };
 		004A96FF2B58D8B70033BF69 /* PhysicalAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhysicalAPI.swift; sourceTree = "<group>"; };
 		0058BF582A9DD8BE002696A0 /* SocialListPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialListPostView.swift; sourceTree = "<group>"; };
 		005CDDD12A8F67EF00CE9A1F /* FeaturedMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedMediaView.swift; sourceTree = "<group>"; };
@@ -161,6 +163,10 @@
 		00F810702A66779800D0EAEA /* MediaImageCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaImageCarousel.swift; sourceTree = "<group>"; };
 		00F810852A669DD700D0EAEA /* MediaThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaThumbnail.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		00DB1CE22E0691F40068E76F /* Screenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Screenshots; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		003661F92A56374E009FCEA8 /* Frameworks */ = {
@@ -225,6 +231,7 @@
 			isa = PBXGroup;
 			children = (
 				00A8139E2A7B36AB00596620 /* README.md */,
+				00DB1CE22E0691F40068E76F /* Screenshots */,
 				003661FE2A56374E009FCEA8 /* Physical */,
 				003661FD2A56374E009FCEA8 /* Products */,
 			);
@@ -408,6 +415,7 @@
 				003BC1DA2A6F455900E16A9F /* HapticsViewExtension.swift */,
 				00968EEE2B2E646B00CE0150 /* AlbumArtView.swift */,
 				009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */,
+				0040F1EA2E05CF4E002A1336 /* Tracklist.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -674,6 +682,7 @@
 				009C01402A6A437E0039CEA2 /* MediaNotesEntryView.swift in Sources */,
 				003DB82F2A7B4E2B004192C2 /* ImageRequest.swift in Sources */,
 				0004E69E2A9817F700D671C8 /* CollectionSection.swift in Sources */,
+				0040F1EB2E05CF4E002A1336 /* Tracklist.swift in Sources */,
 				00316A762ABAB4F200F2B83D /* User.swift in Sources */,
 				00388C252AE4E25D00526910 /* AuthenticationError.swift in Sources */,
 				00783FCD2B34338A00E4AE45 /* UserAccountRequest.swift in Sources */,

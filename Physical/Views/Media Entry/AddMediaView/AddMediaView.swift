@@ -13,15 +13,9 @@ struct AddMediaView: View {
     @State private var newMedia = Media()
     @State private var searchResults: MusicItemCollection<Album> = []
     @State private var editingMediaDetails = false
-    @State private var scanningBarcode = false
     @State private var shouldShowMediaAddedNotification = false
     
     @FocusState private var searchFieldFocused: Bool
-    @Binding var rootViewSelectedTab: Int
-    
-    init(_ selectedTab: Binding<Int>) {
-        self._rootViewSelectedTab = selectedTab
-    }
     
     var body: some View {
         NavigationStack {
@@ -68,18 +62,8 @@ struct AddMediaView: View {
                 @Bindable var newMedia = newMedia
                 MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
             }
-            .navigationDestination(isPresented: $scanningBarcode) {
-                @Bindable var newMedia = newMedia
-                BarcodeScanAlbumSearchView(newMedia: $newMedia, isPresented: $scanningBarcode)
-            }
             .onChange(of: editingMediaDetails) {
                 if !editingMediaDetails {
-                    newMedia = Media()
-                    showMediaAddedNotification()
-                }
-            }
-            .onChange(of: scanningBarcode) {
-                if !scanningBarcode {
                     newMedia = Media()
                     showMediaAddedNotification()
                 }
@@ -97,27 +81,12 @@ struct AddMediaView: View {
                     .transition(.push(from: .bottom))
             }
         }
+        .toolbar(.hidden, for: .tabBar)
         .toolbar {
-            ToolbarItem {
-                // Barcode scanning
-                Button {
-                    scanningBarcode = true
-                } label: {
-                    Label("Scan", systemImage: "barcode.viewfinder")
-                        .labelStyle(.iconOnly)
-                }
-            }
-            
-            if !newMedia.title.isEmpty {
-                if #available(iOS 26.0, *) {
-                    ToolbarSpacer(.fixed)
-                }
-                
-                ToolbarItem {
-                    Button("Continue") {
-                        searchFieldFocused = false
-                        editingMediaDetails = true
-                    }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Continue") {
+                    searchFieldFocused = false
+                    editingMediaDetails = true
                 }
             }
         }
@@ -166,10 +135,4 @@ struct AddMediaView: View {
     private func resetSearchResults() {
         self.searchResults = []
     }
-}
-
-#Preview {
-    @Previewable @State var selected = 1
-    
-    AddMediaView($selected)
 }

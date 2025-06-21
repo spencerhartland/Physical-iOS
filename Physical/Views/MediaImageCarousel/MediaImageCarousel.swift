@@ -27,11 +27,11 @@ struct MediaImageCarousel: View {
                let imageURL = URL(string: albumArtworkURL) {
                 switch mediaType {
                 case .vinylRecord:
-                    PhysicalMedia.vinylRecord(albumArtURL: imageURL, vinylColor: .init(red: 138/255, green: 169/255, blue: 181/255), vinylOpacity: 0.9)
+                    PhysicalMedia.vinylRecord(albumArtURL: imageURL, vinylColor: .red, vinylOpacity: 0.9)
                 case .compactDisc:
                     PhysicalMedia.compactDisc(albumArtURL: imageURL)
                 case .compactCassette:
-                    PhysicalMedia.compactCassette(albumArtURL: imageURL, cassetteColor: .black, cassetteOpacity: 1.0)
+                    PhysicalMedia.compactCassette(albumArtURL: imageURL, cassetteColor: .init(red: 129/255, green: 41/255, blue: 163/255), cassetteOpacity: 1.0)
                 }
             }
             ForEach(imageKeys, id: \.self) { key in

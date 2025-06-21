@@ -26,6 +26,9 @@
     "1" : {
 
     },
+    "Add media" : {
+
+    },
     "Add Media" : {
 
     },
@@ -44,6 +47,9 @@
     "Back" : {
 
     },
+    "Cancel" : {
+
+    },
     "Collection" : {
 
     },
@@ -57,6 +63,9 @@
 
     },
     "Edit details" : {
+
+    },
+    "Edit tracklist" : {
 
     },
     "Enable in Settings" : {
@@ -101,7 +110,7 @@
     "Remove from Collection" : {
 
     },
-    "Scan" : {
+    "Scan barcode" : {
 
     },
     "Search for an album on Apple Music or enter the title and continue to manually add details." : {
@@ -123,6 +132,18 @@
 
     },
     "This is a simple post!" : {
+
+    },
+    "Track %lld title" : {
+
+    },
+    "Tracklist" : {
+
+    },
+    "Turn flashlight off" : {
+
+    },
+    "Turn flashlight on" : {
 
     }
   },
