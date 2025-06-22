@@ -16,6 +16,7 @@
 		0004E6AD2A9BE41000D671C8 /* CompactMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004E6AC2A9BE41000D671C8 /* CompactMediaView.swift */; };
 		000E57C32A89657500BA2B1D /* SocialProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000E57C22A89657500BA2B1D /* SocialProfileView.swift */; };
 		00268E222E085ED400F65E0D /* UIColorValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00268E212E085ED400F65E0D /* UIColorValueTransformer.swift */; };
+		00268E272E0869A000F65E0D /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00268E262E08699B00F65E0D /* ColorExtension.swift */; };
 		0027ECD92A5B98E3001090E4 /* MediaDetailsEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0027ECD82A5B98E3001090E4 /* MediaDetailsEntryView.swift */; };
 		0027ECDB2A5B99C2001090E4 /* DataEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0027ECDA2A5B99C2001090E4 /* DataEntry.swift */; };
 		002BDCE22B50C54800AAABDA /* SocialProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002BDCE12B50C54800AAABDA /* SocialProfileSettingsView.swift */; };
@@ -95,6 +96,7 @@
 		0004E6AC2A9BE41000D671C8 /* CompactMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactMediaView.swift; sourceTree = "<group>"; };
 		000E57C22A89657500BA2B1D /* SocialProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialProfileView.swift; sourceTree = "<group>"; };
 		00268E212E085ED400F65E0D /* UIColorValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorValueTransformer.swift; sourceTree = "<group>"; };
+		00268E262E08699B00F65E0D /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		0027ECD82A5B98E3001090E4 /* MediaDetailsEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailsEntryView.swift; sourceTree = "<group>"; };
 		0027ECDA2A5B99C2001090E4 /* DataEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEntry.swift; sourceTree = "<group>"; };
 		002BDCE12B50C54800AAABDA /* SocialProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialProfileSettingsView.swift; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 		007C0FC32A8D360C00AD9C2D /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				00268E262E08699B00F65E0D /* ColorExtension.swift */,
 				006EAB582D4ECD80005036DF /* Gradient.swift */,
 				007C0FC42A8D363600AD9C2D /* SampleCollection.swift */,
 				007C0FC62A8D399A00AD9C2D /* PreviewSampleData.swift */,
@@ -667,6 +670,7 @@
 				002BDCE22B50C54800AAABDA /* SocialProfileSettingsView.swift in Sources */,
 				00EE2D5E2B2C0377006D7DA9 /* BarcodeScanningView.swift in Sources */,
 				00EE2D622B2C20D4006D7DA9 /* BarcodeSearchResultView.swift in Sources */,
+				00268E272E0869A000F65E0D /* ColorExtension.swift in Sources */,
 				009794582D9C8FB700839146 /* testView.swift in Sources */,
 				00DBFDAD2AD9E6BC00ABF8C2 /* StorageKeys.swift in Sources */,
 				007C0FB82A8C1BA700AD9C2D /* VariableBlurImageBackgroundViewModifier.swift in Sources */,

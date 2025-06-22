@@ -101,7 +101,13 @@ struct MediaDetailView: View {
     
     private var albumArtWithDetails: some View {
         VStack {
-            MediaImageCarousel(size: screenSize, albumArtworkURL: media.albumArtworkURL, imageKeys: media.imageKeys, mediaType: media.type)
+            MediaImageCarousel(
+                size: screenSize,
+                albumArtworkURL: media.albumArtworkURL,
+                mediaColor: media.color,
+                imageKeys: media.imageKeys,
+                mediaType: media.type
+            )
             VStack {
                 // Title
                 Text(media.title)

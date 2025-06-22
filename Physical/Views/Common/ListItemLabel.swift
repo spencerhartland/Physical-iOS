@@ -10,24 +10,39 @@ import SwiftUI
 struct ListItemLabel: View {
     let color: Color
     let symbol: Image
-    let labelText: String
+    let labelText: LocalizedStringResource
     let labelFontWeight: Font.Weight
     
-    init(color: Color, symbolName: String, labelText: String, labelFontWeight: Font.Weight = .regular) {
+    init(
+        color: Color,
+        symbolName: String,
+        labelText: LocalizedStringResource,
+        labelFontWeight: Font.Weight = .regular
+    ) {
         self.color = color
         self.symbol = Image(systemName: symbolName)
         self.labelText = labelText
         self.labelFontWeight = labelFontWeight
     }
     
-    init(color: Color, symbol: ImageResource, labelText: String, labelFontWeight: Font.Weight = .regular) {
+    init(
+        color: Color,
+        symbol: ImageResource,
+        labelText: LocalizedStringResource,
+        labelFontWeight: Font.Weight = .regular
+    ) {
         self.color = color
         self.symbol = Image(symbol)
         self.labelText = labelText
         self.labelFontWeight = labelFontWeight
     }
     
-    init(color: Color, symbol: Image, labelText: String, labelFontWeight: Font.Weight = .regular) {
+    init(
+        color: Color,
+        symbol: Image,
+        labelText: LocalizedStringResource,
+        labelFontWeight: Font.Weight = .regular
+    ) {
         self.color = color
         self.symbol = symbol
         self.labelText = labelText

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct OwnershipPicker: View {
-    private let pickerPrompt = "Own it or Want it?"
     private let ownedSymbol = "star.circle.fill"
     private let wantedSymbol = "star.circle"
     private enum OwnershipStatus: String, CaseIterable {
@@ -28,7 +27,7 @@ struct OwnershipPicker: View {
             ListItemLabel(
                 color: .yellow,
                 symbolName: (ownership == .owned) ? ownedSymbol : wantedSymbol,
-                labelText: pickerPrompt
+                labelText: "Own it or Want it?"
             )
         }
         .onChange(of: ownership) { _, value in

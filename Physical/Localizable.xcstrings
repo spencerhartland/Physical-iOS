@@ -26,6 +26,9 @@
     "1" : {
 
     },
+    "Add image" : {
+
+    },
     "Add media" : {
 
     },
@@ -38,10 +41,16 @@
     "Added to Collection" : {
 
     },
+    "Album details" : {
+
+    },
     "Album Title" : {
 
     },
     "Apple Music access is disabled!" : {
+
+    },
+    "Artist" : {
 
     },
     "Back" : {
@@ -59,7 +68,16 @@
     "Cover Photo" : {
 
     },
+    "Details" : {
+
+    },
+    "Display Official Artwork" : {
+
+    },
     "Don't ask again" : {
+
+    },
+    "Done" : {
 
     },
     "Edit details" : {
@@ -80,7 +98,19 @@
     "Filter and Sort" : {
 
     },
+    "Genre" : {
+
+    },
     "Hello, World!" : {
+
+    },
+    "Media color" : {
+
+    },
+    "Media Condition" : {
+
+    },
+    "Media Type" : {
 
     },
     "More" : {
@@ -95,6 +125,15 @@
     "Notes" : {
 
     },
+    "Own it or Want it?" : {
+
+    },
+    "Photo Library" : {
+
+    },
+    "Physical media" : {
+
+    },
     "Physical uses Apple Music to automatically populate information about new additions to your collection." : {
 
     },
@@ -102,6 +141,9 @@
 
     },
     "Profile Photo" : {
+
+    },
+    "Release Date" : {
 
     },
     "Released" : {
@@ -128,10 +170,16 @@
     "Sort" : {
 
     },
+    "Take Photo" : {
+
+    },
     "This is a list post!" : {
 
     },
     "This is a simple post!" : {
+
+    },
+    "Title" : {
 
     },
     "Track %lld title" : {

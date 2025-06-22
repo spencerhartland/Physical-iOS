@@ -9,35 +9,6 @@ import SwiftUI
 import PhotosUI
 
 struct MediaDetailsEntryView: View {
-    // String constants
-    private let navTitle = "Details"
-    private let albumDetailsSectionHeaderText = "Album details"
-    private let mediaInfoSectionHeaderText = "Physical media"
-    private let albumTitleText = "Title"
-    private let albumArtistText = "Artist"
-    private let albumReleaseDateText = "Release Date"
-    private let mediaTypeText = "Media Type"
-    private let mediaConditionText = "Media Condition"
-    private let takePhotoMenuItemText = "Take Photo"
-    private let photoLibarayMenuItemText = "Photo Library"
-    private let addImageText = "Add image"
-    private let tracklistEditButtonText = "Edit tracklist"
-    private let tracklistCancelButtonText = "Cancel"
-    private let finishEditingButton = "Done"
-    private let officialAlbumArtText = "Display Official Artwork"
-    
-    // SF Symbol names
-    private let takePhotoMenuItemSymbol = "camera"
-    private let photoLibarayMenuItemSymbol = "photo.on.rectangle"
-    private let addImageSymbol = "plus.circle"
-    private let mediaConditionSymbol = "sparkles"
-    private let albumReleaseDateSymbol = "calendar"
-    private let compactDiscSymbol = "opticaldisc.fill"
-    private let addTrackSymbol = "plus.circle.fill"
-    private let beginEditingSymbol = "pencil"
-    private let stopEditingSymbol = "pencil.slash"
-    private let officialAlbumArtSymbol = "checkmark.seal.fill"
-    
     // Model context
     @Environment(\.modelContext) private var modelContext
     @Environment(\.screenSize) private var screenSize
@@ -55,10 +26,12 @@ struct MediaDetailsEntryView: View {
     @State private var mediaTypeSymbol = Image(.vinylRecord)
     @State private var newImage: UIImage? = nil
     @State private var trackTitleText: String = ""
+    @State private var mediaColor: Color
     
     init(newMedia: Bindable<Media>, isPresented: Binding<Bool>) {
         self._newMedia = newMedia
         self._editingMediaDetails = isPresented
+        self.mediaColor = Color(newMedia.color.wrappedValue)
     }
     
     var body: some View {
@@ -68,25 +41,25 @@ struct MediaDetailsEntryView: View {
             
             List {
                 mediaImagesSection
-                ownershipPickerSection
                 physicalMediaDetailsSection
+                ownershipPickerSection
                 albumDetailsSection
                 tracklistSection
                 notesSection
             }
             .listRowBackground(Color(UIColor.systemBackground))
         }
-        .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
+        .navigationTitle("Details")
         .toolbar(.hidden, for: .tabBar)
-        .navigationTitle(navTitle)
         .environment(\.editMode, $editMode)
+        .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
         .onChange(of: newMedia.type) { _, newValue in
             // Change icon based upon the chosen physical media type
             switch newValue {
             case .vinylRecord:
                 mediaTypeSymbol = Image(.vinylRecord)
             case .compactDisc:
-                mediaTypeSymbol = Image(systemName: compactDiscSymbol)
+                mediaTypeSymbol = Image(systemName: "opticaldisc.fill")
             case .compactCassette:
                 mediaTypeSymbol = Image(.compactCassette)
             }
@@ -114,7 +87,7 @@ struct MediaDetailsEntryView: View {
             }
         }
         .toolbar {
-            Button(finishEditingButton) {
+            Button("Done") {
                 uploadCachedImages()
                 modelContext.insert(newMedia)
                 editingMediaDetails = false
@@ -128,8 +101,8 @@ struct MediaDetailsEntryView: View {
             Toggle(isOn: $newMedia.displaysOfficialArtwork) {
                 ListItemLabel(
                     color: .blue,
-                    symbolName: officialAlbumArtSymbol,
-                    labelText: officialAlbumArtText
+                    symbolName: "checkmark.seal.fill",
+                    labelText: "Display Official Artwork"
                 )
             }
             
@@ -139,20 +112,20 @@ struct MediaDetailsEntryView: View {
                 Button {
                     presentCamera = true
                 } label: {
-                    Label(takePhotoMenuItemText, systemImage: takePhotoMenuItemSymbol)
+                    Label("Take Photo", systemImage: "camera")
                 }
                 
                 // Photo Library
                 Button {
                     presentPhotosPicker = true
                 } label: {
-                    Label(photoLibarayMenuItemText, systemImage: photoLibarayMenuItemSymbol)
+                    Label("Photo Library", systemImage: "photo.on.rectangle")
                 }
             } label: {
                 ListItemLabel(
                     color: .green,
-                    symbolName: addImageSymbol,
-                    labelText: addImageText,
+                    symbolName: "plus.circle",
+                    labelText: "Add image",
                     labelFontWeight: .semibold
                 )
             }
@@ -161,6 +134,7 @@ struct MediaDetailsEntryView: View {
                 MediaImageCarousel(
                     size: screenSize,
                     albumArtworkURL: newMedia.displaysOfficialArtwork ? newMedia.albumArtworkURL : nil,
+                    mediaColor: newMedia.color,
                     imageKeys: newMedia.imageKeys,
                     mediaType: newMedia.type
                 )
@@ -182,18 +156,29 @@ struct MediaDetailsEntryView: View {
                     Text($0.rawValue)
                 }
             } label: {
-                ListItemLabel(color: .indigo, symbol: mediaTypeSymbol, labelText: mediaTypeText)
+                ListItemLabel(color: .indigo, symbol: mediaTypeSymbol, labelText: "Media Type")
             }
+            
             // Condition
             Picker(selection: $newMedia.condition) {
                 ForEach(Media.MediaCondition.allCases) {
                     Text($0.rawValue)
                 }
             } label: {
-                ListItemLabel(color: .purple, symbolName: mediaConditionSymbol, labelText: mediaConditionText)
+                ListItemLabel(color: .purple, symbolName: "sparkles", labelText: "Media Condition")
+            }
+            
+            //Color
+            if newMedia.type != .compactDisc {
+                ColorPicker(selection: $mediaColor, supportsOpacity: true) {
+                    ListItemLabel(color: .pink, symbolName: "paintpalette.fill", labelText: "Media color")
+                }
+                .onChange(of: mediaColor) { _, newColor in
+                    newMedia.color = UIColor(newColor)
+                }
             }
         } header: {
-            Text(mediaInfoSectionHeaderText)
+            Text("Physical media")
         }
     }
     
@@ -214,14 +199,14 @@ struct MediaDetailsEntryView: View {
             }
             // Release date
             DatePicker(selection: $newMedia.releaseDate, displayedComponents: [.date]) {
-                ListItemLabel(color: .red, symbolName: albumReleaseDateSymbol, labelText: albumReleaseDateText)
+                ListItemLabel(color: .red, symbolName: "calendar", labelText: "Release Date")
             }
             // Title
-            TextField(albumTitleText, text: $newMedia.title)
+            TextField("Title", text: $newMedia.title)
             // Artist
-            TextField(albumArtistText, text: $newMedia.artist)
+            TextField("Artist", text: $newMedia.artist)
         } header: {
-            Text(albumDetailsSectionHeaderText)
+            Text("Album details")
         }
     }
     

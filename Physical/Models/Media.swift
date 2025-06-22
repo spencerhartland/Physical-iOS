@@ -41,7 +41,7 @@ final class Media {
     var albumArtworkURL: String
     /// A collection of keys associated with user-generated images.
     var imageKeys: [String]
-    @Attribute(.transformable(by: UIColorValueTransformer.self)) var color: UIColor
+    @Attribute(.transformable(by: UIColorValueTransformer.self)) var color: UIColor = UIColor.black
     var notes: String
     var genre: String
     var isFavorite: Bool
@@ -58,7 +58,6 @@ final class Media {
         self.displaysOfficialArtwork = true
         self.albumArtworkURL = ""
         self.imageKeys = []
-        self.color = UIColor.black
         self.notes = ""
         self.genre = ""
         self.isFavorite = false
