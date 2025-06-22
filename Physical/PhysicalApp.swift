@@ -10,6 +10,14 @@ import SwiftData
 
 @main
 struct PhysicalApp: App {
+    
+    init() {
+        ValueTransformer.setValueTransformer(
+            UIColorValueTransformer(),
+            forName: NSValueTransformerName("UIColorValueTransformer")
+        )
+    }
+    
     var body: some Scene {
         WindowGroup {
             RootView()

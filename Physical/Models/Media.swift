@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 import MusicKit
+import UIKit
 
 @Model
 final class Media {
@@ -40,6 +41,7 @@ final class Media {
     var albumArtworkURL: String
     /// A collection of keys associated with user-generated images.
     var imageKeys: [String]
+    @Attribute(.transformable(by: UIColorValueTransformer.self)) var color: UIColor
     var notes: String
     var genre: String
     var isFavorite: Bool
@@ -56,13 +58,25 @@ final class Media {
         self.displaysOfficialArtwork = true
         self.albumArtworkURL = ""
         self.imageKeys = []
+        self.color = UIColor.black
         self.notes = ""
         self.genre = ""
         self.isFavorite = false
         self.isOwned = true
     }
     
-    init(artworkURLString: String, title: String, artist: String, type: Media.MediaType, tracks: [String], genre: String, releaseDate: Date, isFavorite: Bool, isOwned: Bool) {
+    init(
+        artworkURLString: String,
+        color: UIColor = .black,
+        title: String,
+        artist: String,
+        type: Media.MediaType,
+        tracks: [String],
+        genre: String,
+        releaseDate: Date,
+        isFavorite: Bool,
+        isOwned: Bool
+    ) {
         self.rawType = type.rawValue
         self.rawCondition = MediaCondition.nearMint.rawValue
         self.dateAdded = .now
@@ -71,6 +85,7 @@ final class Media {
         self.notes = ""
         
         self.albumArtworkURL = artworkURLString
+        self.color = color
         self.title = title
         self.artist = artist
         self.tracks = tracks

@@ -15,6 +15,7 @@
 		0004E6A72A99EF0E00D671C8 /* SocialSimplePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004E6A62A99EF0E00D671C8 /* SocialSimplePostView.swift */; };
 		0004E6AD2A9BE41000D671C8 /* CompactMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0004E6AC2A9BE41000D671C8 /* CompactMediaView.swift */; };
 		000E57C32A89657500BA2B1D /* SocialProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000E57C22A89657500BA2B1D /* SocialProfileView.swift */; };
+		00268E222E085ED400F65E0D /* UIColorValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00268E212E085ED400F65E0D /* UIColorValueTransformer.swift */; };
 		0027ECD92A5B98E3001090E4 /* MediaDetailsEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0027ECD82A5B98E3001090E4 /* MediaDetailsEntryView.swift */; };
 		0027ECDB2A5B99C2001090E4 /* DataEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0027ECDA2A5B99C2001090E4 /* DataEntry.swift */; };
 		002BDCE22B50C54800AAABDA /* SocialProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002BDCE12B50C54800AAABDA /* SocialProfileSettingsView.swift */; };
@@ -93,6 +94,7 @@
 		0004E6A62A99EF0E00D671C8 /* SocialSimplePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialSimplePostView.swift; sourceTree = "<group>"; };
 		0004E6AC2A9BE41000D671C8 /* CompactMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactMediaView.swift; sourceTree = "<group>"; };
 		000E57C22A89657500BA2B1D /* SocialProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialProfileView.swift; sourceTree = "<group>"; };
+		00268E212E085ED400F65E0D /* UIColorValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorValueTransformer.swift; sourceTree = "<group>"; };
 		0027ECD82A5B98E3001090E4 /* MediaDetailsEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailsEntryView.swift; sourceTree = "<group>"; };
 		0027ECDA2A5B99C2001090E4 /* DataEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEntry.swift; sourceTree = "<group>"; };
 		002BDCE12B50C54800AAABDA /* SocialProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialProfileSettingsView.swift; sourceTree = "<group>"; };
@@ -363,6 +365,7 @@
 				007C0FC62A8D399A00AD9C2D /* PreviewSampleData.swift */,
 				0004E69F2A981F8700D671C8 /* ScreenSize.swift */,
 				00DBFDAC2AD9E6BC00ABF8C2 /* StorageKeys.swift */,
+				00268E212E085ED400F65E0D /* UIColorValueTransformer.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -671,6 +674,7 @@
 				00C57DB72A6C88A7000DDBD3 /* Collection.swift in Sources */,
 				003662002A56374E009FCEA8 /* PhysicalApp.swift in Sources */,
 				00A8139A2A7B1BA300596620 /* ImageCache.swift in Sources */,
+				00268E222E085ED400F65E0D /* UIColorValueTransformer.swift in Sources */,
 				005F4AF02A9C6784004E8E39 /* SocialPostBottomBar.swift in Sources */,
 				007C0FC72A8D399A00AD9C2D /* PreviewSampleData.swift in Sources */,
 				00EE2D662B2C3F1D006D7DA9 /* BarcodeScanAlbumSearchView.swift in Sources */,
