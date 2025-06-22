@@ -155,8 +155,8 @@ struct MediaCollectionView: View {
         } description: {
             Text("Add media to build your digital collection.")
         } actions: {
-            Button {
-                selectedTab = 1
+            NavigationLink {
+                AddMediaView()
             } label: {
                 Label("Add Media", systemImage: "plus")
                     .labelStyle(.titleAndIcon)
