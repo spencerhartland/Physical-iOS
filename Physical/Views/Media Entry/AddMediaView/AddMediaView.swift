@@ -18,60 +18,58 @@ struct AddMediaView: View {
     @FocusState private var searchFieldFocused: Bool
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color(UIColor.secondarySystemBackground)
-                    .ignoresSafeArea()
+        ZStack {
+            Color(UIColor.secondarySystemBackground)
+                .ignoresSafeArea()
+            
+            List {
+                Section {
+                    TextField("Album Title", text: $newMedia.title)
+                        .focused($searchFieldFocused)
+                        .listRowBackground(Color(UIColor.tertiarySystemFill))
+                } footer: {
+                    if searchResults.isEmpty {
+                        Text("Search for an album on Apple Music or enter the title and continue to manually add details.")
+                    }
+                }
                 
-                List {
+                if !searchResults.isEmpty {
                     Section {
-                        TextField("Album Title", text: $newMedia.title)
-                            .focused($searchFieldFocused)
-                            .listRowBackground(Color(UIColor.tertiarySystemFill))
-                    } footer: {
-                        if searchResults.isEmpty {
-                            Text("Search for an album on Apple Music or enter the title and continue to manually add details.")
-                        }
-                    }
-                    
-                    if !searchResults.isEmpty {
-                        Section {
-                            ForEach(searchResults) { album in
-                                Button {
-                                    newMedia.updateWithInfo(from: album)
-                                    searchFieldFocused = false
-                                    editingMediaDetails = true
-                                } label: {
-                                    SearchResultListItem(for: album)
-                                }
-                                .listRowBackground(Color(UIColor.systemBackground))
+                        ForEach(searchResults) { album in
+                            Button {
+                                newMedia.updateWithInfo(from: album)
+                                searchFieldFocused = false
+                                editingMediaDetails = true
+                            } label: {
+                                SearchResultListItem(for: album)
                             }
-                        } header: {
-                            Label("Search Results", systemImage: "magnifyingglass")
-                                .labelStyle(.titleAndIcon)
-                                .textCase(nil)
-                                .font(.subheadline)
-                                .fontWeight(.medium)
+                            .listRowBackground(Color(UIColor.systemBackground))
                         }
+                    } header: {
+                        Label("Search Results", systemImage: "magnifyingglass")
+                            .labelStyle(.titleAndIcon)
+                            .textCase(nil)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
                     }
                 }
-                .scrollContentBackground(.hidden)
             }
-            .navigationTitle("Add Media")
-            .navigationDestination(isPresented: $editingMediaDetails) {
-                @Bindable var newMedia = newMedia
-                MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
+            .scrollContentBackground(.hidden)
+        }
+        .navigationTitle("Add Media")
+        .navigationDestination(isPresented: $editingMediaDetails) {
+            @Bindable var newMedia = newMedia
+            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
+        }
+        .onChange(of: editingMediaDetails) {
+            if !editingMediaDetails {
+                newMedia = Media()
+                showMediaAddedNotification()
             }
-            .onChange(of: editingMediaDetails) {
-                if !editingMediaDetails {
-                    newMedia = Media()
-                    showMediaAddedNotification()
-                }
-            }
-            .onChange(of: newMedia.title) {
-                if MusicAuthorization.currentStatus == .authorized {
-                    self.requestSearchResults(newMedia.title)
-                }
+        }
+        .onChange(of: newMedia.title) {
+            if MusicAuthorization.currentStatus == .authorized {
+                self.requestSearchResults(newMedia.title)
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -88,6 +86,7 @@ struct AddMediaView: View {
                     searchFieldFocused = false
                     editingMediaDetails = true
                 }
+                .disabled(newMedia.title.isEmpty)
             }
         }
     }
