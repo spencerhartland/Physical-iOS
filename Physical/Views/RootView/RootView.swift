@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RootView: View {
     @AppStorage(StorageKeys.userID) private var userID: String = ""
@@ -18,6 +19,9 @@ struct RootView: View {
         return window.screen.bounds.size
     }()
     @State private var selectedTab: Int = 0
+    @State private var shouldShowMediaAddedToast: Bool = false
+    
+    @Query private var media: [Media]
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -52,6 +56,39 @@ struct RootView: View {
                 signInSheetPresented = false
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            if shouldShowMediaAddedToast { mediaAddedToast }
+        }
+        .onChange(of: media) { oldValue, newValue in
+            if oldValue.count < newValue.count {
+                withAnimation { shouldShowMediaAddedToast = true }
+            }
+        }
+    }
+    
+    private var mediaAddedToast: some View {
+        Label("Added to Collection", systemImage: "checkmark.circle.fill")
+            .fontWeight(.medium)
+            .padding(.vertical, 16)
+            .padding(.horizontal, 32)
+            .background {
+                if #available(iOS 26.0, *) {
+                    Capsule()
+                        .fill(Color.clear)
+                        .glassEffect()
+                } else {
+                    Capsule()
+                        .fill(Color(UIColor.systemFill))
+                        .shadow(radius: 8.0)
+                }
+            }
+            .padding(.bottom, 72)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                    withAnimation { shouldShowMediaAddedToast = false }
+                }
+            }
+            .transition(.scale.combined(with: .opacity))
     }
 }
 

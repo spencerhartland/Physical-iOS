@@ -13,7 +13,6 @@ struct AddMediaView: View {
     @State private var newMedia = Media()
     @State private var searchResults: MusicItemCollection<Album> = []
     @State private var editingMediaDetails = false
-    @State private var shouldShowMediaAddedNotification = false
     
     @FocusState private var searchFieldFocused: Bool
     
@@ -62,21 +61,11 @@ struct AddMediaView: View {
             MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
         }
         .onChange(of: editingMediaDetails) {
-            if !editingMediaDetails {
-                newMedia = Media()
-                showMediaAddedNotification()
-            }
+            if !editingMediaDetails { newMedia = Media() }
         }
         .onChange(of: newMedia.title) {
             if MusicAuthorization.currentStatus == .authorized {
                 self.requestSearchResults(newMedia.title)
-            }
-        }
-        .safeAreaInset(edge: .bottom) {
-            if shouldShowMediaAddedNotification {
-                MediaAddedNotificationView()
-                    .padding(.bottom, 48)
-                    .transition(.push(from: .bottom))
             }
         }
         .toolbar(.hidden, for: .tabBar)
@@ -87,19 +76,6 @@ struct AddMediaView: View {
                     editingMediaDetails = true
                 }
                 .disabled(newMedia.title.isEmpty)
-            }
-        }
-    }
-    
-    private func showMediaAddedNotification() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation {
-                shouldShowMediaAddedNotification = true
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6.5) {
-            withAnimation {
-                shouldShowMediaAddedNotification = false
             }
         }
     }
