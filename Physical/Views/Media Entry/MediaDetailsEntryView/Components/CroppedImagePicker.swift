@@ -53,14 +53,9 @@ fileprivate struct CroppedImagePicker<Content: View>: View {
                 ImagePicker(image: $rawImage)
                     .ignoresSafeArea()
             }
-            .onChange(of: photosItem) { _, newValue in
-                if let newValue {
-                    Task {
-                        if let imageData = try? await newValue.loadTransferable(type: Data.self),
-                           let image = UIImage(data: imageData) {
-                            self.update(rawImage: image)
-                        }
-                    }
+            .onChange(of: photosItem) { _, item in
+                if let item {
+                    loadImageData(from: item, to: $rawImage)
                 }
             }
             .onChange(of: rawImage) { _, _ in
@@ -76,12 +71,19 @@ fileprivate struct CroppedImagePicker<Content: View>: View {
             }
     }
     
-    @MainActor
-    private func update(rawImage: UIImage) {
-        self.rawImage = rawImage
+    private func loadImageData(from photosItem: PhotosPickerItem, to binding: Binding<UIImage?>) {
+        Task {
+            if let imageData = try? await photosItem.loadTransferable(type: Data.self),
+               let image = UIImage(data: imageData) {
+                await MainActor.run {
+                    binding.wrappedValue = image
+                }
+            }
+        }
     }
 }
 
+// TODO: Make this look better
 fileprivate struct CropView: View {
     private let coordinateSpace = "CropView"
     private let navTitle = "Crop Image"
@@ -153,19 +155,15 @@ fileprivate struct CropView: View {
                                             withAnimation(.easeInOut(duration: 0.2)) {
                                                 if rect.minX > 0 {
                                                     offset.width = offset.width - rect.minX
-                                                    impactFeedback(.medium)
                                                 }
                                                 if rect.minY > 0 {
                                                     offset.height = offset.height - rect.minY
-                                                    impactFeedback(.medium)
                                                 }
                                                 if rect.maxX < size.width {
                                                     offset.width = rect.minX - offset.width
-                                                    impactFeedback(.medium)
                                                 }
                                                 if rect.maxY < size.height {
                                                     offset.height = rect.minY - offset.height
-                                                    impactFeedback(.medium)
                                                 }
                                             }
                                             lastOffset = offset

@@ -51,18 +51,21 @@ struct RootView: View {
         }
         .environment(\.screenSize, screenSize)
         .onAppear {
-            // If there is a user ID in UserDefaults, do not ask to sign in.
             if !userID.isEmpty {
                 signInSheetPresented = false
             }
         }
-        .safeAreaInset(edge: .bottom) {
-            if shouldShowMediaAddedToast { mediaAddedToast }
-        }
+        // Modifiers for "Added to Collection" notification
         .onChange(of: media) { oldValue, newValue in
             if oldValue.count < newValue.count {
                 withAnimation { shouldShowMediaAddedToast = true }
             }
+        }
+        .overlay(alignment: .center) {
+            if shouldShowMediaAddedToast { mediaAddedToast }
+        }
+        .sensoryFeedback(trigger: shouldShowMediaAddedToast) {
+            shouldShowMediaAddedToast ? .success : nil
         }
     }
     

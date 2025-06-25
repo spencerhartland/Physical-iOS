@@ -28,7 +28,6 @@
 		00388C252AE4E25D00526910 /* AuthenticationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00388C242AE4E25D00526910 /* AuthenticationError.swift */; };
 		00388C272AE84DA300526910 /* KeychainError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00388C262AE84DA300526910 /* KeychainError.swift */; };
 		00388C292AEA1B6700526910 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00388C282AEA1B6700526910 /* Credentials.swift */; };
-		003BC1DB2A6F455900E16A9F /* HapticsViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003BC1DA2A6F455900E16A9F /* HapticsViewExtension.swift */; };
 		003DB82F2A7B4E2B004192C2 /* ImageRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DB82E2A7B4E2B004192C2 /* ImageRequest.swift */; };
 		0040F1EB2E05CF4E002A1336 /* Tracklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040F1EA2E05CF4E002A1336 /* Tracklist.swift */; };
 		004A97002B58D8B70033BF69 /* PhysicalAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004A96FF2B58D8B70033BF69 /* PhysicalAPI.swift */; };
@@ -109,7 +108,6 @@
 		00388C242AE4E25D00526910 /* AuthenticationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationError.swift; sourceTree = "<group>"; };
 		00388C262AE84DA300526910 /* KeychainError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainError.swift; sourceTree = "<group>"; };
 		00388C282AEA1B6700526910 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
-		003BC1DA2A6F455900E16A9F /* HapticsViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsViewExtension.swift; sourceTree = "<group>"; };
 		003DB82E2A7B4E2B004192C2 /* ImageRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageRequest.swift; sourceTree = "<group>"; };
 		0040F1EA2E05CF4E002A1336 /* Tracklist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracklist.swift; sourceTree = "<group>"; };
 		004A96FF2B58D8B70033BF69 /* PhysicalAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhysicalAPI.swift; sourceTree = "<group>"; };
@@ -416,7 +414,6 @@
 				0027ECDA2A5B99C2001090E4 /* DataEntry.swift */,
 				00F810852A669DD700D0EAEA /* MediaThumbnail.swift */,
 				009794572D9C8FB700839146 /* testView.swift */,
-				003BC1DA2A6F455900E16A9F /* HapticsViewExtension.swift */,
 				00968EEE2B2E646B00CE0150 /* AlbumArtView.swift */,
 				009A57CA2A609BB6000EF6F8 /* ListItemLabel.swift */,
 				0040F1EA2E05CF4E002A1336 /* Tracklist.swift */,
@@ -637,7 +634,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				003BC1DB2A6F455900E16A9F /* HapticsViewExtension.swift in Sources */,
 				009A57C92A609346000EF6F8 /* AddMediaView.swift in Sources */,
 				0069F29E2AE0BAE30084147E /* AuthenticationManager.swift in Sources */,
 				00F810862A669DD700D0EAEA /* MediaThumbnail.swift in Sources */,
@@ -851,10 +847,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Physical/Frameworks",
-				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Physical/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Physical;
@@ -896,10 +888,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Physical/Frameworks",
-				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Physical/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Physical;
