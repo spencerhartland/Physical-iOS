@@ -12,8 +12,6 @@ import AVFoundation
 struct BarcodeScanAlbumSearchView: View {
     private let flashlightOnSymbolName = "flashlight.on.fill"
     private let flashlightOffSymbolName = "flashlight.off.fill"
-    private let tooltipText = "Scan the barcode"
-    private let tooltipSymbolName = "barcode.viewfinder"
     private let footerText = "Barcode scanning works on the one-dimensional barcodes of most vinyl records, CDs, and cassettes. Not all UPCs yield results from Apple Music."
     
     @State private var detectedBarcode: String = ""
@@ -25,77 +23,68 @@ struct BarcodeScanAlbumSearchView: View {
     @State private var editingMediaDetails: Bool = false
     
     var body: some View {
-        ZStack {
-            VStack {
-                BarcodeScanningView($detectedBarcode)
-                    .clipShape(Rectangle())
-                    .ignoresSafeArea(edges: .top)
-                    .overlay {
-                        VStack {
-                            Spacer()
-                            barcodeScanningTooltip
-                        }
-                    }
-                VStack(alignment: .center, spacing: 16) {
+        BarcodeScanningView($detectedBarcode)
+            .ignoresSafeArea(edges: .top)
+            .overlay(alignment: .bottom) {
+                if !detectedBarcode.isEmpty {
                     Button {
                         editingMediaDetails = true
                     } label: {
                         BarcodeSearchResultView(for: detectedAlbum, completionFlag: $searchReturnedNoResults)
                     }
-                    Text(footerText)
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                        .multilineTextAlignment(.center)
-                }
-                .padding()
-            }
-        }
-        .navigationDestination(isPresented: $editingMediaDetails) {
-            @Bindable var newMedia = newMedia
-            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
-        }
-        .onChange(of: detectedBarcode) { oldValue, newValue in
-            if newValue != oldValue {
-                handleDetectedBarcode(newValue)
-            }
-        }
-        .onChange(of: flashlightActive) { _, newValue in
-            setTorchState(on: newValue)
-        }
-        .onChange(of: editingMediaDetails) {
-            if !editingMediaDetails {
-                newMedia = Media()
-                // TODO: Show some confirmation that media was added.
-            }
-        }
-        .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
-        .toolbarVisibility(.hidden, for: .tabBar)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                if #available(iOS 26.0, *) {
-                    flashlightToggle
-                        .tint(flashlightActive ? .darkGreen : nil)
+                    .transition(.opacity)
+                    .padding()
                 } else {
-                    flashlightToggle
-                        .buttonStyle(.borderedProminent)
-                        .buttonBorderShape(.capsule)
-                        .tint(Color(UIColor.systemBackground))
-                        .foregroundStyle(flashlightActive ? Color.darkGreen : .primary)
+                    barcodeScanningTooltip
                 }
             }
-        }
+            .navigationDestination(isPresented: $editingMediaDetails) {
+                @Bindable var newMedia = newMedia
+                MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
+            }
+            .onChange(of: detectedBarcode) { oldValue, newValue in
+                if newValue != oldValue {
+                    handleDetectedBarcode(newValue)
+                }
+            }
+            .onChange(of: flashlightActive) { _, newValue in
+                setTorchState(on: newValue)
+            }
+            .onChange(of: editingMediaDetails) {
+                if !editingMediaDetails {
+                    newMedia = Media()
+                    // TODO: Show some confirmation that media was added.
+                }
+            }
+            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+            .toolbarVisibility(.hidden, for: .tabBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    if #available(iOS 26.0, *) {
+                        flashlightToggle
+                            .tint(flashlightActive ? .darkGreen : nil)
+                    } else {
+                        flashlightToggle
+                            .buttonStyle(.borderedProminent)
+                            .buttonBorderShape(.capsule)
+                            .tint(Color(UIColor.systemBackground))
+                            .foregroundStyle(flashlightActive ? Color.darkGreen : .primary)
+                    }
+                }
+            }
     }
     
     // MARK: - UI Elements
     
     // Tooltip centered below the top bar calling users to action.
     private var barcodeScanningTooltip: some View {
-        Label(tooltipText, systemImage: tooltipSymbolName)
+        Label("Scan a barcode", systemImage: "barcode.viewfinder")
             .font(.caption)
-            .padding(4)
+            .padding(.vertical, 4)
+            .padding(.horizontal, 8)
             .background {
-                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                    .foregroundStyle(.thinMaterial)
+                Capsule()
+                    .fill(.thinMaterial)
             }
             .padding(16)
     }

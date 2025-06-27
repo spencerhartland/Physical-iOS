@@ -32,7 +32,7 @@ struct MediaCollectionView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            Group {
                 if media.isEmpty {
                     collectionIsEmptyView
                 } else {
@@ -83,11 +83,11 @@ struct MediaCollectionView: View {
             } message: {
                 Text("Physical uses Apple Music to automatically populate information about new additions to your collection.")
             }
-        }
-        .searchable(text: $currentSearch)
-        .onAppear { rememberSortOption() }
-        .onChange(of: collectionSortOption) { oldValue, newValue in
-            memorizeSortOptionIfChanged(oldValue, newValue)
+            .searchable(text: $currentSearch)
+            .onAppear { rememberSortOption() }
+            .onChange(of: collectionSortOption) { oldValue, newValue in
+                memorizeSortOptionIfChanged(oldValue, newValue)
+            }
         }
     }
     

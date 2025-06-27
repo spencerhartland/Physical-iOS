@@ -9,12 +9,6 @@ import SwiftUI
 import MusicKit
 
 struct BarcodeSearchResultView: View {
-    private let albumTitlePlaceholderValue = "Placeholder album title"
-    private let albumArtistPlaceholderValue = "Placeholder album artist"
-    private let interactionSymbolName = "chevron.forward"
-    private let noResultsTitleText = "No results"
-    private let noResultsDescriptionText = "Tap to add this media manually"
-    
     @Environment(\.screenSize) private var screenSize
     
     let album: Album?
@@ -27,26 +21,34 @@ struct BarcodeSearchResultView: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            AlbumArtView(album?.artwork ?? nil, size: screenSize.width / 6)
+            AlbumArtView(album?.artwork ?? nil, size: screenSize.width / 8, cornerRadius: 10)
             VStack(alignment: .leading) {
-                Text(searchReturnedNoResults ? noResultsTitleText : album?.title ?? albumTitlePlaceholderValue)
+                Text(searchReturnedNoResults ? "No results" : album?.title ?? "Album title")
                     .lineLimit(1)
                     .font(.headline)
                     .foregroundStyle(.primary)
-                Text(searchReturnedNoResults ? noResultsDescriptionText : album?.artistName ?? albumArtistPlaceholderValue)
+                Text(searchReturnedNoResults ? "Tap to add this media manually" : album?.artistName ?? "Album artist")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
             .redacted(reason: (album == nil && !searchReturnedNoResults) ? .placeholder : [])
             Spacer()
-            Image(systemName: interactionSymbolName)
+            Image(systemName: "chevron.forward")
                 .foregroundStyle(.tertiary)
                 .padding(8)
         }
-        .padding(8)
+        .padding(.vertical, 16)
+        .padding(.leading, 32)
+        .padding(.trailing, 16)
         .background {
-            RoundedRectangle(cornerRadius: 16.0)
-                .foregroundStyle(Color(UIColor.secondarySystemBackground))
+            if #available(iOS 26.0, *) {
+                Capsule()
+                    .fill(Color.clear)
+                    .glassEffect()
+            } else {
+                Capsule()
+                    .fill(.regularMaterial)
+            }
         }
     }
 }

@@ -58,10 +58,10 @@ struct RootView: View {
         // Modifiers for "Added to Collection" notification
         .onChange(of: media) { oldValue, newValue in
             if oldValue.count < newValue.count {
-                withAnimation { shouldShowMediaAddedToast = true }
+                shouldShowMediaAddedToast = true
             }
         }
-        .overlay(alignment: .center) {
+        .overlay(alignment: .bottom) {
             if shouldShowMediaAddedToast { mediaAddedToast }
         }
         .sensoryFeedback(trigger: shouldShowMediaAddedToast) {
@@ -74,24 +74,14 @@ struct RootView: View {
             .fontWeight(.medium)
             .padding(.vertical, 16)
             .padding(.horizontal, 32)
-            .background {
-                if #available(iOS 26.0, *) {
-                    Capsule()
-                        .fill(Color.clear)
-                        .glassEffect()
-                } else {
-                    Capsule()
-                        .fill(Color(UIColor.systemFill))
-                        .shadow(radius: 8.0)
-                }
-            }
-            .padding(.bottom, 72)
+            .background { Capsule().fill(Color(UIColor.tertiarySystemBackground)) }
+            .padding(.bottom, screenSize.height / 6)
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
                     withAnimation { shouldShowMediaAddedToast = false }
                 }
             }
-            .transition(.scale.combined(with: .opacity))
+            .transition(.opacity)
     }
 }
 

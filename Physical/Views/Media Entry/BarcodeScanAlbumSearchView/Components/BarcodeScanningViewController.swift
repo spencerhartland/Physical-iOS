@@ -129,7 +129,9 @@ class BarcodeScanningViewController: UIViewController, AVCaptureMetadataOutputOb
                 AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
                 
                 // Remember the recognized barcode string.
-                self.detectedBarcode = detectedBarcode
+                withAnimation {
+                    self.detectedBarcode = detectedBarcode
+                }
             }
             
             // Highlight the detected barcode
