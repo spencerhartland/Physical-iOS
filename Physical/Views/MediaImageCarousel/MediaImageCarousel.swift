@@ -9,43 +9,29 @@ import SwiftUI
 import PhysicalMediaKit
 
 struct MediaImageCarousel: View {
-    var screenSize: CGSize
-    var albumArtworkURL: String?
-    var mediaColor: Color
-    var imageKeys: [String]
-    var mediaType: Media.MediaType
+    @Environment(\.screenSize) private var screenSize
     
-    init(
-        size: CGSize,
-        albumArtworkURL: String?,
-        mediaColor: UIColor,
-        imageKeys: [String],
-        mediaType: Media.MediaType
-    ) {
-        self.screenSize = size
-        self.albumArtworkURL = albumArtworkURL
-        self.mediaColor = Color(mediaColor)
-        self.imageKeys = imageKeys
-        self.mediaType = mediaType
+    var type: Media.MediaType
+    var artworkURL: URL?
+    var color: UIColor
+    
+    init(for type: Media.MediaType, with artworkURL: URL?, and color: UIColor) {
+        self.type = type
+        self.artworkURL = artworkURL
+        self.color = color
     }
     
     var body: some View {
-        TabView {
-            if let albumArtworkURL, let imageURL = URL(string: albumArtworkURL) {
-                switch mediaType {
-                case .vinylRecord:
-                    PhysicalMedia.vinylRecord(albumArtURL: imageURL, vinylColor: mediaColor)
-                case .compactDisc:
-                    PhysicalMedia.compactDisc(albumArtURL: imageURL)
-                case .compactCassette:
-                    PhysicalMedia.compactCassette(albumArtURL: imageURL, cassetteColor: mediaColor)
-                }
-            }
-            ForEach(imageKeys, id: \.self) { key in
-                MediaImageView(key: key, size: screenSize)
+        Group {
+            switch type {
+            case .vinylRecord:
+                PhysicalMedia.vinylRecord(artworkURL, color)
+            case .compactDisc:
+                PhysicalMedia.compactDisc(artworkURL)
+            case .compactCassette:
+                PhysicalMedia.compactCassette(artworkURL, color)
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(width: screenSize.width, height: screenSize.width)
     }
 }

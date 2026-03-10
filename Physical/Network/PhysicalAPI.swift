@@ -15,4 +15,13 @@ struct PhysicalAPI {
     static let standardHeaders = [
         HTTPHeader(field: .contentType, value: "application/json")
     ]
+    static func headersWithToken(ofType tokenType: TokenType) -> [HTTPHeader] {
+        var headers = standardHeaders
+        if let token = KeychainManager.getToken(ofType: tokenType) {
+            headers.append(
+                HTTPHeader(field: .authorization, value: "Bearer \(token)")
+            )
+        }
+        return headers
+    }
 }

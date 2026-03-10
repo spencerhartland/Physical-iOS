@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Credentials {
-    let username: String
+struct Credentials: Decodable {
+    let SIWARefreshToken: String
+    let accessToken: String
     let refreshToken: String
 }

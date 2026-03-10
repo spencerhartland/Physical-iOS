@@ -19,8 +19,15 @@ struct BarcodeScanAlbumSearchView: View {
     @State private var searchReturnedNoResults: Bool = false
     @State private var flashlightActive: Bool = false
     @State private var doneScanning: Bool = false
-    @State private var newMedia = Media()
-    @State private var editingMediaDetails: Bool = false
+    
+    @Bindable var draft: MediaDraft
+    
+    private var completion: (Bool) -> Void
+    
+    init(draft: Bindable<MediaDraft>, _ completion: @escaping (Bool) -> Void) {
+        self._draft = draft
+        self.completion = completion
+    }
     
     var body: some View {
         BarcodeScanningView($detectedBarcode)
@@ -28,7 +35,7 @@ struct BarcodeScanAlbumSearchView: View {
             .overlay(alignment: .bottom) {
                 if !detectedBarcode.isEmpty {
                     Button {
-                        editingMediaDetails = true
+                        completion(detectedAlbum != nil)
                     } label: {
                         BarcodeSearchResultView(for: detectedAlbum, completionFlag: $searchReturnedNoResults)
                     }
@@ -38,10 +45,6 @@ struct BarcodeScanAlbumSearchView: View {
                     barcodeScanningTooltip
                 }
             }
-            .navigationDestination(isPresented: $editingMediaDetails) {
-                @Bindable var newMedia = newMedia
-                MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
-            }
             .onChange(of: detectedBarcode) { oldValue, newValue in
                 if newValue != oldValue {
                     handleDetectedBarcode(newValue)
@@ -50,28 +53,16 @@ struct BarcodeScanAlbumSearchView: View {
             .onChange(of: flashlightActive) { _, newValue in
                 setTorchState(on: newValue)
             }
-            .onChange(of: editingMediaDetails) {
-                if !editingMediaDetails {
-                    newMedia = Media()
-                    // TODO: Show some confirmation that media was added.
-                }
-            }
             .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .toolbarVisibility(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    if #available(iOS 26.0, *) {
-                        flashlightToggle
-                            .tint(flashlightActive ? .darkGreen : nil)
-                    } else {
-                        flashlightToggle
-                            .buttonStyle(.borderedProminent)
-                            .buttonBorderShape(.capsule)
-                            .tint(Color(UIColor.systemBackground))
-                            .foregroundStyle(flashlightActive ? Color.darkGreen : .primary)
-                    }
+                    flashlightToggle
+                        .prominentButtonStyle(isEnabled: flashlightActive)
+                        .tint(flashlightActive ? .physicalGreen : .primary)
                 }
             }
+            .onAppear { detectedBarcode = "" }
     }
     
     // MARK: - UI Elements
@@ -79,12 +70,18 @@ struct BarcodeScanAlbumSearchView: View {
     // Tooltip centered below the top bar calling users to action.
     private var barcodeScanningTooltip: some View {
         Label("Scan a barcode", systemImage: "barcode.viewfinder")
-            .font(.caption)
-            .padding(.vertical, 4)
-            .padding(.horizontal, 8)
+            .font(.body)
+            .fontWeight(.medium)
+            .padding(.vertical, 8)
+            .padding(.horizontal)
             .background {
-                Capsule()
-                    .fill(.thinMaterial)
+                if #available(iOS 26.0, *) {
+                    Capsule()
+                        .glassEffect()
+                } else {
+                    Capsule()
+                        .fill(.thinMaterial)
+                }
             }
             .padding(16)
     }
@@ -109,38 +106,41 @@ struct BarcodeScanAlbumSearchView: View {
     // MARK: - Barcode detection handling
     
     private func handleDetectedBarcode(_ detectedBarcode: String) {
-        if !detectedBarcode.isEmpty {
-            Task {
-                do {
-                    let albumsRequest = MusicCatalogResourceRequest<Album>(matching: \.upc, equalTo: detectedBarcode)
-                    let albumsResponse = try await albumsRequest.response()
-                    if let firstAlbum = albumsResponse.items.first {
-                        self.handleDetectedAlbum(firstAlbum)
-                    } else {
-                        self.handleNoResults()
-                    }
-                } catch {
-                    print("Encountered error while trying to find albums with upc = \"\(detectedBarcode)\".")
+        guard !detectedBarcode.isEmpty else {
+            detectedAlbum = nil
+            return
+        }
+        
+        Task {
+            do {
+                let albumsRequest = MusicCatalogResourceRequest<Album>(matching: \.upc, equalTo: detectedBarcode)
+                let albumsResponse = try await albumsRequest.response()
+                if let firstAlbum = albumsResponse.items.first {
+                    self.handleDetectedAlbum(firstAlbum)
+                } else {
+                    self.handleNoResults()
                 }
+            } catch {
+                print("Encountered error while trying to find albums with upc = \"\(detectedBarcode)\".")
             }
         }
     }
     
     @MainActor
     private func handleDetectedAlbum(_ detectedAlbum: Album) {
-        newMedia.updateWithInfo(from: detectedAlbum)
+        draft.updateWithInfo(from: detectedAlbum)
         self.searchReturnedNoResults = false
         self.detectedAlbum = detectedAlbum
     }
     
     @MainActor
     private func handleNoResults() {
-        newMedia.resetInfo()
         self.searchReturnedNoResults = true
         self.detectedAlbum = nil
     }
     
     // MARK: - Torch control
+    
     private func setTorchState(on: Bool) {
         guard let device = AVCaptureDevice.default(for: .video) else { return }
         

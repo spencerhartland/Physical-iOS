@@ -1,5 +1,7 @@
 {
-  "fill" : "automatic",
+  "fill" : {
+    "automatic-gradient" : "extended-gray:1.00000,1.00000"
+  },
   "groups" : [
     {
       "blend-mode-specializations" : [
@@ -18,8 +20,8 @@
       "blur-material" : null,
       "layers" : [
         {
-          "image-name" : "1_label.png",
-          "name" : "1_label"
+          "image-name" : "1_label 3.png",
+          "name" : "label"
         }
       ],
       "shadow" : {
@@ -50,8 +52,8 @@
       "hidden" : false,
       "layers" : [
         {
-          "image-name" : "0_vinyl.png",
-          "name" : "0_vinyl"
+          "image-name" : "0_vinyl 3.png",
+          "name" : "vinyl"
         }
       ],
       "lighting" : "individual",

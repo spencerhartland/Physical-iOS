@@ -10,101 +10,120 @@ import UIKit
 import MusicKit
 
 struct AddMediaView: View {
-    @State private var newMedia = Media()
-    @State private var searchResults: MusicItemCollection<Album> = []
-    @State private var editingMediaDetails = false
+    // String constants
+    private let noSearchResultsTitle: String = "Add Media"
+    private let noSearchResultsDescription: String = "Enter an album title to continue."
+    private let albumTitleTextfieldPrompt: String = "Album Title"
+    private let continueButtonTitle: String = "Continue"
     
-    @FocusState private var searchFieldFocused: Bool
+    // Symbols
+    private let noSearchResultsSymbolName: String = "music.note.square.stack.fill"
+    private let continueButtonSymbolName: String = "arrow.forward"
+    
+    // Other constants
+    private let albumSearchDebounceDelay: TimeInterval = 0.33
+    
+    @Environment(\.dismissSearch) private var dismissSearch
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @State private var albumSearchRequest: DispatchWorkItem?
+    @State private var searchResults: MusicItemCollection<Album> = []
+    
+    @Bindable var draft: MediaDraft
+    
+    private var completion: () -> Void
+    
+    init(draft: Bindable<MediaDraft>, _ completion: @escaping () -> Void) {
+        self._draft = draft
+        self.completion = completion
+    }
     
     var body: some View {
         ZStack {
-            Color(UIColor.secondarySystemBackground)
-                .ignoresSafeArea()
-            
-            List {
-                Section {
-                    TextField("Album Title", text: $newMedia.title)
-                        .focused($searchFieldFocused)
-                        .listRowBackground(Color(UIColor.tertiarySystemFill))
-                } footer: {
-                    if searchResults.isEmpty {
-                        Text("Search for an album on Apple Music or enter the title and continue to manually add details.")
-                    }
-                }
-                
-                if !searchResults.isEmpty {
-                    Section {
-                        ForEach(searchResults) { album in
-                            Button {
-                                newMedia.updateWithInfo(from: album)
-                                searchFieldFocused = false
-                                editingMediaDetails = true
-                            } label: {
-                                SearchResultListItem(for: album)
-                            }
-                            .listRowBackground(Color(UIColor.systemBackground))
-                        }
-                    } header: {
-                        Label("Search Results", systemImage: "magnifyingglass")
-                            .labelStyle(.titleAndIcon)
-                            .textCase(nil)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                    }
-                }
+            if searchResults.isEmpty {
+                ContentUnavailableView(
+                    noSearchResultsTitle,
+                    systemImage: noSearchResultsSymbolName,
+                    description: Text(noSearchResultsDescription))
             }
-            .scrollContentBackground(.hidden)
+            if !searchResults.isEmpty {
+                List {
+                    ForEach(searchResults) { album in
+                        Button {
+                            draft.updateWithInfo(from: album)
+                            dismissSearch()
+                            completion()
+                        } label: {
+                            SearchResultListItem(for: album)
+                        }
+                        .alignmentGuide(.listRowSeparatorLeading) { dimensions in
+                            return dimensions[.leading]
+                        }
+                    }
+                }
+                .listStyle(.plain)
+            }
         }
-        .navigationTitle("Add Media")
-        .navigationDestination(isPresented: $editingMediaDetails) {
-            @Bindable var newMedia = newMedia
-            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $editingMediaDetails)
-        }
-        .onChange(of: editingMediaDetails) {
-            if !editingMediaDetails { newMedia = Media() }
-        }
-        .onChange(of: newMedia.title) {
+        .searchable(text: $draft.title, prompt: albumTitleTextfieldPrompt)
+        .searchPresentationToolbarBehavior(.avoidHidingContent)
+        .onChange(of: draft.title) {
             if MusicAuthorization.currentStatus == .authorized {
-                self.requestSearchResults(newMedia.title)
+                self.requestSearchResults(draft.title)
             }
         }
         .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Continue") {
-                    searchFieldFocused = false
-                    editingMediaDetails = true
+                Button(continueButtonTitle, systemImage: continueButtonSymbolName) {
+                    dismissSearch()
+                    completion()
                 }
-                .disabled(newMedia.title.isEmpty)
+                .disabled(draft.title.isEmpty)
             }
+        }
+        .onAppear {
+            UISearchBar.appearance().setImage(UIImage(), for: .search, state: .normal)
         }
     }
     
     private func requestSearchResults(_ entry: String) {
-        Task {
-            if entry.isEmpty {
-                self.resetSearchResults()
-            } else {
-                do {
-                    var searchRequest = MusicCatalogSearchRequest(term: entry, types: [Album.self])
-                    searchRequest.limit = 5
-                    let searchResponse = try await searchRequest.response()
-                    
-                    self.updateSearchResults(searchResponse, for: newMedia.title)
-                } catch {
-                    print("Search request failed with error: \(error).")
+        albumSearchRequest?.cancel()
+        albumSearchRequest = DispatchWorkItem {
+            Task {
+                if entry.isEmpty {
                     self.resetSearchResults()
+                } else {
+                    do {
+                        var searchRequest = MusicCatalogSearchRequest(
+                            term: entry,
+                            types: [Album.self])
+                        searchRequest.limit = 5
+                        let searchResponse = try await searchRequest.response()
+                        
+                        self.updateSearchResults(searchResponse, for: draft.title)
+                    } catch {
+                        print("Search request failed with error: \(error).")
+                        self.resetSearchResults()
+                    }
                 }
             }
+            albumSearchRequest = nil
+        }
+        if let albumSearchRequest = albumSearchRequest {
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + albumSearchDebounceDelay,
+                execute: albumSearchRequest)
         }
     }
     
     @MainActor
-    private func updateSearchResults(_ searchResponse: MusicCatalogSearchResponse, for searchTerm: String) {
-        if self.newMedia.title == searchTerm {
-            self.searchResults = searchResponse.albums
+    private func updateSearchResults(
+        _ searchResponse: MusicCatalogSearchResponse,
+        for searchTerm: String) {
+            if self.draft.title == searchTerm {
+                self.searchResults = searchResponse.albums
+            }
         }
-    }
     
     @MainActor
     private func resetSearchResults() {

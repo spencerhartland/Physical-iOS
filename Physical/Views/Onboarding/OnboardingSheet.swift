@@ -159,7 +159,7 @@ struct OnboardingSheet: View {
                 case .success:
                     signInSuccessful = true
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print(error.rawValue)
                     // TODO: Let the user know that auth failed
                 }
             }

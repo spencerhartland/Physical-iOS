@@ -9,7 +9,9 @@ import SwiftUI
 import MusicKit
 
 struct SearchResultListItem: View {
-    private let albumArtSize = 44.0
+    private let chevronSymbolName = "chevron.forward"
+    
+    private let albumArtSize = 56.0
     private let albumArtCornerRadius = 4.0
     
     let album: Album
@@ -24,12 +26,16 @@ struct SearchResultListItem: View {
             VStack(alignment: .leading) {
                 Text(album.title)
                     .lineLimit(1)
-                    .font(.headline)
                     .foregroundStyle(.primary)
+                    .font(.system(size: 16))
                 Text(album.artistName)
-                    .font(.subheadline)
+                    .lineLimit(1)
                     .foregroundStyle(.secondary)
             }
+            Spacer()
+            Image(systemName: chevronSymbolName)
+                .foregroundStyle(.secondary)
         }
+        .font(.system(size: 14))
     }
 }

@@ -27,7 +27,7 @@ struct OwnershipPicker: View {
             ListItemLabel(
                 color: .yellow,
                 symbolName: (ownership == .owned) ? ownedSymbol : wantedSymbol,
-                labelText: "Own it or Want it?"
+                labelText: "Own it or want it?"
             )
         }
         .onChange(of: ownership) { _, value in

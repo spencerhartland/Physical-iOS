@@ -27,10 +27,6 @@ struct AlbumArtView: View {
         if let artwork = artwork {
             ArtworkImage(artwork, width: artworkSize, height: artworkSize)
                 .clipShape(roundedRect)
-                .shadow(radius: 2)
-                .overlay {
-                    roundedRect.stroke(lineWidth: 0.25)
-                }
         } else {
             roundedRect
                 .frame(width: artworkSize, height: artworkSize)

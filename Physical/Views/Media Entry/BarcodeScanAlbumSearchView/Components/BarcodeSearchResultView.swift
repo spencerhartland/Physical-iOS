@@ -43,7 +43,6 @@ struct BarcodeSearchResultView: View {
         .background {
             if #available(iOS 26.0, *) {
                 Capsule()
-                    .fill(Color.clear)
                     .glassEffect()
             } else {
                 Capsule()

@@ -37,11 +37,12 @@ final class Media {
     var artist: String
     var tracks: [String]
     var displaysOfficialArtwork: Bool
-    /// The URL string for the official album artwork provided by Apple Music.
-    var albumArtworkURL: String
+    /// The URL for the official album artwork provided by Apple Music.
+    var albumArtworkURL: URL?
     /// A collection of keys associated with user-generated images.
     var imageKeys: [String]
-    @Attribute(.transformable(by: UIColorValueTransformer.self)) var color: UIColor = UIColor.black
+    @Attribute(.transformable(by: UIColorValueTransformer.self))
+    var color: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
     var notes: String
     var genre: String
     var isFavorite: Bool
@@ -56,7 +57,7 @@ final class Media {
         self.artist = ""
         self.tracks = []
         self.displaysOfficialArtwork = true
-        self.albumArtworkURL = ""
+        self.albumArtworkURL = nil
         self.imageKeys = []
         self.notes = ""
         self.genre = ""
@@ -65,7 +66,7 @@ final class Media {
     }
     
     init(
-        artworkURLString: String,
+        artworkURL: URL? = nil,
         color: UIColor = .black,
         title: String,
         artist: String,
@@ -83,7 +84,7 @@ final class Media {
         self.imageKeys = []
         self.notes = ""
         
-        self.albumArtworkURL = artworkURLString
+        self.albumArtworkURL = artworkURL
         self.color = color
         self.title = title
         self.artist = artist
@@ -92,6 +93,24 @@ final class Media {
         self.releaseDate = releaseDate
         self.isFavorite = isFavorite
         self.isOwned = isOwned
+    }
+    
+    init(from draft: MediaDraft) {
+        self.rawType = draft.rawType
+        self.rawCondition = draft.rawCondition
+        self.dateAdded = draft.dateAdded
+        self.releaseDate = draft.releaseDate
+        self.title = draft.title
+        self.artist = draft.artist
+        self.tracks = draft.tracks
+        self.displaysOfficialArtwork = draft.displaysOfficialArtwork
+        self.albumArtworkURL = draft.albumArtworkURL
+        self.imageKeys = draft.imageKeys
+        self.color = draft.color
+        self.notes = draft.notes
+        self.genre = draft.genre
+        self.isFavorite = draft.isFavorite
+        self.isOwned = draft.isOwned
     }
     
     enum MediaType: String, Codable, CaseIterable, Identifiable, Equatable {
@@ -126,7 +145,7 @@ final class Media {
         self.artist = ""
         self.tracks = []
         self.displaysOfficialArtwork = true
-        self.albumArtworkURL = ""
+        self.albumArtworkURL = nil
         self.imageKeys = []
         self.notes = ""
         self.genre = ""
@@ -145,9 +164,7 @@ final class Media {
         self.title = album.title
         self.artist = album.artistName
         self.releaseDate = album.releaseDate ?? .now
-        if let url = getArtworkURLString(from: album.artwork) {
-            self.albumArtworkURL = url
-        }
+        self.albumArtworkURL = getArtworkURL(from: album.artwork)
     }
     
     @MainActor
@@ -176,11 +193,11 @@ final class Media {
         }
     }
     
-    private func getArtworkURLString(from artwork: Artwork?) -> String? {
+    private func getArtworkURL(from artwork: Artwork?) -> URL? {
         guard let artwork = artwork,
               let url = artwork.url(width: 1080, height: 1080) else {
             return nil
         }
-        return url.absoluteString
+        return url
     }
 }

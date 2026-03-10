@@ -13,7 +13,7 @@ struct GenreSelectionView: View {
     private let genreSelectionHeaderText = "Select a genre"
     private let selectionIndicatorSymbol = "checkmark"
     
-    private var genres = MusicGenres()
+    @State private var genres = MusicGenres()
     
     @Binding var selectedGenre: String
     
@@ -31,7 +31,7 @@ struct GenreSelectionView: View {
                 if genre.name == selectedGenre {
                     Image(systemName: selectionIndicatorSymbol)
                         .fontWeight(.bold)
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(.physicalGreen)
                 }
             }
         }

@@ -10,7 +10,7 @@ import Foundation
 struct SampleCollection {
     static var contents: [Media] = [
         Media(
-            artworkURLString: "https://m.media-amazon.com/images/I/51clQVJViDL._UXNaN_FMjpg_QL85_.jpg",
+            artworkURL: URL(string: "https://m.media-amazon.com/images/I/51clQVJViDL._UXNaN_FMjpg_QL85_.jpg"),
             title: "Miss Anthropocene (Deluxe Edition)",
             artist: "Grimes",
             type: .vinylRecord,
@@ -25,7 +25,7 @@ struct SampleCollection {
             isOwned: true
         ),
         Media(
-            artworkURLString: "https://upload.wikimedia.org/wikipedia/en/d/d9/Grimes_-_Art_Angels.png",
+            artworkURL: URL(string: "https://upload.wikimedia.org/wikipedia/en/d/d9/Grimes_-_Art_Angels.png"),
             title: "Art Angels",
             artist: "Grimes",
             type: .vinylRecord,
@@ -40,7 +40,7 @@ struct SampleCollection {
             isOwned: true
         ),
         Media(
-            artworkURLString: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fb/Grimes_-_Halfaxa_cover.png/220px-Grimes_-_Halfaxa_cover.png",
+            artworkURL: URL(string: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fb/Grimes_-_Halfaxa_cover.png/220px-Grimes_-_Halfaxa_cover.png"),
             title: "Halfaxa",
             artist: "Grimes",
             type: .vinylRecord,
@@ -55,7 +55,7 @@ struct SampleCollection {
             isOwned: true
         ),
         Media(
-            artworkURLString: "https://upload.wikimedia.org/wikipedia/en/c/cc/Grimes_-_Geidi_Primes_album_cover.png",
+            artworkURL: URL(string: "https://upload.wikimedia.org/wikipedia/en/c/cc/Grimes_-_Geidi_Primes_album_cover.png"),
             title: "Geidi Primes",
             artist: "Grimes",
             type: .vinylRecord,
@@ -70,7 +70,7 @@ struct SampleCollection {
             isOwned: true
         ),
         Media(
-            artworkURLString: "https://upload.wikimedia.org/wikipedia/en/2/2c/Björk_-_Utopia_album_cover.png",
+            artworkURL: URL(string: "https://upload.wikimedia.org/wikipedia/en/2/2c/Björk_-_Utopia_album_cover.png"),
             title: "Utopia",
             artist: "Bjork",
             type: .compactCassette,
@@ -86,7 +86,7 @@ struct SampleCollection {
         )
         ,
         Media(
-            artworkURLString: "https://upload.wikimedia.org/wikipedia/en/f/f8/Taylor_Swift_-_Folklore.png",
+            artworkURL: URL(string: "https://upload.wikimedia.org/wikipedia/en/f/f8/Taylor_Swift_-_Folklore.png"),
             title: "Folklore",
             artist: "Taylor Swift",
             type: .compactDisc,

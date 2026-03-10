@@ -120,7 +120,7 @@ struct SocialProfileView: View {
                 .padding(.horizontal)
                 
                 if profileViewSelection == .collection {
-                    SocialProfileCollectionView()
+                    //SocialProfileCollectionView()
                 } else {
                     SocialProfilePostsView()
                 }

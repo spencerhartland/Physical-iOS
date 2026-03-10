@@ -8,6 +8,7 @@
 import Foundation
 
 enum AuthenticationError: String, Error {
+    case keychainError = "A problem occurred while adding the authentication data to the keychain."
     case invalidIDToken = "The provided identity token is invalid."
     case authenticationFailure = "Unable to authenticate with the provided identity token."
     case authenticationRequestFailure = "Unable to complete authentication request."

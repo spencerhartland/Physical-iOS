@@ -6,103 +6,123 @@
 //
 
 import SwiftUI
+import PhysicalMediaKit
 
 struct MediaThumbnail: View {
-    private let placeholderAlbumArtSymbol = "music.note"
-    private let compactDiscSymbol = "opticaldisc.fill"
     private let favoriteSymbol = "heart.fill"
     
-    let media: Media
-    let ornamented: Bool
+    @Bindable var media: Media
     
-    init(for media: Media, ornamented: Bool = true) {
+    init(for media: Media) {
         self.media = media
-        self.ornamented = ornamented
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            albumArt
-                .padding([.trailing, .bottom], ornamented ? 8 : 0)
-                .overlay {
-                    if ornamented { mediaTypeOrnament }
-                }
+            switch media.type {
+            case .vinylRecord:
+                PhysicalMedia.vinylRecordThumbnail(
+                    media.albumArtworkURL,
+                    media.color,
+                    rotationXY: (0, -0.08)
+                )
+            case .compactDisc:
+                PhysicalMedia.compactDiscThumbnail(media.albumArtworkURL)
+            case .compactCassette:
+                PhysicalMedia.compactCassetteThumbnail(media.albumArtworkURL, media.color)
+            }
+            
             albumInfo
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
         }
-    }
-    
-    private var albumArt: some View {
-        let roundedRect = RoundedRectangle(cornerRadius: 6.0)
-        // TODO: Update to show user images if album artwork is disabled / not there
-        return AsyncImage(url: URL(string: media.albumArtworkURL)) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .clipShape(roundedRect)
-                .shadow(radius: 2)
-                .overlay {
-                    roundedRect.stroke(lineWidth: 0.25)
-                }
-        } placeholder: {
-            albumArtPlaceholder
+        .background {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(UIColor.secondarySystemBackground))
         }
-    }
-    
-    private var mediaTypeOrnament: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Spacer()
-                RoundedRectangle(cornerRadius: 4)
-                    .foregroundStyle(.ultraThinMaterial)
-                    .frame(width: 32, height: 32)
-                    .shadow(radius: 0.5)
-                    .overlay {
-                        mediaTypeSymbol
-                            .resizable()
-                            .padding(4)
-                            .foregroundStyle(.white)
-                    }
-            }
-        }
-    }
-    
-    private var albumArtPlaceholder: some View {
-        Color(UIColor.secondarySystemGroupedBackground)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .aspectRatio(contentMode: .fit)
-            .shadow(radius: 2)
-            .overlay {
-                Image(systemName: placeholderAlbumArtSymbol)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding()
-                    .foregroundStyle(.ultraThinMaterial)
-            }
     }
     
     private var albumInfo: some View {
         VStack(alignment: .leading) {
-            Text(media.title)
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(.primary)
-                .lineLimit(1)
+            HStack(spacing: 2) {
+                Text(media.title)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                if media.isFavorite {
+                    Image(systemName: favoriteSymbol)
+                        .foregroundStyle(.physicalGreen)
+                }
+            }
+            .font(.caption)
             Text(media.artist)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
         }
     }
-    
-    private var mediaTypeSymbol: Image {
-        switch media.type {
-        case .vinylRecord:
-            return Image(.vinylRecord)
-        case .compactDisc:
-            return Image(systemName: compactDiscSymbol)
-        case .compactCassette:
-            return Image(.compactCassette)
-        }
-    }
 }
+
+
+// MARK: - Original
+
+//struct MediaThumbnail: View {
+//    private let favoriteSymbol = "heart.fill"
+//    
+//    @Bindable var media: Media
+//    
+//    init(for media: Media) {
+//        self.media = media
+//    }
+//    
+//    var body: some View {
+//        VStack(alignment: .leading) {
+//            switch media.type {
+//            case .vinylRecord:
+//                PhysicalMedia.vinylRecord(
+//                    media.albumArtworkURL,
+//                    media.color,
+//                    rotationXY: (0, -0.08))
+//                .aspectRatio(contentMode: .fit)
+//            case .compactDisc:
+//                PhysicalMedia.compactDisc(
+//                    albumArtURL: media.albumArtworkURL,
+//                    rotationXY: (0, -0.08))
+//                .aspectRatio(contentMode: .fit)
+//            case .compactCassette:
+//                PhysicalMedia.compactCassette(
+//                    albumArtURL: media.albumArtworkURL,
+//                    cassetteColor: media.color,
+//                    rotationXY: (0, 0))
+//                .aspectRatio(contentMode: .fit)
+//            }
+//            albumInfo
+//                .padding(.horizontal, 12)
+//                .padding(.bottom, 8)
+//        }
+//        .background {
+//            RoundedRectangle(cornerRadius: 12)
+//                .fill(Color(UIColor.secondarySystemBackground))
+//        }
+//    }
+//    
+//    private var albumInfo: some View {
+//        VStack(alignment: .leading) {
+//            HStack(spacing: 2) {
+//                Text(media.title)
+//                    .fontWeight(.semibold)
+//                    .foregroundStyle(.primary)
+//                    .lineLimit(1)
+//                if media.isFavorite {
+//                    Image(systemName: favoriteSymbol)
+//                        .foregroundStyle(.physicalGreen)
+//                }
+//            }
+//            .font(.caption)
+//            Text(media.artist)
+//                .font(.caption2)
+//                .foregroundStyle(.secondary)
+//                .lineLimit(1)
+//        }
+//    }
+//}

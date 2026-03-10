@@ -10,7 +10,6 @@ import SwiftUI
 struct CollectionSection: View {
     let title: String
     let content: [Media]
-    let thumbnailsOrnamented: Bool
     let thumbnailWidth: CGFloat?
     let steppedScrolling: Bool
     
@@ -19,13 +18,11 @@ struct CollectionSection: View {
     init(
         _ title: String,
         content: [Media],
-        thumbnailsOrnamented: Bool = true,
         thumbnailWidth: CGFloat? = nil,
         steppedScrolling: Bool = false
     ) {
         self.title = title
         self.content = content
-        self.thumbnailsOrnamented = thumbnailsOrnamented
         self.thumbnailWidth = thumbnailWidth
         self.steppedScrolling = steppedScrolling
     }
@@ -44,7 +41,7 @@ struct CollectionSection: View {
                 HStack(spacing: steppedScrolling ? 16 : 8) {
                     ForEach(0..<5) { index in
                         if index < content.count {
-                            MediaThumbnail(for: content[index], ornamented: thumbnailsOrnamented)
+                            MediaThumbnail(for: content[index])
                                 .frame(width: mediaThumbnailWidth)
                                 .padding(.top, 4)
                         }

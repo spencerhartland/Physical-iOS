@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ListItemLabel: View {
+    private let iconSize: CGFloat = 28.0
+    
     let color: Color
     let symbol: Image
     let labelText: LocalizedStringResource
@@ -54,16 +56,18 @@ struct ListItemLabel: View {
             Text(labelText)
                 .fontWeight(labelFontWeight)
         } icon: {
-            RoundedRectangle(cornerRadius: 6)
-                .aspectRatio(1.0, contentMode: .fit)
-                .foregroundStyle(color)
-                .overlay {
-                    symbol
-                        .resizable()
-                        .foregroundStyle(.white)
-                        .aspectRatio(contentMode: .fit)
-                        .padding(4)
-                }
+            ZStack(alignment: .center) {
+                RoundedRectangle(cornerRadius: 6)
+                    .foregroundStyle(color)
+                    .aspectRatio(1.0, contentMode: .fill)
+                symbol
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundStyle(.white)
+                    .padding(4)
+            }
+            .aspectRatio(1.0, contentMode: .fill)
+            .frame(width: iconSize, height: iconSize)
         }
     }
 }

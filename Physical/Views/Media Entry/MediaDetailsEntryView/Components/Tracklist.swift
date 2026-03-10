@@ -31,7 +31,9 @@ struct Tracklist<Content: View>: View {
     
     var body: some View {
         Section {
-            if isEditable {
+            if tracklist.isEmpty {
+                emptyList
+            } else if isEditable {
                 mutableList
             } else {
                 immutableList
@@ -42,6 +44,8 @@ struct Tracklist<Content: View>: View {
             if isEditable { tracklistEditButton }
         }
     }
+    
+    // MARK: - Components
     
     private var immutableList: some View {
         Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
@@ -89,23 +93,29 @@ struct Tracklist<Content: View>: View {
         }
     }
     
-    // MARK: - Components
+    private var emptyList: some View {
+        TextField(
+            "Track 1 title",
+            text: $newTrackTitle
+        )
+        .focused($focusInNewTrackField)
+        .onChange(of: focusInNewTrackField) { _, focused in
+            if !focused && !newTrackTitle.isEmpty {
+                tracklist.append(newTrackTitle)
+                newTrackTitle = ""
+            }
+        }
+    }
+    
     private var tracklistEditButton: some View {
         HStack {
             Spacer()
             Button {
                 editMode = editMode == .active ? .inactive : .active
             } label: {
-                HStack {
-                    Image(systemName: editMode == .active ? "pencil.slash" : "pencil")
-                    if editMode == .active {
-                        Text("Cancel")
-                    } else {
-                        Text("Edit tracklist")
-                    }
-                }
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                Text(editMode == .active ? "Stop editing" : "Edit tracklist")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
             .buttonStyle(.bordered)
             .disabled($tracklist.isEmpty)
@@ -115,6 +125,7 @@ struct Tracklist<Content: View>: View {
     }
     
     // MARK: - Track list editing logic
+    
     private func removeTrack(at offsets: IndexSet) {
         tracklist.remove(atOffsets: offsets)
         endEditingIfTracklistEmpty()

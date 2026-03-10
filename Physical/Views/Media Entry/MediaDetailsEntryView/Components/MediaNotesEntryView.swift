@@ -12,10 +12,13 @@ struct MediaNotesEntryView: View {
     private let notesHeaderText = "Add notes"
     private let clearButtonSymbol = "trash"
     
+    @FocusState private var editorFocused: Bool
+    
     @Binding var notes: String
     
     var body: some View {
         TextEditor(text: $notes)
+            .focused($editorFocused)
             .padding([.top, .bottom], 10)
             .padding([.leading, .trailing], 28)
             .navigationTitle(navTitle)
@@ -29,5 +32,6 @@ struct MediaNotesEntryView: View {
                     }
                 }
             }
+            .onAppear { editorFocused = true }
     }
 }

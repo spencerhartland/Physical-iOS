@@ -17,7 +17,7 @@ extension UserAccountManager {
                 path: PhysicalAPI.userIDEndpointPath,
                 queryItems: [ URLQueryItem(name: usernameKey, value: username) ],
                 method: .GET,
-                headers: PhysicalAPI.standardHeaders
+                headers: PhysicalAPI.headersWithToken(ofType: .accessToken)
             )
         }
     }
@@ -33,7 +33,7 @@ extension UserAccountManager {
                     URLQueryItem(name: userIDKey, value: userID)
                 ],
                 method: .GET,
-                headers: PhysicalAPI.standardHeaders
+                headers: PhysicalAPI.headersWithToken(ofType: .accessToken)
             )
         }
     }
@@ -48,7 +48,7 @@ extension UserAccountManager {
                 host: PhysicalAPI.host,
                 path: PhysicalAPI.userEndpointPath,
                 method: .POST,
-                headers: PhysicalAPI.standardHeaders,
+                headers: PhysicalAPI.headersWithToken(ofType: .accessToken),
                 body: encodedRequestData
             )
         }

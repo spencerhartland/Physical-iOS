@@ -11,13 +11,13 @@ import PhotosUI
 struct MediaDetailsEntryView: View {
     // Model context
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.screenSize) private var screenSize
     
-    // The media being added to the collection
-    @Bindable var newMedia: Media
+    // The media being edited
+    private let media: Media?
+    @Bindable private var draft: MediaDraft
     
     // View state
-    @Binding var editingMediaDetails: Bool
+    @Binding var mediaAdded: Bool
     @State private var presentCamera = false
     @State private var presentPhotosPicker = false
     @FocusState private var focusInTrackField: Bool
@@ -28,10 +28,29 @@ struct MediaDetailsEntryView: View {
     @State private var trackTitleText: String = ""
     @State private var mediaColor: Color
     
-    init(newMedia: Bindable<Media>, isPresented: Binding<Bool>) {
-        self._newMedia = newMedia
-        self._editingMediaDetails = isPresented
-        self.mediaColor = Color(newMedia.color.wrappedValue)
+    private var completion: () -> Void
+    
+    init(
+        draft: Bindable<MediaDraft>,
+        mediaAdded: Binding<Bool> = .constant(false),
+        _ completion: @escaping () -> Void
+    ) {
+        self.media = nil
+        self._draft = draft
+        self._mediaAdded = mediaAdded
+        self.completion = completion
+        self.mediaColor = Color(draft.color.wrappedValue)
+    }
+    
+    init(
+        media: Media,
+         _ completion: @escaping () -> Void
+    ) {
+        self.media = media
+        self.draft = MediaDraft(from: media)
+        self._mediaAdded = .constant(false)
+        self.completion = completion
+        self.mediaColor = Color(media.color)
     }
     
     var body: some View {
@@ -42,10 +61,9 @@ struct MediaDetailsEntryView: View {
             List {
                 mediaImagesSection
                 physicalMediaDetailsSection
-                ownershipPickerSection
+                notesSection
                 albumDetailsSection
                 tracklistSection
-                notesSection
             }
             .listRowBackground(Color(UIColor.systemBackground))
         }
@@ -53,7 +71,7 @@ struct MediaDetailsEntryView: View {
         .toolbar(.hidden, for: .tabBar)
         .environment(\.editMode, $editMode)
         .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
-        .onChange(of: newMedia.type) { _, newValue in
+        .onChange(of: draft.type) { _, newValue in
             // Change icon based upon the chosen physical media type
             switch newValue {
             case .vinylRecord:
@@ -66,7 +84,7 @@ struct MediaDetailsEntryView: View {
         }
         .onChange(of: focusInTrackField) { _, focused in
             if !focused && !trackTitleText.isEmpty {
-                newMedia.tracks.append(trackTitleText)
+                draft.tracks.append(trackTitleText)
                 trackTitleText = ""
             }
         }
@@ -79,7 +97,7 @@ struct MediaDetailsEntryView: View {
                     // Cache the image
                     try ImageManager.shared.cache(image, withKey: key)
                     // Store the image key
-                    newMedia.imageKeys.append(key)
+                    draft.imageKeys.append(key)
                 }
             } catch {
                 print("There was an error caching the image.")
@@ -87,10 +105,13 @@ struct MediaDetailsEntryView: View {
             }
         }
         .toolbar {
-            Button("Done") {
+            Button("Done", systemImage: "checkmark") {
                 uploadCachedImages()
-                modelContext.insert(newMedia)
-                editingMediaDetails = false
+                save()
+                completion()
+                withAnimation {
+                    mediaAdded = true
+                }
             }
         }
     }
@@ -98,16 +119,19 @@ struct MediaDetailsEntryView: View {
     private var mediaImagesSection: some View {
         Section {
             // Official album art toggle
-            Toggle(isOn: $newMedia.displaysOfficialArtwork) {
+            Toggle(isOn: $draft.displaysOfficialArtwork) {
                 ListItemLabel(
                     color: .blue,
                     symbolName: "checkmark.seal.fill",
                     labelText: "Display Official Artwork"
                 )
             }
+            .alignmentGuide(.listRowSeparatorLeading) { dimensions in
+                return dimensions[.leading]
+            }
             
             // Add image menu
-            Menu {
+            Menu("Add photo") {
                 // Take Photo
                 Button {
                     presentCamera = true
@@ -121,60 +145,46 @@ struct MediaDetailsEntryView: View {
                 } label: {
                     Label("Photo Library", systemImage: "photo.on.rectangle")
                 }
-            } label: {
-                ListItemLabel(
-                    color: .green,
-                    symbolName: "plus.circle",
-                    labelText: "Add image",
-                    labelFontWeight: .semibold
-                )
             }
+            .foregroundStyle(.blue)
         } header : {
-            if !newMedia.imageKeys.isEmpty || (!newMedia.albumArtworkURL.isEmpty && newMedia.displaysOfficialArtwork) {
-                MediaImageCarousel(
-                    size: screenSize,
-                    albumArtworkURL: newMedia.displaysOfficialArtwork ? newMedia.albumArtworkURL : nil,
-                    mediaColor: newMedia.color,
-                    imageKeys: newMedia.imageKeys,
-                    mediaType: newMedia.type
-                )
-            }
-        }
-    }
-    
-    private var ownershipPickerSection: some View {
-        Section {
-            OwnershipPicker(selection: $newMedia.isOwned)
+            MediaImageCarousel(
+                for: draft.type,
+                with: draft.albumArtworkURL,
+                and: draft.color)
         }
     }
     
     private var physicalMediaDetailsSection: some View {
         Section {
+            // Ownership
+            OwnershipPicker(selection: $draft.isOwned)
+            
             // Type
-            Picker(selection: $newMedia.type) {
+            Picker(selection: $draft.type) {
                 ForEach(Media.MediaType.allCases) {
                     Text($0.rawValue)
                 }
             } label: {
-                ListItemLabel(color: .indigo, symbol: mediaTypeSymbol, labelText: "Media Type")
+                ListItemLabel(color: .orange, symbol: mediaTypeSymbol, labelText: "Media type")
             }
             
             // Condition
-            Picker(selection: $newMedia.condition) {
+            Picker(selection: $draft.condition) {
                 ForEach(Media.MediaCondition.allCases) {
                     Text($0.rawValue)
                 }
             } label: {
-                ListItemLabel(color: .purple, symbolName: "sparkles", labelText: "Media Condition")
+                ListItemLabel(color: .purple, symbolName: "sparkles", labelText: "Media condition")
             }
             
             //Color
-            if newMedia.type != .compactDisc {
+            if draft.type != .compactDisc {
                 ColorPicker(selection: $mediaColor, supportsOpacity: true) {
-                    ListItemLabel(color: .pink, symbolName: "paintpalette.fill", labelText: "Media color")
+                    ListItemLabel(color: .indigo, symbolName: "paintpalette.fill", labelText: "Media color")
                 }
                 .onChange(of: mediaColor) { _, newColor in
-                    newMedia.color = UIColor(newColor)
+                    draft.color = UIColor(newColor)
                 }
             }
         } header: {
@@ -186,41 +196,71 @@ struct MediaDetailsEntryView: View {
         Section {
             // Genre
             NavigationLink {
-                GenreSelectionView(selection: $newMedia.genre)
+                GenreSelectionView(selection: $draft.genre)
             } label: {
                 HStack {
                     ListItemLabel(color: .orange, symbolName: "guitars.fill", labelText: "Genre")
                     Spacer()
-                    if !newMedia.genre.isEmpty {
-                        Text(newMedia.genre)
+                    if !draft.genre.isEmpty {
+                        Text(draft.genre)
                             .foregroundStyle(.secondary)
                     }
                 }
             }
             // Release date
-            DatePicker(selection: $newMedia.releaseDate, displayedComponents: [.date]) {
-                ListItemLabel(color: .red, symbolName: "calendar", labelText: "Release Date")
+            DatePicker(selection: $draft.releaseDate, displayedComponents: [.date]) {
+                ListItemLabel(color: .red, symbolName: "calendar", labelText: "Release date")
+            }
+            .alignmentGuide(.listRowSeparatorLeading) { dimensions in
+                return dimensions[.leading]
             }
             // Title
-            TextField("Title", text: $newMedia.title)
+            TextField("Title", text: $draft.title)
+                .alignmentGuide(.listRowSeparatorLeading) { dimensions in
+                    return dimensions[.leading]
+                }
             // Artist
-            TextField("Artist", text: $newMedia.artist)
+            TextField("Artist", text: $draft.artist)
         } header: {
             Text("Album details")
         }
     }
     
     private var tracklistSection: some View {
-        Tracklist($newMedia.tracks, editMode: $editMode, isEditable: true) {
+        Tracklist($draft.tracks, editMode: $editMode, isEditable: true) {
             Text("Tracklist")
         }
     }
     
     private var notesSection: some View {
         NavigationLink {
-            MediaNotesEntryView(notes: $newMedia.notes)
+            MediaNotesEntryView(notes: $draft.notes)
         } label: {
             ListItemLabel(color: .yellow, symbolName: "note.text", labelText: "Notes")
+        }
+    }
+    
+    
+    private func save() {
+        if let media {
+            media.rawType = draft.rawType
+            media.rawCondition = draft.rawCondition
+            media.dateAdded = draft.dateAdded
+            media.releaseDate = draft.releaseDate
+            media.title = draft.title
+            media.artist = draft.artist
+            media.tracks = draft.tracks
+            media.displaysOfficialArtwork = draft.displaysOfficialArtwork
+            media.albumArtworkURL = draft.albumArtworkURL
+            media.imageKeys = draft.imageKeys
+            media.color = draft.color
+            media.notes = draft.notes
+            media.genre = draft.genre
+            media.isFavorite = draft.isFavorite
+            media.isOwned = draft.isOwned
+        } else {
+            let newMedia = Media(from: draft)
+            modelContext.insert(newMedia)
         }
     }
     
@@ -229,7 +269,7 @@ struct MediaDetailsEntryView: View {
     private func uploadCachedImages() {
         Task {
             do {
-                try await ImageManager.shared.uploadFromCache(keys: newMedia.imageKeys)
+                try await ImageManager.shared.uploadFromCache(keys: draft.imageKeys)
             } catch {
                 print(error.localizedDescription)
             }

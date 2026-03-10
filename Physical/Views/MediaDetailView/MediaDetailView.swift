@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct MediaDetailView: View {
-    @Environment(\.screenSize) private var screenSize
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    @State private var media: Media
+    @Bindable var media: Media
     @State private var isEditing: Bool = false
+    @State private var isSharing: Bool = false
     
     init(media: Media) {
         self.media = media
@@ -24,14 +24,20 @@ struct MediaDetailView: View {
             // Album details
             Section {
                 tracklist
+                    .listRowBackground(EmptyView())
             } header: {
                 albumArtWithDetails
             } footer: {
                 tracklistFooter
+                    .foregroundStyle(.primary)
             }
+            .listRowSeparator(.hidden)
             
             // Notes
-            if !media.notes.isEmpty { notes }
+            if !media.notes.isEmpty {
+                notes
+                    .listRowBackground(EmptyView())
+            }
         }
         .listStyle(.grouped)
         .scrollContentBackground(.hidden)
@@ -55,9 +61,9 @@ struct MediaDetailView: View {
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $isEditing) {
-            @Bindable var newMedia = media
-            MediaDetailsEntryView(newMedia: $newMedia, isPresented: $isEditing)
+            MediaDetailsEntryView(media: media) { isEditing = false }
         }
+        .navigationDestination(isPresented: $isSharing) { ShareableView(for: media) }
     }
     
     private var moreMenu: some View {
@@ -66,8 +72,8 @@ struct MediaDetailView: View {
                 media.isFavorite.toggle()
             } label: {
                 Label(
-                    "Favorite",
-                    systemImage: media.isFavorite ? "heart.fill" : "heart"
+                    media.isFavorite ? "Undo favorite" : "Favorite",
+                    systemImage: media.isFavorite ? "heart.fill" : "heart.slash.fill"
                 )
             }
             Divider()
@@ -77,7 +83,7 @@ struct MediaDetailView: View {
                 Label("Edit details", systemImage: "square.and.pencil")
             }
             Button {
-                // TODO: Generate image to share
+                self.isSharing = true
             } label: {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
@@ -93,7 +99,7 @@ struct MediaDetailView: View {
             Label("More", systemImage: "ellipsis")
                 .labelStyle(.iconOnly)
                 .frame(width: 18, height: 18)
-                .foregroundStyle(Color.darkGreen)
+                .foregroundStyle(.physicalGreen)
         }
         .menuStyle(.button)
         .tint(nil)
@@ -102,12 +108,9 @@ struct MediaDetailView: View {
     private var albumArtWithDetails: some View {
         VStack {
             MediaImageCarousel(
-                size: screenSize,
-                albumArtworkURL: media.albumArtworkURL,
-                mediaColor: media.color,
-                imageKeys: media.imageKeys,
-                mediaType: media.type
-            )
+                for: media.type,
+                with: media.albumArtworkURL,
+                and: media.color)
             VStack {
                 // Title
                 Text(media.title)
@@ -141,6 +144,7 @@ struct MediaDetailView: View {
                     .foregroundStyle(.secondary)
                 Text("\(media.releaseDate, format: .dateTime.month().day().year())")
                     .font(.body)
+                    .foregroundStyle(.primary)
             }
             
             VStack(alignment: .leading) {
@@ -150,6 +154,7 @@ struct MediaDetailView: View {
                     .foregroundStyle(.secondary)
                 Text("\(media.dateAdded, format: .dateTime.month().day().year())")
                     .font(.body)
+                    .foregroundStyle(.primary)
             }
         }
         .padding(.vertical)
@@ -157,6 +162,8 @@ struct MediaDetailView: View {
     
     private var tracklist: some View {
         Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
+            Divider()
+            
             ForEach(Array(media.tracks.enumerated()), id: \.element) { trackIndex, trackTitle in
                 GridRow {
                     Text("\(trackIndex + 1)")
@@ -170,25 +177,31 @@ struct MediaDetailView: View {
                     }
                 }
                 
-                if let lastTrack = media.tracks.last,
-                   trackTitle != lastTrack {
-                    Divider()
-                }
+                Divider()
+                    .gridColumnAlignment(.listRowSeparatorLeading)
             }
         }
     }
     
     private var notes: some View {
-        Section {
-            Text(media.notes)
-        } header: {
-            Label("Notes", systemImage: "note.text")
-                .labelStyle(.titleAndIcon)
-                .textCase(nil)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundStyle(.primary)
+        HStack {
+            VStack(alignment: .leading, spacing: 16) {
+                Label("Notes", systemImage: "note.text")
+                    .labelStyle(.titleAndIcon)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
+                Text(media.notes)
+            }
+            .padding()
+            
+            Spacer()
         }
+        .frame(maxWidth: .infinity)
         .listRowSeparator(.hidden)
+        .background {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(UIColor.secondarySystemBackground))
+        }
     }
 }
