@@ -123,7 +123,7 @@ struct MediaDetailsEntryView: View {
                 ListItemLabel(
                     color: .blue,
                     symbolName: "checkmark.seal.fill",
-                    labelText: "Display Official Artwork"
+                    labelText: "Display model"
                 )
             }
             .alignmentGuide(.listRowSeparatorLeading) { dimensions in

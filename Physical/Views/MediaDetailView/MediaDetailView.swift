@@ -73,7 +73,7 @@ struct MediaDetailView: View {
             } label: {
                 Label(
                     media.isFavorite ? "Undo favorite" : "Favorite",
-                    systemImage: media.isFavorite ? "heart.fill" : "heart.slash.fill"
+                    systemImage: media.isFavorite ? "heart.slash.fill" : "heart.fill"
                 )
             }
             Divider()
