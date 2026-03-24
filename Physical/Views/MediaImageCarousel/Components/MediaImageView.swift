@@ -13,43 +13,35 @@ struct MediaImageView: View {
     
     private let key: String?
     private let url: URL?
-    private var screenSize: CGSize
-    private var motion = Motion()
     
     @State private var image: UIImage? = nil
     
-    init(url: String, size: CGSize) {
+    init(url: String) {
         self.key = nil
         self.url = URL(string: url)
-        self.screenSize = size
     }
     
-    init(url: URL?, size: CGSize) {
+    init(url: URL?) {
         self.key = nil
         self.url = url
-        self.screenSize = size
     }
     
-    init(key: String, size: CGSize) {
+    init(key: String) {
         self.key = key
         self.url = nil
-        self.screenSize = size
     }
     
     var body: some View {
-        let imageSize = screenSize.width * 0.85
         ZStack {
             if let image {
-                albumArt(size: imageSize) {
-                    Image(uiImage: image)
-                }
+                Image(uiImage: image)
+                    .resizable()
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .aspectRatio(contentMode: .fill)
             } else {
                 mediaImagePlaceholder
             }
         }
-        .shiny(.glossy(.clear))
-        .floating(screenSize: screenSize)
-        .reflection(screenSize: screenSize)
         .task {
             do {
                 if let url {
@@ -63,31 +55,16 @@ struct MediaImageView: View {
         }
     }
     
-    private func albumArt(size: CGFloat, @ViewBuilder _ image: () -> Image) -> some View {
-        let roundedRect = RoundedRectangle(cornerRadius: 8)
-        return image()
-            .resizable()
-            .clipShape(roundedRect)
-            .aspectRatio(contentMode: .fit)
-            .frame(width: size, height: size)
-            .overlay {
-                roundedRect.stroke(lineWidth: 0.5)
-                    .foregroundStyle(.secondary)
-            }
-    }
-    
     private var mediaImagePlaceholder: some View {
-        let imageSize = screenSize.width * 0.85
         return Color(UIColor.secondarySystemGroupedBackground)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .aspectRatio(contentMode: .fit)
-            .frame(width: imageSize, height: imageSize)
+            .aspectRatio(contentMode: .fill)
             .overlay {
                 VStack {
                     Image(systemName: placeholderAlbumArtSymbolName)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .padding(imageSize * 0.2)
+                        .padding()
                         .foregroundStyle(.ultraThinMaterial)
                 }
             }

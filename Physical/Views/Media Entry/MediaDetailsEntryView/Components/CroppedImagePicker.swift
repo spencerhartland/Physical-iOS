@@ -241,6 +241,7 @@ fileprivate struct CropView: View {
     private func convertImage() {
         let renderer = ImageRenderer(content: imageView(showHandles: false))
         renderer.proposedSize = .init(crop)
+        renderer.scale = 1024.0 / crop.width
         self.croppedImage = renderer.uiImage
     }
 }

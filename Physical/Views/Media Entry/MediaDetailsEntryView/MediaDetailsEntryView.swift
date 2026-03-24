@@ -148,10 +148,7 @@ struct MediaDetailsEntryView: View {
             }
             .foregroundStyle(.blue)
         } header : {
-            MediaImageCarousel(
-                for: draft.type,
-                with: draft.albumArtworkURL,
-                and: draft.color)
+            MediaImageCarousel(for: draft)
         }
     }
     
