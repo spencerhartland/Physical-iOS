@@ -19,17 +19,28 @@ struct MediaThumbnail: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            switch media.type {
-            case .vinylRecord:
-                PhysicalMedia.vinylRecordThumbnail(
-                    media.albumArtworkURL,
-                    media.color,
-                    rotationXY: (0, -0.08)
-                )
-            case .compactDisc:
-                PhysicalMedia.compactDiscThumbnail(media.albumArtworkURL)
-            case .compactCassette:
-                PhysicalMedia.compactCassetteThumbnail(media.albumArtworkURL, media.color)
+            if media.displaysOfficialArtwork {
+                switch media.type {
+                case .vinylRecord:
+                    PhysicalMedia.vinylRecordThumbnail(
+                        media.albumArtworkURL,
+                        media.color,
+                        rotationXY: (0, -0.08)
+                    )
+                case .compactDisc:
+                    PhysicalMedia.compactDiscThumbnail(media.albumArtworkURL)
+                case .compactCassette:
+                    PhysicalMedia.compactCassetteThumbnail(media.albumArtworkURL, media.color)
+                }
+            } else {
+                if let imageKey = media.imageKeys.first {
+                    MediaImageView(key: imageKey)
+                        .aspectRatio(1, contentMode: .fit)
+                        .padding([.horizontal, .top], 8)
+                    Spacer()
+                } else {
+                    PlaceholderView()
+                }
             }
             
             albumInfo

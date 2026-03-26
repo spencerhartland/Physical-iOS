@@ -122,13 +122,14 @@ struct MediaDetailsEntryView: View {
             Toggle(isOn: $draft.displaysOfficialArtwork) {
                 ListItemLabel(
                     color: .blue,
-                    symbolName: "checkmark.seal.fill",
+                    symbolName: draft.displaysOfficialArtwork ? "eye.fill" : "eye.slash.fill",
                     labelText: "Display model"
                 )
             }
             .alignmentGuide(.listRowSeparatorLeading) { dimensions in
                 return dimensions[.leading]
             }
+            .disabled(draft.imageKeys.isEmpty)
             
             // Add image menu
             Menu("Add photo") {

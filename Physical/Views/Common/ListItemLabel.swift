@@ -65,6 +65,7 @@ struct ListItemLabel: View {
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(.white)
                     .padding(4)
+                    .contentTransition(.symbolEffect(.replace))
             }
             .aspectRatio(1.0, contentMode: .fill)
             .frame(width: iconSize, height: iconSize)

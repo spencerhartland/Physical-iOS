@@ -39,7 +39,7 @@ struct MediaImageView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .aspectRatio(contentMode: .fill)
             } else {
-                mediaImagePlaceholder
+                PlaceholderView()
             }
         }
         .task {
@@ -53,20 +53,5 @@ struct MediaImageView: View {
                 print(error.localizedDescription)
             }
         }
-    }
-    
-    private var mediaImagePlaceholder: some View {
-        return Color(UIColor.secondarySystemGroupedBackground)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .aspectRatio(contentMode: .fill)
-            .overlay {
-                VStack {
-                    Image(systemName: placeholderAlbumArtSymbolName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding()
-                        .foregroundStyle(.ultraThinMaterial)
-                }
-            }
     }
 }
