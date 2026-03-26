@@ -104,7 +104,6 @@ final class ImageManager {
     /// - Parameter key: The image's assigned key.
     func removeImage(withKey key: String) throws {
         try cache.removeImage(forKey: key)
-        // TODO: Remove from server and remove key from media
     }
     
     /// Fetches the image at the provided URL.

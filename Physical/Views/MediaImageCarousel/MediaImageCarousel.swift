@@ -14,6 +14,7 @@ struct MediaImageCarousel: View {
     
     @Environment(\.screenSize) private var screenSize
     @State private var currentPage: Int = 0
+    @State private var isConfirmingEdit: Bool = false
     // Scrub gesture
     @State private var isScrubbing: Bool = false
     @State private var scrubOffset: CGFloat = 0
@@ -25,6 +26,7 @@ struct MediaImageCarousel: View {
     private var mediaColor: UIColor
     private var mediaImageKeys: [String]
     private var shouldShowModel: Bool
+    private var onDelete: ((String) -> Void)?
     private var pageIndexOffset: Int { shouldShowModel ? 1 : 0 }
     private var pages: [Int] {
         let pageCount = mediaImageKeys.count + pageIndexOffset
@@ -33,20 +35,22 @@ struct MediaImageCarousel: View {
         return result
     }
     
-    init(for media: Media) {
+    init(for media: Media, _ onDelete: ((String) -> Void)? = nil) {
         self.mediaType = media.type
         self.mediaAlbumArtworkURL = media.albumArtworkURL
         self.mediaColor = media.color
         self.mediaImageKeys = media.imageKeys
         self.shouldShowModel = media.displaysOfficialArtwork
+        self.onDelete = onDelete
     }
     
-    init(for draft: MediaDraft) {
+    init(for draft: MediaDraft, _ onDelete: ((String) -> Void)? = nil) {
         self.mediaType = draft.type
         self.mediaAlbumArtworkURL = draft.albumArtworkURL
         self.mediaColor = draft.color
         self.mediaImageKeys = draft.imageKeys
         self.shouldShowModel = draft.displaysOfficialArtwork
+        self.onDelete = onDelete
     }
     
     var body: some View {
@@ -79,13 +83,37 @@ struct MediaImageCarousel: View {
             
             ForEach(Array(mediaImageKeys.enumerated()), id: \.offset) { index, key in
                 Tab(value: index + pageIndexOffset) {
-                    MediaImageView(key: key)
-                        .padding()
+                    ZStack(alignment: .bottomTrailing) {
+                        MediaImageView(key: key)
+                        if onDelete != nil { deleteButton(for: key) }
+                    }
+                    .padding()
                 }
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .aspectRatio(1.0, contentMode: .fit)
+    }
+    
+    private func deleteButton(for key: String) -> some View {
+        Button(role: .destructive) {
+            isConfirmingEdit = true
+        } label: {
+            Label("Remove photo", systemImage: "trash")
+        }
+        .labelStyle(.iconOnly)
+        .standardButtonStyle()
+        .buttonBorderShape(.circle)
+        .controlSize(.large)
+        .padding()
+        .confirmationDialog("Remove photo?", isPresented: $isConfirmingEdit) {
+            Button("Remove photo", role: .destructive) {
+                isConfirmingEdit = false
+                if let onDelete { onDelete(key) }
+            }
+        } message: {
+            Text("This photo will be removed. Are you sure?")
+        }
     }
     
     private var thumbnailPicker: some View {
@@ -128,6 +156,21 @@ struct MediaImageCarousel: View {
                 thumbnail(for: index + pageIndexOffset) { MediaImageView(key: key) }
             }
         }
+    }
+    
+    private func thumbnail(for page: Int, _ image: @escaping () -> some View) -> some View {
+        let isFocused = page == currentPage && !isScrubbing
+        let width: CGFloat = isFocused ? thumbnailSize : (thumbnailSize / 2)
+        
+        return ZStack {
+            Color(uiColor: .secondarySystemBackground)
+            image()
+        }
+        .frame(width: width, height: thumbnailSize)
+        .mask(RoundedRectangle(cornerRadius: 8.0))
+        .animation(.default, value: currentPage)
+        .animation(.default, value: isScrubbing)
+        .padding(.horizontal, isFocused ? 8 : 0)
     }
     
     private var scrubGesture: some Gesture {
@@ -204,21 +247,6 @@ struct MediaImageCarousel: View {
             x += w + thumbnailSpacing
         }
         return nil
-    }
-    
-    private func thumbnail(for page: Int, _ image: @escaping () -> some View) -> some View {
-        let isFocused = page == currentPage && !isScrubbing
-        let width: CGFloat = isFocused ? thumbnailSize : (thumbnailSize / 2)
-        
-        return ZStack {
-            Color(uiColor: .secondarySystemBackground)
-            image()
-        }
-        .frame(width: width, height: thumbnailSize)
-        .mask(RoundedRectangle(cornerRadius: 8.0))
-        .animation(.default, value: currentPage)
-        .animation(.default, value: isScrubbing)
-        .padding(.horizontal, isFocused ? 8 : 0)
     }
 }
 

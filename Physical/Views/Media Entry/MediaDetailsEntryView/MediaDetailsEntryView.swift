@@ -149,7 +149,24 @@ struct MediaDetailsEntryView: View {
             }
             .foregroundStyle(.blue)
         } header : {
-            MediaImageCarousel(for: draft)
+            MediaImageCarousel(for: draft) { keyToRemove in
+                // Remove key from media
+                draft.imageKeys.removeAll { key in
+                    return key == keyToRemove
+                }
+                // Remove key / image from cache
+                do {
+                    try ImageManager.shared.removeImage(withKey: keyToRemove)
+                } catch {
+                    Log.general.error("Unable to remove image: \(error.localizedDescription).")
+                }
+                // Enforce no placeholder
+                if draft.imageKeys.isEmpty {
+                    withAnimation { draft.displaysOfficialArtwork = true }
+                }
+                // Save changes
+                save()
+            }
         }
     }
     
