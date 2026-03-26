@@ -17,6 +17,8 @@ struct RootView: View {
     @State private var mediaAdded: Bool = false
     @State private var shouldShowMediaAddedToast: Bool = false
     
+    @State private var shouldHideStatusBar: Bool = false
+    
     var body: some View {
         NavigationStack(path: $navigationManager.path) {
             MediaCollectionView()
@@ -38,6 +40,8 @@ struct RootView: View {
                                     navigationManager.path.append(MediaEntryStep.albumSearch(.manual))
                                 }
                             }
+                            .onAppear { shouldHideStatusBar = true }
+                            .onDisappear { shouldHideStatusBar = false }
                         case .detailEdit:
                             MediaDetailsEntryView(draft: $draft, mediaAdded: $mediaAdded) {
                                 let steps = navigationManager.path.count - 1
@@ -71,5 +75,6 @@ struct RootView: View {
                     }
                 }
         }
+        .statusBarHidden(shouldHideStatusBar)
     }
 }
