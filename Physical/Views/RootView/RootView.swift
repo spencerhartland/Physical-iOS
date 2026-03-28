@@ -74,6 +74,20 @@ struct RootView: View {
                         mediaAdded = false
                     }
                 }
+                .onChange(of: navigationManager.path) { oldPath, newPath in
+                    guard newPath.count < oldPath.count, !mediaAdded else { return }
+                    
+                    if let abortedStep = oldPath.last {
+                        switch abortedStep {
+                        case .detailEdit:
+                            let title = draft.title
+                            draft = MediaDraft()
+                            draft.title = title
+                        case .albumSearch:
+                            draft = MediaDraft()
+                        }
+                    }
+                }
         }
         .statusBarHidden(shouldHideStatusBar)
     }
