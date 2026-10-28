@@ -22,7 +22,7 @@ struct MediaCollectionView: View {
     
     @Environment(\.openURL) private var openURL
     @Environment(\.modelContext) private var context
-    @Environment(\.navigationManager) private var navigationManager
+    @Environment(NavigationManager.self) private var navigationManager
     
     // View State
     @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
@@ -42,28 +42,27 @@ struct MediaCollectionView: View {
             }
         }
         .navigationTitle(collectionFilterOption == .allMedia ? "Collection" : collectionFilterOption.rawValue)
+        .navigationSubtitleIfAvailable(mediaItemTotals)
         .toolbarTitleDisplayMode(.large)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                filterAndSortMenu
-            }
-            
-            ToolbarItem {
+            ToolbarItemGroup {
+                NavigationLink(value: MediaEntryStep.albumSearch(.manual)) {
+                    Label("Add media", systemImage: "plus")
+                        .labelStyle(.iconOnly)
+                }
+                
                 NavigationLink(value: MediaEntryStep.albumSearch(.barcode)) {
                     Label("Scan barcode", systemImage: "barcode.viewfinder")
                         .labelStyle(.iconOnly)
                 }
             }
             
-            if #available(iOS 26.0, *) {
+            if #available(anyAppleOS 26.0, *) {
                 ToolbarSpacer(.fixed)
             }
             
             ToolbarItem {
-                NavigationLink(value: MediaEntryStep.albumSearch(.manual)) {
-                    Label("Add media", systemImage: "plus")
-                        .labelStyle(.iconOnly)
-                }
+                filterAndSortMenu
             }
         }
         .alert("Apple Music access is disabled!", isPresented: $musicAuthorizationDenied) {
@@ -162,6 +161,45 @@ struct MediaCollectionView: View {
         result = result.sorted(using: collectionSortOption.sortDescriptor)
 
         return result
+    }
+    
+    private var mediaItemTotals: Text {
+        if media.isEmpty { return Text("No items") }
+        
+        let filteredMediaGroupedByType = Dictionary(grouping: filteredMedia, by: { $0.type })
+        var vinylRecordCount = 0
+        var compactDiscCount = 0
+        var compactCassetteCount = 0
+        
+        for (type, items) in filteredMediaGroupedByType {
+            switch type {
+            case .vinylRecord:
+                vinylRecordCount = items.count
+            case .compactDisc:
+                compactDiscCount = items.count
+            case .compactCassette:
+                compactCassetteCount = items.count
+            }
+        }
+        
+        let separator = " ・ "
+        var totals = ""
+        if vinylRecordCount > 0 {
+            totals.append("\(vinylRecordCount) vinyl record")
+            if vinylRecordCount > 1 { totals.append("s") }
+        }
+        if compactDiscCount > 0 {
+            if !totals.isEmpty { totals.append(separator) }
+            totals.append("\(compactDiscCount) CD")
+            if compactDiscCount > 1 { totals.append("s") }
+        }
+        if compactCassetteCount > 0 {
+            if !totals.isEmpty { totals.append(separator) }
+            totals.append("\(compactCassetteCount) cassette")
+            if compactCassetteCount > 1 { totals.append("s") }
+        }
+        
+        return Text(totals)
     }
     
     private var categorizedMedia: [(String, [Media])] {

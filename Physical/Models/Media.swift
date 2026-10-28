@@ -9,12 +9,15 @@ import Foundation
 import SwiftData
 import MusicKit
 import UIKit
+import WidgetKit
+import PhysicalMediaKit
 
 @Model
 final class Media {
     var rawType: String
     var rawCondition: String
-    
+
+    var id: UUID = UUID()
     var type: MediaType {
         get {
             return MediaType(rawValue: self.rawType)!
@@ -47,7 +50,7 @@ final class Media {
     var genre: String
     var isFavorite: Bool
     var isOwned: Bool
-    
+
     init() {
         self.rawType = MediaType.vinylRecord.rawValue
         self.rawCondition = MediaCondition.nearMint.rawValue
@@ -64,13 +67,13 @@ final class Media {
         self.isFavorite = false
         self.isOwned = true
     }
-    
+
     init(
         artworkURL: URL? = nil,
         color: UIColor = .black,
         title: String,
         artist: String,
-        type: Media.MediaType,
+        type: MediaType,
         tracks: [String],
         genre: String,
         releaseDate: Date,
@@ -83,7 +86,7 @@ final class Media {
         self.displaysOfficialArtwork = true
         self.imageKeys = []
         self.notes = ""
-        
+
         self.albumArtworkURL = artworkURL
         self.color = color
         self.title = title
@@ -94,7 +97,7 @@ final class Media {
         self.isFavorite = isFavorite
         self.isOwned = isOwned
     }
-    
+
     init(from draft: MediaDraft) {
         self.rawType = draft.rawType
         self.rawCondition = draft.rawCondition
@@ -112,16 +115,7 @@ final class Media {
         self.isFavorite = draft.isFavorite
         self.isOwned = draft.isOwned
     }
-    
-    enum MediaType: String, Codable, CaseIterable, Identifiable, Equatable {
-        var id: Self {
-            return self
-        }
-        case vinylRecord = "Vinyl Record"
-        case compactDisc = "Compact Disc"
-        case compactCassette = "Compact Cassette"
-    }
-    
+
     enum MediaCondition: String, Codable, CaseIterable, Identifiable, Equatable {
         var id: Self {
             return self
@@ -134,7 +128,7 @@ final class Media {
         case fair = "Fair"
         case poor = "Poor"
     }
-    
+
     @MainActor
     public func resetInfo() {
         self.rawType = MediaType.vinylRecord.rawValue
@@ -152,7 +146,7 @@ final class Media {
         self.isFavorite = false
         self.isOwned = true
     }
-    
+
     @MainActor
     public func updateWithInfo(from album: Album) {
         Task {
@@ -166,13 +160,13 @@ final class Media {
         self.releaseDate = album.releaseDate ?? .now
         self.albumArtworkURL = getArtworkURL(from: album.artwork)
     }
-    
+
     @MainActor
     private func updateWithDetailedInfo(genre: String, tracks: [String]) {
         self.genre = genre
         self.tracks = tracks
     }
-    
+
     private func fetchRelatedData(from album: Album) async -> (String, [String])? {
         do {
             let detailedAlbum = try await album.with([.tracks, .genres])
@@ -192,7 +186,7 @@ final class Media {
             return nil
         }
     }
-    
+
     private func getArtworkURL(from artwork: Artwork?) -> URL? {
         guard let artwork = artwork,
               let url = artwork.url(width: 1080, height: 1080) else {

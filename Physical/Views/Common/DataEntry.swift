@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhysicalMediaKit
 
 struct DateEntryListItemView: View {
     private let rightChevronSymbol = "chevron.right"
@@ -54,10 +55,10 @@ struct MediaTypeSelectionListItemView: View {
     let prompt: String
     let footer: String?
     
-    @Binding var input: Media.MediaType
+    @Binding var input: MediaType
     @State private var userHasSelected = false
     
-    init(header: String, prompt: String, footer: String? = nil, input: Binding<Media.MediaType>) {
+    init(header: String, prompt: String, footer: String? = nil, input: Binding<MediaType>) {
         self.header = header
         self.prompt = prompt
         self.footer = footer
@@ -82,7 +83,7 @@ struct MediaTypeSelectionListItemView: View {
     }
     
     private var multichoice: some View {
-        List(Media.MediaType.allCases) { mediaType in
+        List(MediaType.allCases) { mediaType in
             Button {
                 input = mediaType
             } label: {

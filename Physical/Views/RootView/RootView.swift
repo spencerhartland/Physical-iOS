@@ -9,8 +9,12 @@ import SwiftUI
 import SwiftData
 
 struct RootView: View {
-    // Navigation
-    @State private var navigationManager = NavigationManager()
+    @Environment(NavigationManager.self) private var navigationManager
+    @Environment(\.modelContext) private var modelContext
+    
+    // Widget
+    @State private var widgetURLReceived = false
+    @State private var requestedMedia: Media? = nil
     
     // Media addition
     @State private var draft = MediaDraft()
@@ -20,9 +24,25 @@ struct RootView: View {
     @State private var shouldHideStatusBar: Bool = false
     
     var body: some View {
+        @Bindable var navigationManager = navigationManager
+        
         NavigationStack(path: $navigationManager.path) {
             MediaCollectionView()
-                .environment(\.navigationManager, navigationManager)
+                .onOpenURL { url in
+                    if let mediaID = UUID(uuidString: url.lastPathComponent) {
+                        let fetchDesc = FetchDescriptor<Media>(
+                            predicate: #Predicate { $0.id == mediaID }
+                        )
+                        if let result = try? modelContext.fetch(fetchDesc),
+                           let media = result.first {
+                            requestedMedia = media
+                            widgetURLReceived = true
+                        }
+                    }
+                }
+                .navigationDestination(isPresented: $widgetURLReceived) {
+                    if let requestedMedia { MediaDetailView(media: requestedMedia) }
+                }
                 .navigationDestination(for: MediaEntryStep.self) { step in
                     @Bindable var draft = self.draft
                     
@@ -91,4 +111,15 @@ struct RootView: View {
         }
         .statusBarHidden(shouldHideStatusBar)
     }
+}
+
+#Preview {
+    @Previewable @State var navigationManager = NavigationManager()
+    
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let modelContainer = try! ModelContainer(for: Media.self, configurations: configuration)
+    
+    RootView()
+        .modelContainer(modelContainer)
+        .environment(navigationManager)
 }

@@ -21,7 +21,7 @@ struct MediaImageCarousel: View {
     @State private var scrubBaseOffset: CGFloat = 0
     @State private var containerCenterX: CGFloat = 0
     
-    private var mediaType: Media.MediaType
+    private var mediaType: MediaType
     private var mediaAlbumArtworkURL: URL?
     private var mediaColor: UIColor
     private var mediaImageKeys: [String]
