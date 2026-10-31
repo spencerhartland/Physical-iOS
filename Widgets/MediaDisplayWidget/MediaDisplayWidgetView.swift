@@ -10,6 +10,8 @@ import WidgetKit
 import PhysicalMediaKit
 
 struct MediaDisplayWidgetView: View {
+    @State private var thumbnail: UIImage?
+    
     var entry: MediaDisplayEntry
     let widgetURL: URL?
     
@@ -24,11 +26,17 @@ struct MediaDisplayWidgetView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            mediaThumbnail
-            albumInfo
+        GeometryReader { proxy in
+            VStack(alignment: .leading) {
+                mediaThumbnail
+                albumInfo
+            }
+            .frame(width: proxy.size.width, height: proxy.size.height)
         }
-        .containerBackground(backgroundStyle, for: .widget)
+        .containerBackground(
+            backgroundStyle,
+            for: .widget
+        )
         .widgetURL(widgetURL)
     }
     
@@ -80,14 +88,6 @@ struct MediaDisplayWidgetView: View {
     }
     
     private var backgroundStyle: some ShapeStyle {
-        LinearGradient(
-            colors: [
-                Color(uiColor: .secondarySystemBackground),
-                Color(uiColor: .systemBackground),
-            ],
-            startPoint: .bottom,
-            endPoint: .top,
-        )
+        Color(uiColor: .systemBackground).gradient
     }
 }
-

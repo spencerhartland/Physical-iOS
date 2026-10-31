@@ -16,8 +16,11 @@ struct MediaDetailView: View {
     @State private var isEditing: Bool = false
     @State private var isSharing: Bool = false
     
-    init(media: Media) {
+    let allowsNavigationBackwards: Bool
+    
+    init(for media: Media, allowsNavigationBackwards: Bool = true) {
         self.media = media
+        self.allowsNavigationBackwards = allowsNavigationBackwards
     }
     
     var body: some View {
@@ -44,19 +47,29 @@ struct MediaDetailView: View {
         .scrollContentBackground(.hidden)
         .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Label("Back", systemImage: "chevron.backward")
-                        .labelStyle(.iconOnly)
+            if allowsNavigationBackwards {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Label("Back", systemImage: "chevron.backward")
+                            .labelStyle(.iconOnly)
+                    }
+                    .tint(nil)
+                    .fontWeight(.medium)
                 }
-                .tint(nil)
-                .fontWeight(.medium)
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                moreMenu
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    moreMenu
+                }
+            } else {
+                if #available(anyAppleOS 26.0, *) {
+                    ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    moreMenu
+                }
             }
         }
         .navigationBarBackButtonHidden()
@@ -65,6 +78,7 @@ struct MediaDetailView: View {
             MediaDetailsEntryView(media: media) { isEditing = false }
         }
         .navigationDestination(isPresented: $isSharing) { ShareableView(for: media) }
+        .onHingeOpen { if allowsNavigationBackwards { dismiss() } }
     }
     
     private var moreMenu: some View {

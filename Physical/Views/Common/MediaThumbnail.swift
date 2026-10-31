@@ -5,11 +5,12 @@
 //  Created by Spencer Hartland on 7/18/23.
 //
 
+import SwiftData
 import SwiftUI
 import PhysicalMediaKit
 
 struct MediaThumbnail: View {
-    private let favoriteSymbol = "heart.fill"
+    @Environment(\.modelContext) private var context
     
     @Bindable var media: Media
     
@@ -22,11 +23,7 @@ struct MediaThumbnail: View {
             if media.displaysOfficialArtwork {
                 switch media.type {
                 case .vinylRecord:
-                    PhysicalMedia.vinylRecordThumbnail(
-                        media.albumArtworkURL,
-                        media.color,
-                        rotationXY: (0, -0.08)
-                    )
+                    PhysicalMedia.vinylRecordThumbnail(media.albumArtworkURL, media.color)
                 case .compactDisc:
                     PhysicalMedia.compactDiscThumbnail(media.albumArtworkURL)
                 case .compactCassette:
@@ -47,10 +44,39 @@ struct MediaThumbnail: View {
                 .padding(.horizontal, 12)
                 .padding(.bottom, 8)
         }
+        .padding(8)
         .background {
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 16)
                 .fill(Color(UIColor.secondarySystemBackground))
         }
+        .contextMenu {
+            Button {
+                media.isFavorite.toggle()
+                
+                if media.isFavorite {
+                    Task { await WidgetRenderer.renderThumbnailsForFavorite(media) }
+                }
+            } label: {
+                Label(
+                    media.isFavorite ? "Undo Favorite" : "Favorite",
+                    systemImage: media.isFavorite ? "heart.slash.fill" : "heart.fill")
+            }
+            Divider()
+            NavigationLink {
+                ShareableView(for: media)
+            } label: {
+                Label("Share", systemImage: "square.and.arrow.up")
+            }
+            Divider()
+            Button(role: .destructive) {
+                context.delete(media)
+            } label: {
+                Label(
+                    "Delete",
+                    systemImage: "trash")
+            }
+        }
+        .sensoryFeedback(.success, trigger: media.isFavorite)
     }
     
     private var albumInfo: some View {
@@ -61,7 +87,7 @@ struct MediaThumbnail: View {
                     .foregroundStyle(.primary)
                     .lineLimit(1)
                 if media.isFavorite {
-                    Image(systemName: favoriteSymbol)
+                    Image(systemName: "heart.fill")
                         .foregroundStyle(.physicalGreen)
                 }
             }

@@ -11,25 +11,9 @@ import SwiftData
 struct MediaImageView: View {
     private let placeholderAlbumArtSymbolName = "music.note"
     
-    private let key: String?
-    private let url: URL?
-    
     @State private var image: UIImage? = nil
     
-    init(url: String) {
-        self.key = nil
-        self.url = URL(string: url)
-    }
-    
-    init(url: URL?) {
-        self.key = nil
-        self.url = url
-    }
-    
-    init(key: String) {
-        self.key = key
-        self.url = nil
-    }
+    let key: String
     
     var body: some View {
         ZStack {
@@ -44,11 +28,7 @@ struct MediaImageView: View {
         }
         .task {
             do {
-                if let url {
-                    image = try await ImageManager.shared.fetchImage(url: url)
-                } else if let key {
-                    image = try await ImageManager.shared.retrieveImage(withKey: key)
-                }
+                image = try await ImageManager.shared.retrieveImage(withKey: key)
             } catch {
                 print(error.localizedDescription)
             }

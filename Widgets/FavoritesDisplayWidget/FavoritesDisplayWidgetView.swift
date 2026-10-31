@@ -5,9 +5,11 @@
 //  Created by Spencer Hartland on 5/20/26.
 //
 
+import Foundation
+import OSLog
+import PhysicalMediaKit
 import SwiftUI
 import WidgetKit
-import PhysicalMediaKit
 
 struct FavoritesDisplayWidgetView: View {
     var entry: FavoritesDisplayEntry
@@ -71,14 +73,7 @@ struct FavoritesDisplayWidgetView: View {
     }
     
     private var backgroundStyle: some ShapeStyle {
-        LinearGradient(
-            colors: [
-                Color(uiColor: .secondarySystemBackground),
-                Color(uiColor: .systemBackground),
-            ],
-            startPoint: .bottom,
-            endPoint: .top,
-        )
+        Color(uiColor: .systemBackground).gradient
     }
 }
 
@@ -89,30 +84,38 @@ extension FavoritesDisplayWidgetView {
         var body: some View {
             let enumeratedThumbnailKeys = Array(thumbnailKeys.enumerated())
             
-            ZStack {
-                ForEach(enumeratedThumbnailKeys, id: \.offset) { index, key in
-                    coverFlowItem(for: key, at: index)
+            GeometryReader { proxy in
+                let width: CGFloat = proxy.size.width
+                let itemWidth: CGFloat = width * 0.65
+                let remainingWidth: CGFloat = width - itemWidth
+                
+                ZStack(alignment: .leading) {
+                    ForEach(enumeratedThumbnailKeys, id: \.offset) { index, key in
+                        let offset: CGFloat = {
+                            (remainingWidth / CGFloat(thumbnailKeys.count - 1)) * CGFloat(index)
+                        }()
+                        
+                        coverFlowItem(for: key, at: index)
+                            .frame(maxWidth: itemWidth)
+                            .offset(x: offset)
+                            .zIndex(Double(-index))
+                    }
                 }
+                .frame(width: proxy.size.width, height: proxy.size.height, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
         
         private func coverFlowItem(for key: String, at index: Int) -> some View {
-            let imageOffset: CGFloat = {
-                if index == 0 { return 0 }
-                return CGFloat(index) * 32
-            }()
+            let brightness: CGFloat = -(CGFloat(index) * 0.025)
             
             return Group {
                 if let image = PhysicalMedia.cachedThumbnail(for: key) {
                     Image(uiImage: image)
                         .resizable()
+                        .widgetAccentedRenderingMode(.fullColor)
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 85)
-                        .offset(x: imageOffset)
-                        .brightness(Double(index) * 0.05)
+                        .brightness(brightness)
                         .shadow(radius: 1)
-                        .zIndex(Double(-index))
                 } else {
                     placeholder
                 }
@@ -136,4 +139,3 @@ extension FavoritesDisplayWidgetView {
         }
     }
 }
-

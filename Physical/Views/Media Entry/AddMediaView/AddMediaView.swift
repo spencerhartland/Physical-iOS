@@ -10,21 +10,12 @@ import UIKit
 import MusicKit
 
 struct AddMediaView: View {
-    // String constants
-    private let noSearchResultsTitle: String = "Add Media"
-    private let noSearchResultsDescription: String = "Enter an album title to continue."
-    private let albumTitleTextfieldPrompt: String = "Album Title"
-    private let continueButtonTitle: String = "Continue"
-    
-    // Symbols
-    private let noSearchResultsSymbolName: String = "music.note.square.stack.fill"
-    private let continueButtonSymbolName: String = "arrow.forward"
-    
-    // Other constants
     private let albumSearchDebounceDelay: TimeInterval = 0.33
     
     @Environment(\.dismissSearch) private var dismissSearch
     @Environment(\.colorScheme) private var colorScheme
+    
+    @FocusState private var albumTitleFieldIsFocused: Bool
     
     @State private var albumSearchRequest: DispatchWorkItem?
     @State private var searchResults: MusicItemCollection<Album> = []
@@ -42,9 +33,10 @@ struct AddMediaView: View {
         ZStack {
             if searchResults.isEmpty {
                 ContentUnavailableView(
-                    noSearchResultsTitle,
-                    systemImage: noSearchResultsSymbolName,
-                    description: Text(noSearchResultsDescription))
+                    "Add Media",
+                    systemImage: "music.note.square.stack.fill",
+                    description: Text("Enter an album title to continue.")
+                )
             }
             if !searchResults.isEmpty {
                 List {
@@ -63,9 +55,20 @@ struct AddMediaView: View {
                 }
                 .listStyle(.plain)
             }
+            
+            VStack {
+                Spacer()
+                
+                TextField(
+                    "Album Title",
+                    text: $draft.title,
+                    prompt: Text("Album Title")
+                )
+                .glassTextfieldStyle()
+                .focused($albumTitleFieldIsFocused)
+                .padding(albumTitleFieldIsFocused ? [.horizontal, .bottom] : [.horizontal])
+            }
         }
-        .searchable(text: $draft.title, prompt: albumTitleTextfieldPrompt)
-        .searchPresentationToolbarBehavior(.avoidHidingContent)
         .onChange(of: draft.title) {
             if MusicAuthorization.currentStatus == .authorized {
                 self.requestSearchResults(draft.title)
@@ -73,16 +76,15 @@ struct AddMediaView: View {
         }
         .toolbar(.hidden, for: .tabBar)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(continueButtonTitle, systemImage: continueButtonSymbolName) {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Continue", systemImage: "chevron.forward") {
                     dismissSearch()
                     completion()
                 }
+                .prominentButtonStyle()
+                .tint(.physicalGreen)
                 .disabled(draft.title.isEmpty)
             }
-        }
-        .onAppear {
-            UISearchBar.appearance().setImage(UIImage(), for: .search, state: .normal)
         }
     }
     

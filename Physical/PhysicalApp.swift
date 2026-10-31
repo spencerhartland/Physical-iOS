@@ -83,15 +83,25 @@ struct PhysicalApp: App {
     
     @MainActor
     private static func renderFavoritesThumbnailsIfNeeded(in context: ModelContext) {
-        //guard !UserDefaults.standard.bool(forKey: "favThumbsRendered") else { return }
+        // One-time render of favorites existing before widgets were introduced.
+        guard !UserDefaults.standard.bool(forKey: "preexistingFavoritesThumbnailsRendered") else {
+            return
+        }
         
         let fetchDesc = FetchDescriptor<Media>(
             predicate: #Predicate { $0.isFavorite }
         )
-        guard let favoriteMedia = try? context.fetch(fetchDesc) else { return }
-        Task { await renderThumbnails(for: favoriteMedia) }
+        guard let favoriteMedia = try? context.fetch(fetchDesc) else {
+            Log.general.debug("Couldn't get favorites.")
+            return
+        }
         
-        //UserDefaults.standard.set(true, forKey: "favThumbsRendered")
+        Task {
+            Log.general.debug("Rendering thumbnails for favorites...")
+            await WidgetRenderer.renderThumbnailsForFavorites(favoriteMedia)
+        }
+        
+        UserDefaults.standard.set(true, forKey: "preexistingFavoritesThumbnailsRendered")
     }
 
     private static func migrateStoreIfNeeded(to newStoreURL: URL) {
@@ -123,44 +133,5 @@ struct PhysicalApp: App {
         }
         
         UserDefaults.standard.set(true, forKey: "storeDidMigrate")
-    }
-    
-    private static func renderThumbnails(for favorites: [Media]) async {
-        for favorite in favorites {
-            for index in 0..<3 {
-                let scaleOffset: Float = 0.04 * pow(0.5, Float(index))
-                let rotationY: Float = (index == 0 ? 0 : (-0.4 - (0.075 * Float(index))))
-                
-                switch favorite.type {
-                case .vinylRecord:
-                    let scale: Float = 0.11 + scaleOffset
-                    
-                    let _ = await PhysicalMedia.vinylRecordThumbnailImage(
-                        favorite.albumArtworkURL,
-                        favorite.color,
-                        scale: scale,
-                        rotationXY: (0, rotationY),
-                    )
-                case .compactDisc:
-                    let scale: Float = 0.155 + scaleOffset
-                    let rotationYOffset: Float = (index == 0 ? 0.18 : 0)
-                    
-                    let _ = await PhysicalMedia.compactDiscThumbnailImage(
-                        favorite.albumArtworkURL,
-                        scale: scale,
-                        rotationXY: (0, (rotationY + rotationYOffset)),
-                    )
-                case .compactCassette:
-                    let scale: Float = 0.31 + scaleOffset
-                    
-                    let _ = await PhysicalMedia.compactCassetteThumbnailImage(
-                        favorite.albumArtworkURL,
-                        favorite.color,
-                        scale: scale,
-                        rotationXY: (0, rotationY),
-                    )
-                }
-            }
-        }
     }
 }

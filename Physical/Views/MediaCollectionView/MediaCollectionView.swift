@@ -5,9 +5,10 @@
 //  Created by Spencer Hartland on 7/5/23.
 //
 
-import SwiftUI
-import SwiftData
 import MusicKit
+import PhysicalMediaKit
+import SwiftData
+import SwiftUI
 
 struct MediaCollectionView: View {
     private let favoriteMenuItemText = "Favorite"
@@ -32,6 +33,14 @@ struct MediaCollectionView: View {
     @State private var currentSearch: String = ""
     
     @Query private var media: [Media]
+    
+    let showsDetailsLink: Bool
+    let onSelect: ((Media) -> Void)?
+    
+    init(showsDetailsLink: Bool = true, _ onSelect: ((Media) -> Void)? = nil) {
+        self.showsDetailsLink = showsDetailsLink
+        self.onSelect = onSelect
+    }
     
     var body: some View {
         Group {
@@ -58,11 +67,15 @@ struct MediaCollectionView: View {
             }
             
             if #available(anyAppleOS 26.0, *) {
-                ToolbarSpacer(.fixed)
-            }
-            
-            ToolbarItem {
-                filterAndSortMenu
+                ToolbarItem(placement: .bottomBar) {
+                    filterAndSortMenu
+                }
+                ToolbarSpacer(.fixed, placement: .bottomBar)
+                DefaultToolbarItem(kind: .search, placement: .bottomBar)
+            } else {
+                ToolbarItem(placement: .bottomBar) {
+                    filterAndSortMenu
+                }
             }
         }
         .alert("Apple Music access is disabled!", isPresented: $musicAuthorizationDenied) {
@@ -84,6 +97,10 @@ struct MediaCollectionView: View {
         .onAppear {
             rememberSortOption()
             checkForMusicAuthorization()
+            
+            if let latestItem = media.last {
+                onSelect?(latestItem)
+            }
         }
         .onChange(of: collectionSortOption) { oldValue, newValue in
             memorizeSortOptionIfChanged(oldValue, newValue)
@@ -99,34 +116,18 @@ struct MediaCollectionView: View {
                 ForEach(categorizedMedia, id: \.0) { categoryTitle, categoryContents in
                     Section {
                         ForEach(categoryContents) { media in
-                            NavigationLink {
-                                MediaDetailView(media: media)
-                            } label: {
-                                MediaThumbnail(for: media)
-                                    .contextMenu {
-                                        Button {
-                                            media.isFavorite.toggle()
-                                        } label: {
-                                            Label(
-                                                media.isFavorite ? undoFavoriteMenuItemText : favoriteMenuItemText,
-                                                systemImage: media.isFavorite ? undoFavoriteMenuItemSymbol : favoriteMenuItemSymbol)
-                                        }
-                                        Divider()
-                                        NavigationLink {
-                                            ShareableView(for: media)
-                                        } label: {
-                                            Label("Share", systemImage: "square.and.arrow.up")
-                                        }
-                                        Divider()
-                                        Button(role: .destructive) {
-                                            context.delete(media)
-                                        } label: {
-                                            Label(
-                                                deleteMenuItemText,
-                                                systemImage: deleteMenuItemSymbol)
-                                        }
-                                    }
-                                    .sensoryFeedback(.success, trigger: media.isFavorite)
+                            if showsDetailsLink {
+                                NavigationLink {
+                                    MediaDetailView(for: media)
+                                } label: {
+                                    MediaThumbnail(for: media)
+                                }
+                            } else {
+                                Button {
+                                    onSelect?(media)
+                                } label: {
+                                    MediaThumbnail(for: media)
+                                }
                             }
                         }
                     } header: {
@@ -140,7 +141,7 @@ struct MediaCollectionView: View {
                     }
                 }
             }
-            .padding()
+            .padding(.horizontal)
         }
     }
     
@@ -230,15 +231,7 @@ struct MediaCollectionView: View {
             sortMenu
             filterMenu
         } label: {
-            // Normally, a button does not go here. This is a workaround for a visual issue with
-            // applying the .glassProminent ButtonStyle to a Menu.
-            Button {
-                return
-            } label: {
-                Image(systemName: "line.3.horizontal.decrease")
-            }
-            .prominentButtonStyle(isEnabled: collectionFilterOption != .allMedia)
-            .tint(collectionFilterOption == .allMedia ? nil : .physicalGreen)
+            Label("Filter and Sort", systemImage: "line.3.horizontal.decrease")
         }
     }
     
@@ -261,6 +254,10 @@ struct MediaCollectionView: View {
             }
         } label: {
             Text("Filter")
+            
+            if collectionFilterOption != .allMedia {
+                Text(collectionFilterOption.rawValue)
+            }
         }
     }
     
@@ -281,6 +278,7 @@ struct MediaCollectionView: View {
             }
         } label: {
             Text("Sort")
+            Text(collectionSortOption.rawValue)
         }
     }
     

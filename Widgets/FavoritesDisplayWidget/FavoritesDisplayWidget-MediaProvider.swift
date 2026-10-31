@@ -42,6 +42,7 @@ extension FavoritesDisplayWidget {
                             if favoriteIndex == 0 {
                                 let displayFavorite = allFavorites.removeFirst()
                                 favorites.append(displayFavorite)
+                                allFavorites.append(displayFavorite)
                             } else {
                                 let index = favoriteIndex - 1
                                 guard index < allFavorites.count else { break }

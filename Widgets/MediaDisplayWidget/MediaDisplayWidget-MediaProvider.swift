@@ -61,23 +61,23 @@ extension MediaDisplayWidget {
                     artworkURL: media.albumArtworkURL,
                     mediaColor: media.color,
                     scale: 0.150,
-                    rotationXY: (0.0, 0.0),
+                    rotationXY: (0, 0),
                 )
             case .compactDisc:
                 return PhysicalMedia.cacheKey(
                     for: .compactDisc,
                     artworkURL: media.albumArtworkURL,
                     mediaColor: nil,
-                    scale: 0.195,
-                    rotationXY: (0.0, 0.1),
+                    scale: 0.125,
+                    rotationXY: nil,
                 )
             case .compactCassette:
                 return PhysicalMedia.cacheKey(
                     for: .compactCassette,
                     artworkURL: media.albumArtworkURL,
                     mediaColor: media.color,
-                    scale: 0.350,
-                    rotationXY: (0.0, 0.0),
+                    scale: 0.250,
+                    rotationXY: nil,
                 )
             }
         }
