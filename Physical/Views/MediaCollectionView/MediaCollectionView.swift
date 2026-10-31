@@ -34,12 +34,13 @@ struct MediaCollectionView: View {
     
     @Query private var media: [Media]
     
-    let showsDetailsLink: Bool
-    let onSelect: ((Media) -> Void)?
+    @Binding var selection: Media?
     
-    init(showsDetailsLink: Bool = true, _ onSelect: ((Media) -> Void)? = nil) {
+    let showsDetailsLink: Bool
+    
+    init(_ selection: Binding<Media?> = .constant(nil), showsDetailsLink: Bool = true) {
+        self._selection = selection
         self.showsDetailsLink = showsDetailsLink
-        self.onSelect = onSelect
     }
     
     var body: some View {
@@ -97,10 +98,7 @@ struct MediaCollectionView: View {
         .onAppear {
             rememberSortOption()
             checkForMusicAuthorization()
-            
-            if let latestItem = media.last {
-                onSelect?(latestItem)
-            }
+            selectLatestItemIfNeeded()
         }
         .onChange(of: collectionSortOption) { oldValue, newValue in
             memorizeSortOptionIfChanged(oldValue, newValue)
@@ -118,13 +116,17 @@ struct MediaCollectionView: View {
                         ForEach(categoryContents) { media in
                             if showsDetailsLink {
                                 NavigationLink {
-                                    MediaDetailView(for: media)
+                                    MediaDetailView(for: media) {
+                                        selection = nil
+                                        selectLatestItemIfNeeded()
+                                    }
+                                    .onAppear { selection = media }
                                 } label: {
                                     MediaThumbnail(for: media)
                                 }
                             } else {
                                 Button {
-                                    onSelect?(media)
+                                    selection = media
                                 } label: {
                                     MediaThumbnail(for: media)
                                 }
@@ -298,6 +300,13 @@ struct MediaCollectionView: View {
             .tint(.physicalGreen)
             .font(.headline)
             .fontWeight(.medium)
+        }
+    }
+    
+    private func selectLatestItemIfNeeded() {
+        if let latestItem = media.last {
+            guard selection == nil else { return }
+            selection = latestItem
         }
     }
     

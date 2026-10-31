@@ -21,11 +21,7 @@ struct CollectionArrangementView: View {
             }
             
             ArrangementView {
-                MediaCollectionView(
-                    showsDetailsLink: shouldDisplayNavigationLink
-                ) { media in
-                    selection = media
-                }
+                MediaCollectionView($selection, showsDetailsLink: shouldDisplayNavigationLink)
             } secondary: {
                 if let selection {
                     MediaDetailView(for: selection, allowsNavigationBackwards: false)

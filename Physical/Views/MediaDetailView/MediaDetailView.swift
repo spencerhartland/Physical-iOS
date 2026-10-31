@@ -17,10 +17,16 @@ struct MediaDetailView: View {
     @State private var isSharing: Bool = false
     
     let allowsNavigationBackwards: Bool
+    let onDismiss: (() -> Void)?
     
-    init(for media: Media, allowsNavigationBackwards: Bool = true) {
+    init(
+        for media: Media,
+        allowsNavigationBackwards: Bool = true,
+        _ onDismiss: (() -> Void)? = nil
+    ) {
         self.media = media
         self.allowsNavigationBackwards = allowsNavigationBackwards
+        self.onDismiss = onDismiss
     }
     
     var body: some View {
@@ -50,6 +56,7 @@ struct MediaDetailView: View {
             if allowsNavigationBackwards {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
+                        onDismiss?()
                         dismiss()
                     } label: {
                         Label("Back", systemImage: "chevron.backward")
