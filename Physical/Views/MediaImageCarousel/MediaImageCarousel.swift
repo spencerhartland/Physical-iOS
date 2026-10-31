@@ -12,7 +12,6 @@ struct MediaImageCarousel: View {
     private let thumbnailSize: CGFloat = 44.0
     private let thumbnailSpacing: CGFloat = 4.0
     
-    @Environment(\.screenSize) private var screenSize
     @State private var currentPage: Int = 0
     @State private var isConfirmingEdit: Bool = false
     // Scrub gesture
@@ -21,7 +20,7 @@ struct MediaImageCarousel: View {
     @State private var scrubBaseOffset: CGFloat = 0
     @State private var containerCenterX: CGFloat = 0
     
-    private var mediaType: Media.MediaType
+    private var mediaType: MediaType
     private var mediaAlbumArtworkURL: URL?
     private var mediaColor: UIColor
     private var mediaImageKeys: [String]
@@ -61,7 +60,6 @@ struct MediaImageCarousel: View {
             // Small thumbnails
             if pages.count > 1 { thumbnailPicker }
         }
-        .frame(width: screenSize.width)
     }
     
     private var carousel: some View {
@@ -71,11 +69,11 @@ struct MediaImageCarousel: View {
                     Group {
                         switch mediaType {
                         case .vinylRecord:
-                            PhysicalMedia.vinylRecord(mediaAlbumArtworkURL, mediaColor)
+                            PhysicalMedia.vinylRecord(mediaAlbumArtworkURL, mediaColor, scale: 0.75)
                         case .compactDisc:
                             PhysicalMedia.compactDisc(mediaAlbumArtworkURL)
                         case .compactCassette:
-                            PhysicalMedia.compactCassette(mediaAlbumArtworkURL, mediaColor)
+                            PhysicalMedia.compactCassette(mediaAlbumArtworkURL, mediaColor, scale: 1.95)
                         }
                     }
                 }

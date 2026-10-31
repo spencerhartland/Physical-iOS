@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PhysicalMediaKit
 
 enum CollectionFilter: String, Identifiable, CaseIterable {
     case allMedia = "All Media"
@@ -21,9 +22,9 @@ enum CollectionFilter: String, Identifiable, CaseIterable {
     }
     
     var predicate: Predicate<Media> {
-        let vinylRecord = Media.MediaType.vinylRecord.rawValue
-        let compactDisc = Media.MediaType.compactDisc.rawValue
-        let compactCassette = Media.MediaType.compactCassette.rawValue
+        let vinylRecord = MediaType.vinylRecord.rawValue
+        let compactDisc = MediaType.compactDisc.rawValue
+        let compactCassette = MediaType.compactCassette.rawValue
         
         switch self {
         case .allMedia:

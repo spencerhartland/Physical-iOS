@@ -5,8 +5,10 @@
 //  Created by Spencer Hartland on 7/9/23.
 //
 
-import SwiftUI
 import PhotosUI
+import PhysicalMediaKit
+import SwiftData
+import SwiftUI
 
 struct MediaDetailsEntryView: View {
     // Model context
@@ -105,13 +107,16 @@ struct MediaDetailsEntryView: View {
             }
         }
         .toolbar {
-            Button("Done", systemImage: "checkmark") {
-                uploadCachedImages()
-                save()
-                completion()
-                withAnimation {
-                    mediaAdded = true
+            ToolbarItem(placement: .primaryAction) {
+                Button("Done", systemImage: "checkmark") {
+                    save()
+                    completion()
+                    withAnimation {
+                        mediaAdded = true
+                    }
                 }
+                .prominentButtonStyle()
+                .tint(.physicalGreen)
             }
         }
     }
@@ -177,7 +182,7 @@ struct MediaDetailsEntryView: View {
             
             // Type
             Picker(selection: $draft.type) {
-                ForEach(Media.MediaType.allCases) {
+                ForEach(MediaType.allCases) {
                     Text($0.rawValue)
                 }
             } label: {
@@ -276,18 +281,6 @@ struct MediaDetailsEntryView: View {
         } else {
             let newMedia = Media(from: draft)
             modelContext.insert(newMedia)
-        }
-    }
-    
-    // MARK: - Image upload logic
-    
-    private func uploadCachedImages() {
-        Task {
-            do {
-                try await ImageManager.shared.uploadFromCache(keys: draft.imageKeys)
-            } catch {
-                print(error.localizedDescription)
-            }
         }
     }
 }

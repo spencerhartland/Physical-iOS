@@ -8,15 +8,16 @@
 import Foundation
 import UIKit
 import MusicKit
+import PhysicalMediaKit
 
 @Observable
 final class MediaDraft {
     var rawType: String
     var rawCondition: String
     
-    var type: Media.MediaType {
+    var type: MediaType {
         get {
-            return Media.MediaType(rawValue: self.rawType)!
+            return MediaType(rawValue: self.rawType)!
         }
         set {
             self.rawType = newValue.rawValue
@@ -47,7 +48,7 @@ final class MediaDraft {
     var isOwned: Bool
     
     init() {
-        self.rawType = Media.MediaType.vinylRecord.rawValue
+        self.rawType = MediaType.vinylRecord.rawValue
         self.rawCondition = Media.MediaCondition.nearMint.rawValue
         self.dateAdded = .now
         self.releaseDate = .now

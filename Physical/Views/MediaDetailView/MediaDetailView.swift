@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MediaDetailView: View {
     @Environment(\.modelContext) private var modelContext
@@ -15,8 +16,17 @@ struct MediaDetailView: View {
     @State private var isEditing: Bool = false
     @State private var isSharing: Bool = false
     
-    init(media: Media) {
+    let allowsNavigationBackwards: Bool
+    let onDismiss: (() -> Void)?
+    
+    init(
+        for media: Media,
+        allowsNavigationBackwards: Bool = true,
+        _ onDismiss: (() -> Void)? = nil
+    ) {
         self.media = media
+        self.allowsNavigationBackwards = allowsNavigationBackwards
+        self.onDismiss = onDismiss
     }
     
     var body: some View {
@@ -43,19 +53,30 @@ struct MediaDetailView: View {
         .scrollContentBackground(.hidden)
         .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Label("Back", systemImage: "chevron.backward")
-                        .labelStyle(.iconOnly)
+            if allowsNavigationBackwards {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        onDismiss?()
+                        dismiss()
+                    } label: {
+                        Label("Back", systemImage: "chevron.backward")
+                            .labelStyle(.iconOnly)
+                    }
+                    .tint(nil)
+                    .fontWeight(.medium)
                 }
-                .tint(nil)
-                .fontWeight(.medium)
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                moreMenu
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    moreMenu
+                }
+            } else {
+                if #available(anyAppleOS 26.0, *) {
+                    ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    moreMenu
+                }
             }
         }
         .navigationBarBackButtonHidden()
@@ -64,6 +85,7 @@ struct MediaDetailView: View {
             MediaDetailsEntryView(media: media) { isEditing = false }
         }
         .navigationDestination(isPresented: $isSharing) { ShareableView(for: media) }
+        .onHingeOpen { if allowsNavigationBackwards { dismiss() } }
     }
     
     private var moreMenu: some View {

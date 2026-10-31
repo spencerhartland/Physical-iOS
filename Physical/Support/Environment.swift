@@ -8,7 +8,6 @@
 import SwiftUI
 
 extension EnvironmentValues {
-    @Entry var navigationManager: NavigationManager = NavigationManager()
     @Entry var screenSize: CGSize = {
         guard let window = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return .zero

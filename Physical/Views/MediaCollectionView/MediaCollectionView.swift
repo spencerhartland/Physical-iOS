@@ -5,9 +5,10 @@
 //  Created by Spencer Hartland on 7/5/23.
 //
 
-import SwiftUI
-import SwiftData
 import MusicKit
+import PhysicalMediaKit
+import SwiftData
+import SwiftUI
 
 struct MediaCollectionView: View {
     private let favoriteMenuItemText = "Favorite"
@@ -22,7 +23,7 @@ struct MediaCollectionView: View {
     
     @Environment(\.openURL) private var openURL
     @Environment(\.modelContext) private var context
-    @Environment(\.navigationManager) private var navigationManager
+    @Environment(NavigationManager.self) private var navigationManager
     
     // View State
     @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
@@ -33,6 +34,15 @@ struct MediaCollectionView: View {
     
     @Query private var media: [Media]
     
+    @Binding var selection: Media?
+    
+    let showsDetailsLink: Bool
+    
+    init(_ selection: Binding<Media?> = .constant(nil), showsDetailsLink: Bool = true) {
+        self._selection = selection
+        self.showsDetailsLink = showsDetailsLink
+    }
+    
     var body: some View {
         Group {
             if media.isEmpty {
@@ -42,27 +52,30 @@ struct MediaCollectionView: View {
             }
         }
         .navigationTitle(collectionFilterOption == .allMedia ? "Collection" : collectionFilterOption.rawValue)
+        .navigationSubtitleIfAvailable(mediaItemTotals)
         .toolbarTitleDisplayMode(.large)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                filterAndSortMenu
-            }
-            
-            ToolbarItem {
+            ToolbarItemGroup {
+                NavigationLink(value: MediaEntryStep.albumSearch(.manual)) {
+                    Label("Add media", systemImage: "plus")
+                        .labelStyle(.iconOnly)
+                }
+                
                 NavigationLink(value: MediaEntryStep.albumSearch(.barcode)) {
                     Label("Scan barcode", systemImage: "barcode.viewfinder")
                         .labelStyle(.iconOnly)
                 }
             }
             
-            if #available(iOS 26.0, *) {
-                ToolbarSpacer(.fixed)
-            }
-            
-            ToolbarItem {
-                NavigationLink(value: MediaEntryStep.albumSearch(.manual)) {
-                    Label("Add media", systemImage: "plus")
-                        .labelStyle(.iconOnly)
+            if #available(anyAppleOS 26.0, *) {
+                ToolbarItem(placement: .bottomBar) {
+                    filterAndSortMenu
+                }
+                ToolbarSpacer(.fixed, placement: .bottomBar)
+                DefaultToolbarItem(kind: .search, placement: .bottomBar)
+            } else {
+                ToolbarItem(placement: .bottomBar) {
+                    filterAndSortMenu
                 }
             }
         }
@@ -85,6 +98,7 @@ struct MediaCollectionView: View {
         .onAppear {
             rememberSortOption()
             checkForMusicAuthorization()
+            selectLatestItemIfNeeded()
         }
         .onChange(of: collectionSortOption) { oldValue, newValue in
             memorizeSortOptionIfChanged(oldValue, newValue)
@@ -100,34 +114,22 @@ struct MediaCollectionView: View {
                 ForEach(categorizedMedia, id: \.0) { categoryTitle, categoryContents in
                     Section {
                         ForEach(categoryContents) { media in
-                            NavigationLink {
-                                MediaDetailView(media: media)
-                            } label: {
-                                MediaThumbnail(for: media)
-                                    .contextMenu {
-                                        Button {
-                                            media.isFavorite.toggle()
-                                        } label: {
-                                            Label(
-                                                media.isFavorite ? undoFavoriteMenuItemText : favoriteMenuItemText,
-                                                systemImage: media.isFavorite ? undoFavoriteMenuItemSymbol : favoriteMenuItemSymbol)
-                                        }
-                                        Divider()
-                                        NavigationLink {
-                                            ShareableView(for: media)
-                                        } label: {
-                                            Label("Share", systemImage: "square.and.arrow.up")
-                                        }
-                                        Divider()
-                                        Button(role: .destructive) {
-                                            context.delete(media)
-                                        } label: {
-                                            Label(
-                                                deleteMenuItemText,
-                                                systemImage: deleteMenuItemSymbol)
-                                        }
+                            if showsDetailsLink {
+                                NavigationLink {
+                                    MediaDetailView(for: media) {
+                                        selection = nil
+                                        selectLatestItemIfNeeded()
                                     }
-                                    .sensoryFeedback(.success, trigger: media.isFavorite)
+                                    .onAppear { selection = media }
+                                } label: {
+                                    MediaThumbnail(for: media)
+                                }
+                            } else {
+                                Button {
+                                    selection = media
+                                } label: {
+                                    MediaThumbnail(for: media)
+                                }
                             }
                         }
                     } header: {
@@ -141,7 +143,7 @@ struct MediaCollectionView: View {
                     }
                 }
             }
-            .padding()
+            .padding(.horizontal)
         }
     }
     
@@ -162,6 +164,45 @@ struct MediaCollectionView: View {
         result = result.sorted(using: collectionSortOption.sortDescriptor)
 
         return result
+    }
+    
+    private var mediaItemTotals: Text {
+        if media.isEmpty { return Text("No items") }
+        
+        let filteredMediaGroupedByType = Dictionary(grouping: filteredMedia, by: { $0.type })
+        var vinylRecordCount = 0
+        var compactDiscCount = 0
+        var compactCassetteCount = 0
+        
+        for (type, items) in filteredMediaGroupedByType {
+            switch type {
+            case .vinylRecord:
+                vinylRecordCount = items.count
+            case .compactDisc:
+                compactDiscCount = items.count
+            case .compactCassette:
+                compactCassetteCount = items.count
+            }
+        }
+        
+        let separator = " ・ "
+        var totals = ""
+        if vinylRecordCount > 0 {
+            totals.append("\(vinylRecordCount) vinyl record")
+            if vinylRecordCount > 1 { totals.append("s") }
+        }
+        if compactDiscCount > 0 {
+            if !totals.isEmpty { totals.append(separator) }
+            totals.append("\(compactDiscCount) CD")
+            if compactDiscCount > 1 { totals.append("s") }
+        }
+        if compactCassetteCount > 0 {
+            if !totals.isEmpty { totals.append(separator) }
+            totals.append("\(compactCassetteCount) cassette")
+            if compactCassetteCount > 1 { totals.append("s") }
+        }
+        
+        return Text(totals)
     }
     
     private var categorizedMedia: [(String, [Media])] {
@@ -192,15 +233,7 @@ struct MediaCollectionView: View {
             sortMenu
             filterMenu
         } label: {
-            // Normally, a button does not go here. This is a workaround for a visual issue with
-            // applying the .glassProminent ButtonStyle to a Menu.
-            Button {
-                return
-            } label: {
-                Image(systemName: "line.3.horizontal.decrease")
-            }
-            .prominentButtonStyle(isEnabled: collectionFilterOption != .allMedia)
-            .tint(collectionFilterOption == .allMedia ? nil : .physicalGreen)
+            Label("Filter and Sort", systemImage: "line.3.horizontal.decrease")
         }
     }
     
@@ -223,6 +256,10 @@ struct MediaCollectionView: View {
             }
         } label: {
             Text("Filter")
+            
+            if collectionFilterOption != .allMedia {
+                Text(collectionFilterOption.rawValue)
+            }
         }
     }
     
@@ -243,6 +280,7 @@ struct MediaCollectionView: View {
             }
         } label: {
             Text("Sort")
+            Text(collectionSortOption.rawValue)
         }
     }
     
@@ -262,6 +300,13 @@ struct MediaCollectionView: View {
             .tint(.physicalGreen)
             .font(.headline)
             .fontWeight(.medium)
+        }
+    }
+    
+    private func selectLatestItemIfNeeded() {
+        if let latestItem = media.last {
+            guard selection == nil else { return }
+            selection = latestItem
         }
     }
     
