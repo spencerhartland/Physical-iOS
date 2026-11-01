@@ -42,7 +42,7 @@ struct MediaDisplayWidgetView: View {
     
     private var mediaThumbnail: some View {
         Group {
-            if let thumbnail = PhysicalMedia.cachedThumbnail(for: entry.thumbnailKey) {
+            if let thumbnail = entry.thumbnail {
                 Image(uiImage: thumbnail)
                     .resizable()
                     .widgetAccentedRenderingMode(.fullColor)

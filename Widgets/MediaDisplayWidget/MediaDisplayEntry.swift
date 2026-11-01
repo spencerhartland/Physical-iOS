@@ -12,5 +12,5 @@ import SwiftUI
 struct MediaDisplayEntry: TimelineEntry {
     let date: Date
     let configuration: SelectMediaIntent
-    let thumbnailKey: String
+    let thumbnail: UIImage?
 }

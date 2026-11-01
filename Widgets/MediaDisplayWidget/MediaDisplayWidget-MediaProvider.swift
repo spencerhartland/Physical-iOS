@@ -15,9 +15,9 @@ extension MediaDisplayWidget {
         typealias Entry = MediaDisplayEntry
         
         private let emptyEntry = Entry(
-            date: Date(),
+            date: .now,
             configuration: SelectMediaIntent(),
-            thumbnailKey: "",
+            thumbnail: nil
         )
         
         func placeholder(in context: Context) -> Entry { return emptyEntry }
@@ -25,26 +25,25 @@ extension MediaDisplayWidget {
         func snapshot(for configuration: SelectMediaIntent, in context: Context) async -> Entry {
             guard let media = configuration.media else { return emptyEntry }
             
-            let thumbnailKey = thumbnailKey(for: media)
-            return Entry(
-                date: Date(),
-                configuration: configuration,
-                thumbnailKey: thumbnailKey,
-            )
+            let key = thumbnailKey(for: media)
+            let thumbnail = PhysicalMedia.cachedThumbnail(for: key)
+            
+            return Entry(date: .now, configuration: configuration, thumbnail: thumbnail)
         }
         
         func timeline(for configuration: SelectMediaIntent, in context: Context) async -> Timeline<Entry> {
             var entries: [Entry] = []
             
             if let media = configuration.media {
-                let currentDate = Date()
-                let thumbnailKey = thumbnailKey(for: media)
+                let date = Date()
+                let key = thumbnailKey(for: media)
+                let thumbnail = PhysicalMedia.cachedThumbnail(for: key)
                 for hourOffset in 0 ..< 8 {
-                    let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+                    let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: date)!
                     let entry = Entry(
                         date: entryDate,
                         configuration: configuration,
-                        thumbnailKey: thumbnailKey,
+                        thumbnail: thumbnail,
                     )
                     entries.append(entry)
                 }

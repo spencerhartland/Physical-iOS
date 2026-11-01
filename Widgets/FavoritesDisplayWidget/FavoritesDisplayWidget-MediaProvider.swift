@@ -24,7 +24,7 @@ extension FavoritesDisplayWidget {
                     var allFavorites = try fetchFavorites()
                     
                     var entries: [Entry] = []
-                    let currentDate = Date()
+                    let currentDate: Date = .now
                     
                     for entry in 0..<48 {
                         guard !allFavorites.isEmpty else { break }
@@ -51,12 +51,13 @@ extension FavoritesDisplayWidget {
                             }
                         }
                         
-                        let thumbnailKeys = retrieveThumbnailKeys(for: favorites)
+                        let keys = retrieveThumbnailKeys(for: favorites)
+                        let thumbnails = retrieveThumbnails(for: keys)
                         
                         let entry = Entry(
                             date: entryDate,
                             favorites: favorites,
-                            thumbnailKeys: thumbnailKeys
+                            thumbnails: thumbnails
                         )
                         entries.append(entry)
                     }
@@ -78,17 +79,19 @@ extension FavoritesDisplayWidget {
                         guard index < 3 else { break } // Snapshot only the first 3 favorites
                         favorites.append(favorite)
                     }
-                    let thumbnailKeys = retrieveThumbnailKeys(for: favorites)
+                    
+                    let keys = retrieveThumbnailKeys(for: favorites)
+                    let thumbnails = retrieveThumbnails(for: keys)
                     
                     let entry = Entry(
                         date: .now,
                         favorites: favorites,
-                        thumbnailKeys: thumbnailKeys
+                        thumbnails: thumbnails
                     )
                     
                     completion(entry)
                 } catch {
-                    completion(Entry(date: .now, favorites: [], thumbnailKeys: []))
+                    completion(Entry())
                 }
             }
         }
@@ -158,6 +161,10 @@ extension FavoritesDisplayWidget {
             }
             
             return keys
+        }
+        
+        private func retrieveThumbnails(for keys: [String]) -> [UIImage] {
+            return keys.compactMap { PhysicalMedia.cachedThumbnail(for: $0) }
         }
         
         private func modelContext() -> ModelContext {
