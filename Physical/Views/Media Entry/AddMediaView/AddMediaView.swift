@@ -20,11 +20,11 @@ struct AddMediaView: View {
     @State private var albumSearchRequest: DispatchWorkItem?
     @State private var searchResults: MusicItemCollection<Album> = []
     
-    @Bindable var draft: MediaDraft
+    @Binding var draft: MediaDraft
     
     private var completion: () -> Void
     
-    init(draft: Bindable<MediaDraft>, _ completion: @escaping () -> Void) {
+    init(draft: Binding<MediaDraft>, _ completion: @escaping () -> Void) {
         self._draft = draft
         self.completion = completion
     }

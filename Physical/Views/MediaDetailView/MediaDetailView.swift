@@ -13,6 +13,7 @@ struct MediaDetailView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Bindable var media: Media
+    @State private var draft: MediaDraft
     @State private var isEditing: Bool = false
     @State private var isSharing: Bool = false
     
@@ -25,6 +26,7 @@ struct MediaDetailView: View {
         _ onDismiss: (() -> Void)? = nil
     ) {
         self.media = media
+        self.draft = MediaDraft(from: media)
         self.allowsNavigationBackwards = allowsNavigationBackwards
         self.onDismiss = onDismiss
     }
@@ -82,7 +84,10 @@ struct MediaDetailView: View {
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $isEditing) {
-            MediaDetailsEntryView(media: media) { isEditing = false }
+            MediaDetailsEntryView(draft: $draft) {
+                media.applyChanges(from: draft)
+                isEditing = false
+            }
         }
         .navigationDestination(isPresented: $isSharing) { ShareableView(for: media) }
         .onHingeOpen { if allowsNavigationBackwards { dismiss() } }

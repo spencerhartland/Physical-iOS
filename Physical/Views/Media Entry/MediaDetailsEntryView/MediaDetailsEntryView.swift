@@ -15,11 +15,9 @@ struct MediaDetailsEntryView: View {
     @Environment(\.modelContext) private var modelContext
     
     // The media being edited
-    private let media: Media?
-    @Bindable private var draft: MediaDraft
+    @Binding private var draft: MediaDraft
     
     // View state
-    @Binding var mediaAdded: Bool
     @State private var presentCamera = false
     @State private var presentPhotosPicker = false
     @FocusState private var focusInTrackField: Bool
@@ -33,26 +31,12 @@ struct MediaDetailsEntryView: View {
     private var completion: () -> Void
     
     init(
-        draft: Bindable<MediaDraft>,
-        mediaAdded: Binding<Bool> = .constant(false),
+        draft: Binding<MediaDraft>,
         _ completion: @escaping () -> Void
     ) {
-        self.media = nil
         self._draft = draft
-        self._mediaAdded = mediaAdded
         self.completion = completion
         self.mediaColor = Color(draft.color.wrappedValue)
-    }
-    
-    init(
-        media: Media,
-         _ completion: @escaping () -> Void
-    ) {
-        self.media = media
-        self.draft = MediaDraft(from: media)
-        self._mediaAdded = .constant(false)
-        self.completion = completion
-        self.mediaColor = Color(media.color)
     }
     
     var body: some View {
@@ -72,7 +56,11 @@ struct MediaDetailsEntryView: View {
         .navigationTitle("Details")
         .toolbar(.hidden, for: .tabBar)
         .environment(\.editMode, $editMode)
-        .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
+        .croppedImagePicker(
+            pickerIsPresented: $presentPhotosPicker,
+            cameraIsPresented: $presentCamera,
+            croppedImage: $newImage
+        )
         .onChange(of: draft.type) { _, newValue in
             // Change icon based upon the chosen physical media type
             switch newValue {
@@ -108,15 +96,9 @@ struct MediaDetailsEntryView: View {
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Done", systemImage: "checkmark") {
-                    save()
-                    completion()
-                    withAnimation {
-                        mediaAdded = true
-                    }
-                }
-                .prominentButtonStyle()
-                .tint(.physicalGreen)
+                Button("Done", systemImage: "checkmark") { completion() }
+                    .prominentButtonStyle()
+                    .tint(.physicalGreen)
             }
         }
     }
@@ -169,8 +151,6 @@ struct MediaDetailsEntryView: View {
                 if draft.imageKeys.isEmpty {
                     withAnimation { draft.displaysOfficialArtwork = true }
                 }
-                // Save changes
-                save()
             }
         }
     }
@@ -257,16 +237,6 @@ struct MediaDetailsEntryView: View {
             MediaNotesEntryView(notes: $draft.notes)
         } label: {
             ListItemLabel(color: .yellow, symbolName: "note.text", labelText: "Notes")
-        }
-    }
-    
-    
-    private func save() {
-        if let media {
-            media.applyChanges(from: draft)
-        } else {
-            let newMedia = Media(from: draft)
-            modelContext.insert(newMedia)
         }
     }
 }

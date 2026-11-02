@@ -50,8 +50,6 @@ struct RootView: View {
                 if let requestedMedia { MediaDetailView(for: requestedMedia) }
             }
             .navigationDestination(for: MediaEntryStep.self) { step in
-                @Bindable var draft = self.draft
-                
                 Group {
                     switch step {
                     case .albumSearch(.manual):
@@ -69,7 +67,12 @@ struct RootView: View {
                         .onAppear { shouldHideStatusBar = true }
                         .onDisappear { shouldHideStatusBar = false }
                     case .detailEdit:
-                        MediaDetailsEntryView(draft: $draft, mediaAdded: $mediaAdded) {
+                        MediaDetailsEntryView(draft: $draft) {
+                            // Save media
+                            let newMedia = Media(from: draft)
+                            modelContext.insert(newMedia)
+                            
+                            // Dismiss
                             let steps = navigationManager.path.count - 1
                             if steps > 1 {
                                 navigationManager.path.removeLast()
@@ -79,6 +82,9 @@ struct RootView: View {
                             } else {
                                 navigationManager.path.removeLast()
                             }
+                            
+                            // Indicate success
+                            withAnimation { mediaAdded = true }
                         }
                     }
                 }
