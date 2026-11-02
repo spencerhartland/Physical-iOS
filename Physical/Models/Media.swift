@@ -14,6 +14,19 @@ import PhysicalMediaKit
 
 @Model
 final class Media {
+    enum Condition: String, Codable, CaseIterable, Identifiable, Equatable {
+        var id: Self {
+            return self
+        }
+        case mint = "Mint"
+        case nearMint = "Near Mint"
+        case excellent = "Excellent"
+        case veryGood = "Very Good"
+        case good = "Good"
+        case fair = "Fair"
+        case poor = "Poor"
+    }
+    
     var rawType: String
     var rawCondition: String
 
@@ -26,9 +39,9 @@ final class Media {
             self.rawType = newValue.rawValue
         }
     }
-    var condition: MediaCondition {
+    var condition: Condition {
         get {
-            return MediaCondition(rawValue: self.rawCondition)!
+            return Condition(rawValue: self.rawCondition)!
         }
         set {
             self.rawCondition = newValue.rawValue
@@ -53,7 +66,7 @@ final class Media {
 
     init() {
         self.rawType = MediaType.vinylRecord.rawValue
-        self.rawCondition = MediaCondition.nearMint.rawValue
+        self.rawCondition = Condition.nearMint.rawValue
         self.dateAdded = .now
         self.releaseDate = .now
         self.title = ""
@@ -81,7 +94,7 @@ final class Media {
         isOwned: Bool
     ) {
         self.rawType = type.rawValue
-        self.rawCondition = MediaCondition.nearMint.rawValue
+        self.rawCondition = Condition.nearMint.rawValue
         self.dateAdded = .now
         self.displaysOfficialArtwork = true
         self.imageKeys = []
@@ -115,83 +128,22 @@ final class Media {
         self.isFavorite = draft.isFavorite
         self.isOwned = draft.isOwned
     }
-
-    enum MediaCondition: String, Codable, CaseIterable, Identifiable, Equatable {
-        var id: Self {
-            return self
-        }
-        case mint = "Mint"
-        case nearMint = "Near Mint"
-        case excellent = "Excellent"
-        case veryGood = "Very Good"
-        case good = "Good"
-        case fair = "Fair"
-        case poor = "Poor"
-    }
-
-    @MainActor
-    public func resetInfo() {
-        self.rawType = MediaType.vinylRecord.rawValue
-        self.rawCondition = MediaCondition.nearMint.rawValue
-        self.dateAdded = .now
-        self.releaseDate = .now
-        self.title = ""
-        self.artist = ""
-        self.tracks = []
-        self.displaysOfficialArtwork = true
-        self.albumArtworkURL = nil
-        self.imageKeys = []
-        self.notes = ""
-        self.genre = ""
-        self.isFavorite = false
-        self.isOwned = true
-    }
-
-    @MainActor
-    public func updateWithInfo(from album: Album) {
-        Task {
-            let albumRelatedData = await fetchRelatedData(from: album)
-            if let data = albumRelatedData {
-                self.updateWithDetailedInfo(genre: data.0, tracks: data.1)
-            }
-        }
-        self.title = album.title
-        self.artist = album.artistName
-        self.releaseDate = album.releaseDate ?? .now
-        self.albumArtworkURL = getArtworkURL(from: album.artwork)
-    }
-
-    @MainActor
-    private func updateWithDetailedInfo(genre: String, tracks: [String]) {
-        self.genre = genre
-        self.tracks = tracks
-    }
-
-    private func fetchRelatedData(from album: Album) async -> (String, [String])? {
-        do {
-            let detailedAlbum = try await album.with([.tracks, .genres])
-            guard let tracks = detailedAlbum.tracks,
-                  let genres = detailedAlbum.genres,
-                  let primaryGenre = genres.first else {
-                print("Error fetching detailed album.")
-                return nil
-            }
-            var tracksArray = [String]()
-            for track in tracks {
-                tracksArray.append(track.title)
-            }
-            return (primaryGenre.name, tracksArray)
-        } catch {
-            print("Error fetching detailed album: \(error.localizedDescription)")
-            return nil
-        }
-    }
-
-    private func getArtworkURL(from artwork: Artwork?) -> URL? {
-        guard let artwork = artwork,
-              let url = artwork.url(width: 1080, height: 1080) else {
-            return nil
-        }
-        return url
+    
+    func applyChanges(from draft: MediaDraft) {
+        self.rawType = draft.rawType
+        self.rawCondition = draft.rawCondition
+        self.dateAdded = draft.dateAdded
+        self.releaseDate = draft.releaseDate
+        self.title = draft.title
+        self.artist = draft.artist
+        self.tracks = draft.tracks
+        self.displaysOfficialArtwork = draft.displaysOfficialArtwork
+        self.albumArtworkURL = draft.albumArtworkURL
+        self.imageKeys = draft.imageKeys
+        self.color = draft.color
+        self.notes = draft.notes
+        self.genre = draft.genre
+        self.isFavorite = draft.isFavorite
+        self.isOwned = draft.isOwned
     }
 }

@@ -191,7 +191,7 @@ struct MediaDetailsEntryView: View {
             
             // Condition
             Picker(selection: $draft.condition) {
-                ForEach(Media.MediaCondition.allCases) {
+                ForEach(Media.Condition.allCases) {
                     Text($0.rawValue)
                 }
             } label: {
@@ -263,21 +263,7 @@ struct MediaDetailsEntryView: View {
     
     private func save() {
         if let media {
-            media.rawType = draft.rawType
-            media.rawCondition = draft.rawCondition
-            media.dateAdded = draft.dateAdded
-            media.releaseDate = draft.releaseDate
-            media.title = draft.title
-            media.artist = draft.artist
-            media.tracks = draft.tracks
-            media.displaysOfficialArtwork = draft.displaysOfficialArtwork
-            media.albumArtworkURL = draft.albumArtworkURL
-            media.imageKeys = draft.imageKeys
-            media.color = draft.color
-            media.notes = draft.notes
-            media.genre = draft.genre
-            media.isFavorite = draft.isFavorite
-            media.isOwned = draft.isOwned
+            media.applyChanges(from: draft)
         } else {
             let newMedia = Media(from: draft)
             modelContext.insert(newMedia)

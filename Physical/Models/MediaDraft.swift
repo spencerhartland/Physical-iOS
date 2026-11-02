@@ -23,9 +23,9 @@ final class MediaDraft {
             self.rawType = newValue.rawValue
         }
     }
-    var condition: Media.MediaCondition {
+    var condition: Media.Condition {
         get {
-            return Media.MediaCondition(rawValue: self.rawCondition)!
+            return Media.Condition(rawValue: self.rawCondition)!
         }
         set {
             self.rawCondition = newValue.rawValue
@@ -49,7 +49,7 @@ final class MediaDraft {
     
     init() {
         self.rawType = MediaType.vinylRecord.rawValue
-        self.rawCondition = Media.MediaCondition.nearMint.rawValue
+        self.rawCondition = Media.Condition.nearMint.rawValue
         self.dateAdded = .now
         self.releaseDate = .now
         self.title = ""
