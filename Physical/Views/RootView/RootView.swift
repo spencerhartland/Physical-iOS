@@ -5,6 +5,7 @@
 //  Created by Spencer Hartland on 8/24/23.
 //
 
+import PhysicalMediaKit
 import SwiftUI
 import SwiftData
 
@@ -68,23 +69,38 @@ struct RootView: View {
                         .onDisappear { shouldHideStatusBar = false }
                     case .detailEdit:
                         MediaDetailsEntryView(draft: $draft) {
-                            // Save media
-                            let newMedia = Media(from: draft)
-                            modelContext.insert(newMedia)
-                            
-                            // Dismiss
-                            let steps = navigationManager.path.count - 1
-                            if steps > 1 {
-                                navigationManager.path.removeLast()
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            Task {
+                                // Save media
+                                let newMedia = Media(from: draft)
+                                
+                                if let thumbnail = await PhysicalMedia.thumbnailImage(
+                                    for: newMedia.type,
+                                    artworkURL: newMedia.albumArtworkURL,
+                                    mediaColor: newMedia.color),
+                                   let cgImage = thumbnail.cgImage
+                                {
+                                    let colors = await DominantColorsCalculator.dominantColors(
+                                        in: cgImage
+                                    )
+                                    newMedia.dominantColors = colors
+                                }
+                                
+                                modelContext.insert(newMedia)
+                                
+                                // Dismiss
+                                let steps = navigationManager.path.count - 1
+                                if steps > 1 {
+                                    navigationManager.path.removeLast()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        navigationManager.path.removeLast()
+                                    }
+                                } else {
                                     navigationManager.path.removeLast()
                                 }
-                            } else {
-                                navigationManager.path.removeLast()
+                                
+                                // Indicate success
+                                withAnimation { mediaAdded = true }
                             }
-                            
-                            // Indicate success
-                            withAnimation { mediaAdded = true }
                         }
                     }
                 }

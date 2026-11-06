@@ -98,12 +98,14 @@ extension FavoritesDisplayWidget {
         
         private func fetchFavorites() throws -> [MediaEntity] {
             let context = modelContext()
+            
+            let vinylRecordType = MediaType.vinylRecord.rawValue
             let favoriteMedia = FetchDescriptor<Media>(
-                predicate: #Predicate { $0.isFavorite == true },
+                predicate: #Predicate { $0.rawType == vinylRecordType && $0.isFavorite },
                 sortBy: [.init(\.dateAdded)]
             )
-            let favorites = try context.fetch(favoriteMedia)
             
+            let favorites = try context.fetch(favoriteMedia)
             return favorites.map { favorite in
                 return MediaEntity(from: favorite)
             }

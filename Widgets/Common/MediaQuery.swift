@@ -27,6 +27,7 @@ struct MediaQuery: EntityQuery {
                 title: item.title,
                 artist: item.artist,
                 albumArtworkURL: item.albumArtworkURL,
+                dominantColor: item.dominantColor,
                 color: item.color
             )
         }
@@ -55,6 +56,7 @@ struct MediaQuery: EntityQuery {
                 title: item.title,
                 artist: item.artist,
                 albumArtworkURL: item.albumArtworkURL,
+                dominantColor: item.dominantColor,
                 color: item.color
             )
         }
@@ -75,6 +77,7 @@ struct MediaQuery: EntityQuery {
                     title: latestAddition.title,
                     artist: latestAddition.artist,
                     albumArtworkURL: latestAddition.albumArtworkURL,
+                    dominantColor: latestAddition.dominantColor,
                     color: latestAddition.color
                 )
             } else {

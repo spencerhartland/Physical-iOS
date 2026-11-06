@@ -9,6 +9,7 @@ import Foundation
 import AppIntents
 import UIKit
 import SwiftData
+import SwiftUI
 import PhysicalMediaKit
 
 struct MediaEntity: AppEntity, Identifiable {
@@ -16,6 +17,7 @@ struct MediaEntity: AppEntity, Identifiable {
     var title: String
     var artist: String
     var albumArtworkURL: URL?
+    var dominantColor: Color?
     var color: UIColor
     var rawType: String
     var type: MediaType {
@@ -40,6 +42,7 @@ struct MediaEntity: AppEntity, Identifiable {
         self.title = media.title
         self.artist = media.artist
         self.albumArtworkURL = media.albumArtworkURL
+        self.dominantColor = media.dominantColor
         self.color = media.color
     }
     
@@ -49,6 +52,7 @@ struct MediaEntity: AppEntity, Identifiable {
         title: String,
         artist: String,
         albumArtworkURL: URL?,
+        dominantColor: Color?,
         color: UIColor,
     ) {
         self.id = id
@@ -56,6 +60,7 @@ struct MediaEntity: AppEntity, Identifiable {
         self.title = title
         self.artist = artist
         self.albumArtworkURL = albumArtworkURL
+        self.dominantColor = dominantColor
         self.color = color
     }
 }

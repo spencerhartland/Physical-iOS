@@ -6,13 +6,24 @@
 //
 
 import Foundation
-import SwiftData
 import MusicKit
+import PhysicalMediaKit
+import SwiftData
+import SwiftUI
 import UIKit
 import WidgetKit
-import PhysicalMediaKit
 
-typealias Media = MediaSchemaV1.Media
+typealias Media = MediaSchemaV2.Media
+
+struct MediaMigrationPlan: SchemaMigrationPlan {
+    static let schemas: [any VersionedSchema.Type] = [MediaSchemaV1.self, MediaSchemaV2.self]
+    static let stages: [MigrationStage] = [v1ToV2]
+    
+    static let v1ToV2 = MigrationStage.lightweight(
+        fromVersion: MediaSchemaV1.self,
+        toVersion: MediaSchemaV2.self
+    )
+}
 
 // TODO: Add dominant colors
 enum MediaSchemaV2: VersionedSchema {
@@ -62,6 +73,8 @@ enum MediaSchemaV2: VersionedSchema {
         var displaysOfficialArtwork: Bool
         /// The URL for the official album artwork provided by Apple Music.
         var albumArtworkURL: URL?
+        var dominantColors: [DominantColor] = []
+        var dominantColor: Color? { dominantColors.sorted(by: >).first?.color }
         /// A collection of keys associated with user-generated images.
         var imageKeys: [String]
         @Attribute(.transformable(by: UIColorValueTransformer.self))

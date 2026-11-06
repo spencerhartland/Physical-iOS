@@ -32,6 +32,7 @@ struct MediaDisplayWidgetView: View {
                 albumInfo
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
+            .foregroundStyle(foregroundStyle)
         }
         .containerBackground(
             backgroundStyle,
@@ -87,7 +88,19 @@ struct MediaDisplayWidgetView: View {
         .aspectRatio(1, contentMode: .fit)
     }
     
+    private var foregroundStyle: some ShapeStyle {
+        if let media = entry.configuration.media, let bgColor = media.dominantColor {
+            ContrastingStyle(background: bgColor)
+        } else {
+            ContrastingStyle(background: Color(uiColor: .systemBackground))
+        }
+    }
+    
     private var backgroundStyle: some ShapeStyle {
-        Color(uiColor: .systemBackground).gradient
+        if let media = entry.configuration.media, let bgColor = media.dominantColor {
+            bgColor.gradient
+        } else {
+            Color(uiColor: .systemBackground).gradient
+        }
     }
 }

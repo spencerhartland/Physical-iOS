@@ -5,6 +5,7 @@
 //  Created by Spencer Hartland on 7/19/23.
 //
 
+import PhysicalMediaKit
 import SwiftUI
 import SwiftData
 
@@ -16,6 +17,8 @@ struct MediaDetailView: View {
     @State private var draft: MediaDraft
     @State private var isEditing: Bool = false
     @State private var isSharing: Bool = false
+    
+    private var bgColor: Color { media.dominantColor ?? Color(uiColor: .systemBackground) }
     
     let allowsNavigationBackwards: Bool
     let onDismiss: (() -> Void)?
@@ -85,18 +88,54 @@ struct MediaDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $isEditing) {
             MediaDetailsEntryView(draft: $draft) {
-                media.applyChanges(from: draft)
-                isEditing = false
+                Task {
+                    media.applyChanges(from: draft)
+                    
+                    if let thumbnail = await PhysicalMedia.thumbnailImage(
+                        for: media.type,
+                        artworkURL: media.albumArtworkURL,
+                        mediaColor: media.color),
+                       let cgImage = thumbnail.cgImage
+                    {
+                        let colors = await DominantColorsCalculator.dominantColors(in: cgImage)
+                        media.dominantColors = colors
+                    }
+                    
+                    isEditing = false
+                }
             }
         }
         .navigationDestination(isPresented: $isSharing) { ShareableView(for: media) }
         .onHingeOpen { if allowsNavigationBackwards { dismiss() } }
+        .task(id: media) {
+            guard media.dominantColors.isEmpty else { return }
+            
+            if let thumbnail = await PhysicalMedia.thumbnailImage(
+                    for: media.type,
+                    artworkURL: media.albumArtworkURL,
+                    mediaColor: media.color),
+                  let cgImage = thumbnail.cgImage
+            {
+                media.dominantColors = await DominantColorsCalculator.dominantColors(in: cgImage)
+                try? modelContext.save()
+            }
+        }
+        .background {
+            Rectangle()
+                .fill(bgColor.gradient)
+                .ignoresSafeArea()
+        }
+        .foregroundStyle(.contrasting(with: bgColor))
     }
     
     private var moreMenu: some View {
         Menu {
             Button {
                 media.isFavorite.toggle()
+                
+                if media.isFavorite {
+                    Task { await WidgetHelper.prepareFavoritesForWidget([media]) }
+                }
             } label: {
                 Label(
                     media.isFavorite ? "Undo favorite" : "Favorite",
@@ -189,6 +228,8 @@ struct MediaDetailView: View {
     private var tracklist: some View {
         Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
             Divider()
+                .overlay(.contrasting(with: bgColor))
+                .opacity(0.5)
             
             ForEach(Array(media.tracks.enumerated()), id: \.element) { trackIndex, trackTitle in
                 GridRow {
@@ -204,6 +245,8 @@ struct MediaDetailView: View {
                 }
                 
                 Divider()
+                    .overlay(.contrasting(with: bgColor))
+                    .opacity(0.5)
                     .gridColumnAlignment(.listRowSeparatorLeading)
             }
         }

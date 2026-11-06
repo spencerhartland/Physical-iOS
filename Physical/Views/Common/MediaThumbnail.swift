@@ -54,7 +54,7 @@ struct MediaThumbnail: View {
                 media.isFavorite.toggle()
                 
                 if media.isFavorite {
-                    Task { await WidgetRenderer.renderThumbnailsForFavorite(media) }
+                    Task { await WidgetHelper.prepareFavoritesForWidget([media]) }
                 }
             } label: {
                 Label(

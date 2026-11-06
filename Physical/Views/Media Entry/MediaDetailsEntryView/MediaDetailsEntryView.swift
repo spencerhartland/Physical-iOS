@@ -5,6 +5,7 @@
 //  Created by Spencer Hartland on 7/9/23.
 //
 
+import OSLog
 import PhotosUI
 import PhysicalMediaKit
 import SwiftData
@@ -145,7 +146,11 @@ struct MediaDetailsEntryView: View {
                 do {
                     try ImageManager.shared.removeImage(withKey: keyToRemove)
                 } catch {
-                    Log.general.error("Unable to remove image: \(error.localizedDescription).")
+                    Logger.Standard.general.error(
+                        """
+                        Unable to remove image: \(error.localizedDescription).
+                        """
+                    )
                 }
                 // Enforce no placeholder
                 if draft.imageKeys.isEmpty {

@@ -13,4 +13,5 @@ struct MediaDisplayEntry: TimelineEntry {
     let date: Date
     let configuration: SelectMediaIntent
     let thumbnail: UIImage?
+    let dominantColor: Color?
 }

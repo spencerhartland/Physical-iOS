@@ -17,7 +17,8 @@ extension MediaDisplayWidget {
         private let emptyEntry = Entry(
             date: .now,
             configuration: SelectMediaIntent(),
-            thumbnail: nil
+            thumbnail: nil,
+            dominantColor: nil
         )
         
         func placeholder(in context: Context) -> Entry { return emptyEntry }
@@ -28,7 +29,12 @@ extension MediaDisplayWidget {
             let key = thumbnailKey(for: media)
             let thumbnail = PhysicalMedia.cachedThumbnail(for: key)
             
-            return Entry(date: .now, configuration: configuration, thumbnail: thumbnail)
+            return Entry(
+                date: .now, 
+                configuration: configuration,
+                thumbnail: thumbnail,
+                dominantColor: media.dominantColor
+            )
         }
         
         func timeline(for configuration: SelectMediaIntent, in context: Context) async -> Timeline<Entry> {
@@ -44,6 +50,7 @@ extension MediaDisplayWidget {
                         date: entryDate,
                         configuration: configuration,
                         thumbnail: thumbnail,
+                        dominantColor: media.dominantColor
                     )
                     entries.append(entry)
                 }
