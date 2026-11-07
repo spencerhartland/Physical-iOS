@@ -37,7 +37,7 @@ struct MediaImageCarousel: View {
     init(for media: Media, _ onDelete: ((String) -> Void)? = nil) {
         self.mediaType = media.type
         self.mediaAlbumArtworkURL = media.albumArtworkURL
-        self.mediaColor = media.color
+        self.mediaColor = media.mediaColor
         self.mediaImageKeys = media.imageKeys
         self.shouldShowModel = media.displaysOfficialArtwork
         self.onDelete = onDelete

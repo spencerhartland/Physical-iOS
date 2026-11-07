@@ -43,7 +43,7 @@ struct MediaEntity: AppEntity, Identifiable {
         self.artist = media.artist
         self.albumArtworkURL = media.albumArtworkURL
         self.dominantColor = media.dominantColor
-        self.color = media.color
+        self.color = media.mediaColor
     }
     
     init(

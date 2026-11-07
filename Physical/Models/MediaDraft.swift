@@ -74,7 +74,7 @@ final class MediaDraft {
         self.tracks = media.tracks
         self.displaysOfficialArtwork = media.displaysOfficialArtwork
         self.albumArtworkURL = media.albumArtworkURL
-        self.color = media.color
+        self.color = media.mediaColor
         self.imageKeys = media.imageKeys
         self.notes = media.notes
         self.genre = media.genre

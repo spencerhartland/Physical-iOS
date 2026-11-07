@@ -77,8 +77,8 @@ enum MediaSchemaV2: VersionedSchema {
         var dominantColor: Color? { dominantColors.sorted(by: >).first?.color }
         /// A collection of keys associated with user-generated images.
         var imageKeys: [String]
-        @Attribute(.transformable(by: UIColorValueTransformer.self))
-        var color: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
+        @Attribute(.transformable(by: UIColorValueTransformer.self), originalName: "color")
+        var mediaColor: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
         var notes: String
         var genre: String
         var isFavorite: Bool
@@ -121,7 +121,7 @@ enum MediaSchemaV2: VersionedSchema {
             self.notes = ""
             
             self.albumArtworkURL = artworkURL
-            self.color = color
+            self.mediaColor = color
             self.title = title
             self.artist = artist
             self.tracks = tracks
@@ -142,7 +142,7 @@ enum MediaSchemaV2: VersionedSchema {
             self.displaysOfficialArtwork = draft.displaysOfficialArtwork
             self.albumArtworkURL = draft.albumArtworkURL
             self.imageKeys = draft.imageKeys
-            self.color = draft.color
+            self.mediaColor = draft.color
             self.notes = draft.notes
             self.genre = draft.genre
             self.isFavorite = draft.isFavorite
@@ -160,7 +160,7 @@ enum MediaSchemaV2: VersionedSchema {
             self.displaysOfficialArtwork = draft.displaysOfficialArtwork
             self.albumArtworkURL = draft.albumArtworkURL
             self.imageKeys = draft.imageKeys
-            self.color = draft.color
+            self.mediaColor = draft.color
             self.notes = draft.notes
             self.genre = draft.genre
             self.isFavorite = draft.isFavorite

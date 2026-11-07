@@ -94,7 +94,7 @@ struct MediaDetailView: View {
                     if let thumbnail = await PhysicalMedia.thumbnailImage(
                         for: media.type,
                         artworkURL: media.albumArtworkURL,
-                        mediaColor: media.color),
+                        mediaColor: media.mediaColor),
                        let cgImage = thumbnail.cgImage
                     {
                         let colors = await DominantColorsCalculator.dominantColors(in: cgImage)
@@ -113,7 +113,7 @@ struct MediaDetailView: View {
             if let thumbnail = await PhysicalMedia.thumbnailImage(
                     for: media.type,
                     artworkURL: media.albumArtworkURL,
-                    mediaColor: media.color),
+                    mediaColor: media.mediaColor),
                   let cgImage = thumbnail.cgImage
             {
                 media.dominantColors = await DominantColorsCalculator.dominantColors(in: cgImage)
