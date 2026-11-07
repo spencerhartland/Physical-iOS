@@ -86,6 +86,7 @@ struct AddMediaView: View {
                 .disabled(draft.title.isEmpty)
             }
         }
+        .requestAppleMusicAccessIfNeeded()
     }
     
     private func requestSearchResults(_ entry: String) {
