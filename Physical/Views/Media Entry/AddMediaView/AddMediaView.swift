@@ -12,7 +12,6 @@ import MusicKit
 struct AddMediaView: View {
     private let albumSearchDebounceDelay: TimeInterval = 0.33
     
-    @Environment(\.dismissSearch) private var dismissSearch
     @Environment(\.colorScheme) private var colorScheme
     
     @FocusState private var albumTitleFieldIsFocused: Bool
@@ -70,6 +69,7 @@ struct AddMediaView: View {
             }
         }
         .onChange(of: draft.title) {
+            if !albumTitleFieldIsFocused { albumTitleFieldIsFocused = true }
             if MusicAuthorization.currentStatus == .authorized {
                 self.requestSearchResults(draft.title)
             }
@@ -88,6 +88,8 @@ struct AddMediaView: View {
         }
         .requestAppleMusicAccessIfNeeded()
     }
+    
+    private func dismissSearch() { albumTitleFieldIsFocused = false }
     
     private func requestSearchResults(_ entry: String) {
         albumSearchRequest?.cancel()
