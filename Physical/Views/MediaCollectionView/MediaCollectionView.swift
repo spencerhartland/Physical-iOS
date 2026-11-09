@@ -112,6 +112,7 @@ struct MediaCollectionView: View {
                                 }
                             }
                         }
+                        .foregroundStyle(.primary)
                     } header: {
                         // Do not display category title if only
                         // a single category is being displayed.

@@ -23,6 +23,7 @@ struct MediaImageCarousel: View {
     private var mediaType: MediaType
     private var mediaAlbumArtworkURL: URL?
     private var mediaColor: UIColor
+    private var coverColor: UIColor
     private var mediaImageKeys: [String]
     private var shouldShowModel: Bool
     private var onDelete: ((String) -> Void)?
@@ -38,6 +39,7 @@ struct MediaImageCarousel: View {
         self.mediaType = media.type
         self.mediaAlbumArtworkURL = media.albumArtworkURL
         self.mediaColor = media.mediaColor
+        self.coverColor = media.coverColor
         self.mediaImageKeys = media.imageKeys
         self.shouldShowModel = media.displaysOfficialArtwork
         self.onDelete = onDelete
@@ -46,7 +48,8 @@ struct MediaImageCarousel: View {
     init(for draft: MediaDraft, _ onDelete: ((String) -> Void)? = nil) {
         self.mediaType = draft.type
         self.mediaAlbumArtworkURL = draft.albumArtworkURL
-        self.mediaColor = draft.color
+        self.mediaColor = draft.mediaColor
+        self.coverColor = draft.coverColor
         self.mediaImageKeys = draft.imageKeys
         self.shouldShowModel = draft.displaysOfficialArtwork
         self.onDelete = onDelete
@@ -69,11 +72,24 @@ struct MediaImageCarousel: View {
                     Group {
                         switch mediaType {
                         case .vinylRecord:
-                            PhysicalMedia.vinylRecord(mediaAlbumArtworkURL, mediaColor, scale: 0.75)
+                            PhysicalMedia.vinylRecord(
+                                mediaAlbumArtworkURL,
+                                mediaColor,
+                                coverColor,
+                                scale: 0.75
+                            )
                         case .compactDisc:
-                            PhysicalMedia.compactDisc(mediaAlbumArtworkURL)
+                            PhysicalMedia.compactDisc(
+                                mediaAlbumArtworkURL,
+                                coverColor
+                            )
                         case .compactCassette:
-                            PhysicalMedia.compactCassette(mediaAlbumArtworkURL, mediaColor, scale: 1.95)
+                            PhysicalMedia.compactCassette(
+                                mediaAlbumArtworkURL,
+                                mediaColor,
+                                coverColor,
+                                scale: 1.95
+                            )
                         }
                     }
                 }
@@ -139,12 +155,20 @@ struct MediaImageCarousel: View {
                             PhysicalMedia.vinylRecordThumbnail(
                                 mediaAlbumArtworkURL,
                                 mediaColor,
+                                coverColor,
                                 rotationXY: (0, -0.08)
                             )
                         case .compactDisc:
-                            PhysicalMedia.compactDiscThumbnail(mediaAlbumArtworkURL)
+                            PhysicalMedia.compactDiscThumbnail(
+                                mediaAlbumArtworkURL,
+                                coverColor
+                            )
                         case .compactCassette:
-                            PhysicalMedia.compactCassetteThumbnail(mediaAlbumArtworkURL, mediaColor)
+                            PhysicalMedia.compactCassetteThumbnail(
+                                mediaAlbumArtworkURL,
+                                mediaColor,
+                                coverColor
+                            )
                         }
                     }
                 }

@@ -126,7 +126,8 @@ extension FavoritesDisplayWidget {
                         PhysicalMedia.cacheKey(
                             for: .vinylRecord,
                             artworkURL: favorite.albumArtworkURL,
-                            mediaColor: favorite.color,
+                            coverColor: favorite.coverColor,
+                            mediaColor: favorite.mediaColor,
                             scale: scale,
                             rotationXY: (0, rotationY),
                         )
@@ -142,6 +143,7 @@ extension FavoritesDisplayWidget {
                         PhysicalMedia.cacheKey(
                             for: .compactDisc,
                             artworkURL: favorite.albumArtworkURL,
+                            coverColor: favorite.coverColor,
                             mediaColor: nil,
                             scale: scale,
                             rotationXY: (0, (rotationY + rotationYOffset)),
@@ -154,7 +156,8 @@ extension FavoritesDisplayWidget {
                         PhysicalMedia.cacheKey(
                             for: .compactCassette,
                             artworkURL: favorite.albumArtworkURL,
-                            mediaColor: favorite.color,
+                            coverColor: favorite.coverColor,
+                            mediaColor: favorite.mediaColor,
                             scale: scale,
                             rotationXY: (0, rotationY),
                         )

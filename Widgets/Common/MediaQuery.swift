@@ -21,15 +21,7 @@ struct MediaQuery: EntityQuery {
         let media = try modelContainer.mainContext.fetch(descriptor)
         
         return media.map { item in
-            return MediaEntity(
-                id: item.id,
-                type: item.type,
-                title: item.title,
-                artist: item.artist,
-                albumArtworkURL: item.albumArtworkURL,
-                dominantColor: item.dominantColor,
-                color: item.mediaColor
-            )
+            return MediaEntity(from: item)
         }
     }
     
@@ -50,15 +42,7 @@ struct MediaQuery: EntityQuery {
         }
         
         return media.map { item in
-            return MediaEntity(
-                id: item.id,
-                type: item.type,
-                title: item.title,
-                artist: item.artist,
-                albumArtworkURL: item.albumArtworkURL,
-                dominantColor: item.dominantColor,
-                color: item.mediaColor
-            )
+            return MediaEntity(from: item)
         }
     }
     
@@ -71,15 +55,7 @@ struct MediaQuery: EntityQuery {
             let media = try modelContainer.mainContext.fetch(descriptor)
             
             if let latestAddition = media.first {
-                return MediaEntity(
-                    id: latestAddition.id,
-                    type: latestAddition.type,
-                    title: latestAddition.title,
-                    artist: latestAddition.artist,
-                    albumArtworkURL: latestAddition.albumArtworkURL,
-                    dominantColor: latestAddition.dominantColor,
-                    color: latestAddition.mediaColor
-                )
+                return MediaEntity(from: latestAddition)
             } else {
                 return nil
             }

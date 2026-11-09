@@ -121,11 +121,20 @@ internal struct ShareableView: View {
                     PhysicalMedia.vinylRecordThumbnail(
                         media.albumArtworkURL,
                         media.mediaColor,
-                        rotationXY: (0, -0.08))
+                        media.coverColor,
+                        rotationXY: (0, -0.08)
+                    )
                 case .compactDisc:
-                    PhysicalMedia.compactDiscThumbnail(media.albumArtworkURL)
+                    PhysicalMedia.compactDiscThumbnail(
+                        media.albumArtworkURL,
+                        media.coverColor
+                    )
                 case .compactCassette:
-                    PhysicalMedia.compactCassetteThumbnail(media.albumArtworkURL, media.mediaColor)
+                    PhysicalMedia.compactCassetteThumbnail(
+                        media.albumArtworkURL,
+                        media.mediaColor,
+                        media.coverColor
+                    )
                 }
             }
             Text(label)

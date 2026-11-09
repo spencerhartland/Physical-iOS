@@ -18,7 +18,8 @@ struct MediaEntity: AppEntity, Identifiable {
     var artist: String
     var albumArtworkURL: URL?
     var dominantColor: Color?
-    var color: UIColor
+    var mediaColor: UIColor
+    var coverColor: UIColor?
     var rawType: String
     var type: MediaType {
         get {
@@ -37,23 +38,27 @@ struct MediaEntity: AppEntity, Identifiable {
     }
     
     init(from media: Media) {
-        self.id = media.id
-        self.rawType = media.type.rawValue
-        self.title = media.title
-        self.artist = media.artist
-        self.albumArtworkURL = media.albumArtworkURL
-        self.dominantColor = media.dominantColor
-        self.color = media.mediaColor
+        self.init(
+            id: media.id,
+            type: media.type,
+            title: media.title,
+            artist: media.artist,
+            albumArtworkURL: media.albumArtworkURL,
+            dominantColor: media.dominantColor,
+            mediaColor: media.mediaColor,
+            coverColor: media.coverColor
+        )
     }
     
-    init(
+    private init(
         id: UUID,
         type: MediaType,
         title: String,
         artist: String,
         albumArtworkURL: URL?,
         dominantColor: Color?,
-        color: UIColor,
+        mediaColor: UIColor,
+        coverColor: UIColor?,
     ) {
         self.id = id
         self.rawType = type.rawValue
@@ -61,6 +66,7 @@ struct MediaEntity: AppEntity, Identifiable {
         self.artist = artist
         self.albumArtworkURL = albumArtworkURL
         self.dominantColor = dominantColor
-        self.color = color
+        self.mediaColor = mediaColor
+        self.coverColor = coverColor
     }
 }

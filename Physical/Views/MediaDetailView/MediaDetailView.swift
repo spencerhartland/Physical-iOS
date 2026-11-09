@@ -91,12 +91,14 @@ struct MediaDetailView: View {
                 Task {
                     media.applyChanges(from: draft)
                     
-                    if let thumbnail = await PhysicalMedia.thumbnailImage(
+                    let thumbnail = await PhysicalMedia.thumbnailImage(
                         for: media.type,
                         artworkURL: media.albumArtworkURL,
-                        mediaColor: media.mediaColor),
-                       let cgImage = thumbnail.cgImage
-                    {
+                        coverColor: media.coverColor,
+                        mediaColor: media.mediaColor
+                    )
+                    
+                    if let cgImage = thumbnail?.cgImage {
                         let colors = await DominantColorsCalculator.dominantColors(in: cgImage)
                         media.dominantColors = colors
                     }
@@ -110,12 +112,14 @@ struct MediaDetailView: View {
         .task(id: media) {
             guard media.dominantColors.isEmpty else { return }
             
-            if let thumbnail = await PhysicalMedia.thumbnailImage(
-                    for: media.type,
-                    artworkURL: media.albumArtworkURL,
-                    mediaColor: media.mediaColor),
-                  let cgImage = thumbnail.cgImage
-            {
+            let thumbnail = await PhysicalMedia.thumbnailImage(
+                for: media.type,
+                artworkURL: media.albumArtworkURL,
+                coverColor: media.coverColor,
+                mediaColor: media.mediaColor
+            )
+            
+            if let cgImage = thumbnail?.cgImage {
                 media.dominantColors = await DominantColorsCalculator.dominantColors(in: cgImage)
                 try? modelContext.save()
             }

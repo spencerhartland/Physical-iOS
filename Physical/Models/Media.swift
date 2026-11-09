@@ -79,6 +79,8 @@ enum MediaSchemaV2: VersionedSchema {
         var imageKeys: [String]
         @Attribute(.transformable(by: UIColorValueTransformer.self), originalName: "color")
         var mediaColor: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
+        @Attribute(.transformable(by: UIColorValueTransformer.self))
+        var coverColor: UIColor = UIColor.physicalGreen
         var notes: String
         var genre: String
         var isFavorite: Bool
@@ -142,7 +144,7 @@ enum MediaSchemaV2: VersionedSchema {
             self.displaysOfficialArtwork = draft.displaysOfficialArtwork
             self.albumArtworkURL = draft.albumArtworkURL
             self.imageKeys = draft.imageKeys
-            self.mediaColor = draft.color
+            self.mediaColor = draft.mediaColor
             self.notes = draft.notes
             self.genre = draft.genre
             self.isFavorite = draft.isFavorite
@@ -160,7 +162,7 @@ enum MediaSchemaV2: VersionedSchema {
             self.displaysOfficialArtwork = draft.displaysOfficialArtwork
             self.albumArtworkURL = draft.albumArtworkURL
             self.imageKeys = draft.imageKeys
-            self.mediaColor = draft.color
+            self.mediaColor = draft.mediaColor
             self.notes = draft.notes
             self.genre = draft.genre
             self.isFavorite = draft.isFavorite
@@ -283,7 +285,7 @@ enum MediaSchemaV1: VersionedSchema {
             self.displaysOfficialArtwork = draft.displaysOfficialArtwork
             self.albumArtworkURL = draft.albumArtworkURL
             self.imageKeys = draft.imageKeys
-            self.color = draft.color
+            self.color = draft.mediaColor
             self.notes = draft.notes
             self.genre = draft.genre
             self.isFavorite = draft.isFavorite
@@ -301,7 +303,7 @@ enum MediaSchemaV1: VersionedSchema {
             self.displaysOfficialArtwork = draft.displaysOfficialArtwork
             self.albumArtworkURL = draft.albumArtworkURL
             self.imageKeys = draft.imageKeys
-            self.color = draft.color
+            self.color = draft.mediaColor
             self.notes = draft.notes
             self.genre = draft.genre
             self.isFavorite = draft.isFavorite

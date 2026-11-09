@@ -37,7 +37,7 @@ struct MediaDetailsEntryView: View {
     ) {
         self._draft = draft
         self.completion = completion
-        self.mediaColor = Color(draft.color.wrappedValue)
+        self.mediaColor = Color(draft.mediaColor.wrappedValue)
     }
     
     var body: some View {
@@ -189,7 +189,7 @@ struct MediaDetailsEntryView: View {
                     ListItemLabel(color: .indigo, symbolName: "paintpalette.fill", labelText: "Media color")
                 }
                 .onChange(of: mediaColor) { _, newColor in
-                    draft.color = UIColor(newColor)
+                    draft.mediaColor = UIColor(newColor)
                 }
             }
         } header: {

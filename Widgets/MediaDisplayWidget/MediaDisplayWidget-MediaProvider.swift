@@ -65,7 +65,8 @@ extension MediaDisplayWidget {
                 return PhysicalMedia.cacheKey(
                     for: .vinylRecord,
                     artworkURL: media.albumArtworkURL,
-                    mediaColor: media.color,
+                    coverColor: media.coverColor,
+                    mediaColor: media.mediaColor,
                     scale: 0.150,
                     rotationXY: (0, 0),
                 )
@@ -73,6 +74,7 @@ extension MediaDisplayWidget {
                 return PhysicalMedia.cacheKey(
                     for: .compactDisc,
                     artworkURL: media.albumArtworkURL,
+                    coverColor: media.coverColor,
                     mediaColor: nil,
                     scale: 0.125,
                     rotationXY: nil,
@@ -81,7 +83,8 @@ extension MediaDisplayWidget {
                 return PhysicalMedia.cacheKey(
                     for: .compactCassette,
                     artworkURL: media.albumArtworkURL,
-                    mediaColor: media.color,
+                    coverColor: media.coverColor,
+                    mediaColor: media.mediaColor,
                     scale: 0.250,
                     rotationXY: nil,
                 )

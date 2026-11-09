@@ -23,11 +23,22 @@ struct MediaThumbnail: View {
             if media.displaysOfficialArtwork {
                 switch media.type {
                 case .vinylRecord:
-                    PhysicalMedia.vinylRecordThumbnail(media.albumArtworkURL, media.mediaColor)
+                    PhysicalMedia.vinylRecordThumbnail(
+                        media.albumArtworkURL,
+                        media.mediaColor,
+                        media.coverColor
+                    )
                 case .compactDisc:
-                    PhysicalMedia.compactDiscThumbnail(media.albumArtworkURL)
+                    PhysicalMedia.compactDiscThumbnail(
+                        media.albumArtworkURL,
+                        media.coverColor
+                    )
                 case .compactCassette:
-                    PhysicalMedia.compactCassetteThumbnail(media.albumArtworkURL, media.mediaColor)
+                    PhysicalMedia.compactCassetteThumbnail(
+                        media.albumArtworkURL,
+                        media.mediaColor,
+                        media.coverColor
+                    )
                 }
             } else {
                 if let imageKey = media.imageKeys.first {

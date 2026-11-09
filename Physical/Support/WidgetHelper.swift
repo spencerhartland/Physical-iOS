@@ -46,6 +46,7 @@ actor WidgetHelper {
                 thumbnail = await PhysicalMedia.vinylRecordThumbnailImage(
                     favorite.albumArtworkURL,
                     favorite.mediaColor,
+                    coverColor: favorite.coverColor,
                     scale: scale,
                     rotationXY: (0, rotationY),
                 )
@@ -55,6 +56,7 @@ actor WidgetHelper {
                 
                 thumbnail = await PhysicalMedia.compactDiscThumbnailImage(
                     favorite.albumArtworkURL,
+                    coverColor: favorite.coverColor,
                     scale: scale,
                     rotationXY: (0, (rotationY + rotationYOffset)),
                 )
@@ -64,6 +66,7 @@ actor WidgetHelper {
                 thumbnail = await PhysicalMedia.compactCassetteThumbnailImage(
                     favorite.albumArtworkURL,
                     favorite.mediaColor,
+                    coverColor: favorite.coverColor,
                     scale: scale,
                     rotationXY: (0, rotationY),
                 )

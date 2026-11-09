@@ -73,12 +73,14 @@ struct RootView: View {
                                 // Save media
                                 let newMedia = Media(from: draft)
                                 
-                                if let thumbnail = await PhysicalMedia.thumbnailImage(
+                                let thumbnail = await PhysicalMedia.thumbnailImage(
                                     for: newMedia.type,
                                     artworkURL: newMedia.albumArtworkURL,
-                                    mediaColor: newMedia.mediaColor),
-                                   let cgImage = thumbnail.cgImage
-                                {
+                                    coverColor: newMedia.coverColor,
+                                    mediaColor: newMedia.mediaColor,
+                                )
+                                
+                                if let cgImage = thumbnail?.cgImage {
                                     let colors = await DominantColorsCalculator.dominantColors(
                                         in: cgImage
                                     )
