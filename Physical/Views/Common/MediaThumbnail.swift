@@ -67,6 +67,8 @@ struct MediaThumbnail: View {
                 if media.isFavorite {
                     Task { await WidgetHelper.prepareFavoritesForWidget([media]) }
                 }
+                
+                WidgetHelper.reloadTimelines(ofKind: .favoritesDisplay)
             } label: {
                 Label(
                     media.isFavorite ? "Undo Favorite" : "Favorite",

@@ -9,8 +9,18 @@ import Foundation
 import PhysicalMediaKit
 import SwiftData
 import UIKit
+import WidgetKit
 
 actor WidgetHelper {
+    enum WidgetKind: String {
+        case mediaDisplay = "com.spencerhartland.Physical.MediaDisplayWidget"
+        case favoritesDisplay = "com.spencerhartland.Physical.FavoritesDisplayWidget"
+    }
+    
+    nonisolated static func reloadTimelines(ofKind kind: WidgetKind) {
+        WidgetCenter.shared.reloadTimelines(ofKind: kind.rawValue)
+    }
+    
     static func prepareFavoritesForWidget(_ favorites: [Media]) async {
         for favorite in favorites {
             await renderThumbnailsForFavorite(favorite)

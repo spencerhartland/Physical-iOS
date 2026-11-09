@@ -102,6 +102,7 @@ struct PhysicalApp: App {
             Logger.Standard.general.debug("Preparing favorites for widgets...")
             await WidgetHelper.prepareFavoritesForWidget(favoriteMedia)
             try? context.save()
+            WidgetHelper.reloadTimelines(ofKind: .favoritesDisplay)
         }
         
         UserDefaults.standard.set(true, forKey: Self.favoritesPreparedKey)
