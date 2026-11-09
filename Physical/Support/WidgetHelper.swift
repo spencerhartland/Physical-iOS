@@ -13,16 +13,14 @@ import UIKit
 actor WidgetHelper {
     static func prepareFavoritesForWidget(_ favorites: [Media]) async {
         for favorite in favorites {
-            let primaryThumbnail = await renderThumbnailsForFavorite(favorite)
-            favorite.dominantColors = await calculateDominantColorsInThumbnail(primaryThumbnail)
+            await renderThumbnailsForFavorite(favorite)
+            
+            if let artworkURL = favorite.albumArtworkURL,
+               let artwork = await PhysicalMedia.albumArtwork(from: artworkURL) {
+                let colors = await DominantColorsCalculator.dominantColors(in: artwork)
+                favorite.dominantColors = colors
+            }
         }
-    }
-    
-    static func calculateDominantColorsInThumbnail(
-        _ thumbnail: UIImage?
-    ) async -> [DominantColor] {
-        guard let cgImage = thumbnail?.cgImage else { return [] }
-        return await DominantColorsCalculator.dominantColors(in: cgImage)
     }
     
     /// Renders the thumbnails needed to display a favorite item in the Favorites Display Widget.
@@ -30,20 +28,16 @@ actor WidgetHelper {
     /// - Parameter favorite: The `Media` item to render thumbnails for.
     /// - Returns: The primary thumbnail for the `Media` item used in contexts outside of the
     ///   Favorites Display Widget.
-    static func renderThumbnailsForFavorite(_ favorite: Media) async -> UIImage? {
-        var primaryThumbnail: UIImage?
-        
+    static func renderThumbnailsForFavorite(_ favorite: Media) async {
         for index in 0..<3 {
             let scaleOffset: Float = 0.04 * pow(0.5, Float(index))
             let rotationY: Float = (index == 0 ? 0 : (-0.4 - (0.075 * Float(index))))
-            
-            var thumbnail: UIImage?
             
             switch favorite.type {
             case .vinylRecord:
                 let scale: Float = 0.11 + scaleOffset
                 
-                thumbnail = await PhysicalMedia.vinylRecordThumbnailImage(
+                let _ = await PhysicalMedia.vinylRecordThumbnailImage(
                     favorite.albumArtworkURL,
                     favorite.mediaColor,
                     coverColor: favorite.coverColor,
@@ -54,7 +48,7 @@ actor WidgetHelper {
                 let scale: Float = 0.155 + scaleOffset
                 let rotationYOffset: Float = (index == 0 ? 0.18 : 0)
                 
-                thumbnail = await PhysicalMedia.compactDiscThumbnailImage(
+                let _ = await PhysicalMedia.compactDiscThumbnailImage(
                     favorite.albumArtworkURL,
                     coverColor: favorite.coverColor,
                     scale: scale,
@@ -63,7 +57,7 @@ actor WidgetHelper {
             case .compactCassette:
                 let scale: Float = 0.31 + scaleOffset
                 
-                thumbnail = await PhysicalMedia.compactCassetteThumbnailImage(
+                let _ = await PhysicalMedia.compactCassetteThumbnailImage(
                     favorite.albumArtworkURL,
                     favorite.mediaColor,
                     coverColor: favorite.coverColor,
@@ -71,10 +65,6 @@ actor WidgetHelper {
                     rotationXY: (0, rotationY),
                 )
             }
-            
-            if index == 0 { primaryThumbnail = thumbnail }
         }
-        
-        return primaryThumbnail
     }
 }
