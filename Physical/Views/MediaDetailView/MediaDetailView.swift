@@ -36,23 +36,26 @@ struct MediaDetailView: View {
     
     var body: some View {
         List {
-            // Album details
-            Section {
-                tracklist
-                    .listRowBackground(EmptyView())
-            } header: {
-                albumArtWithDetails
-            } footer: {
-                tracklistFooter
-                    .foregroundStyle(.primary)
+            Group {
+                // Album details
+                Section {
+                    tracklist
+                        .listRowBackground(EmptyView())
+                } header: {
+                    albumArtWithDetails
+                } footer: {
+                    tracklistFooter
+                        .foregroundStyle(.primary)
+                }
+                .listRowSeparator(.hidden)
+                
+                // Notes
+                if !media.notes.isEmpty {
+                    notes
+                        .listRowBackground(EmptyView())
+                }
             }
-            .listRowSeparator(.hidden)
-            
-            // Notes
-            if !media.notes.isEmpty {
-                notes
-                    .listRowBackground(EmptyView())
-            }
+            .padding(allowsNavigationBackwards ? [] : [.horizontal])
         }
         .listStyle(.grouped)
         .scrollContentBackground(.hidden)
@@ -222,11 +225,9 @@ struct MediaDetailView: View {
     
     private var tracklist: some View {
         Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
-            Divider()
-                .overlay(.contrasting(with: bgColor))
-                .opacity(0.5)
+            TrackSeparator(.contrasting(with: bgColor))
             
-            ForEach(Array(media.tracks.enumerated()), id: \.element) { trackIndex, trackTitle in
+            ForEach(Array(media.tracks.enumerated()), id: \.offset) { trackIndex, trackTitle in
                 GridRow {
                     Text("\(trackIndex + 1)")
                         .foregroundStyle(.secondary)
@@ -239,10 +240,7 @@ struct MediaDetailView: View {
                     }
                 }
                 
-                Divider()
-                    .overlay(.contrasting(with: bgColor))
-                    .opacity(0.5)
-                    .gridColumnAlignment(.listRowSeparatorLeading)
+                TrackSeparator(.contrasting(with: bgColor))
             }
         }
     }
@@ -266,6 +264,36 @@ struct MediaDetailView: View {
         .background {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(UIColor.secondarySystemBackground))
+        }
+    }
+    
+    private struct TrackSeparator<Style: ShapeStyle>: View {
+        @Environment(\.displayScale) private var displayScale
+        @State private var pixelCorrection: CGFloat = 0
+        private let style: Style
+        
+        init(_ style: Style) {
+            self.style = style
+        }
+        
+        var body: some View {
+            let scale = displayScale
+            let thickness = 1 / scale
+            Color.clear
+                .frame(height: thickness)
+                .overlay(alignment: .top) {
+                    Rectangle()
+                        .fill(style)
+                        .opacity(0.5)
+                        .frame(height: thickness)
+                        .offset(y: pixelCorrection)
+                }
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    let minY = proxy.frame(in: .global).minY * scale
+                    return (minY.rounded() - minY) / scale
+                } action: { correction in
+                    pixelCorrection = correction
+                }
         }
     }
 }
