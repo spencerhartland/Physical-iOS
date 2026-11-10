@@ -232,16 +232,24 @@ struct MediaDetailView: View {
                     Text("\(trackIndex + 1)")
                         .foregroundStyle(.secondary)
                         .gridColumnAlignment(.trailing)
+                    
                     HStack {
                         Text(trackTitle)
-                            .foregroundStyle(.primary)
-                            .gridColumnAlignment(.leading)
                         Spacer()
                     }
+                    .foregroundStyle(.primary)
+                    .gridColumnAlignment(.leading)
                 }
                 
-                TrackSeparator(.contrasting(with: bgColor))
+                if media.tracks.index(after: trackIndex) != media.tracks.endIndex {
+                    GridRow {
+                        Color.clear.frame(width: 0, height: 0)
+                        TrackSeparator(.contrasting(with: bgColor))
+                    }
+                }
             }
+            
+            TrackSeparator(.contrasting(with: bgColor))
         }
     }
     
