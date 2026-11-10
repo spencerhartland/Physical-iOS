@@ -5,6 +5,7 @@
 //  Created by Spencer Hartland on 7/9/23.
 //
 
+import OSLog
 import PhotosUI
 import PhysicalMediaKit
 import SwiftData
@@ -15,11 +16,9 @@ struct MediaDetailsEntryView: View {
     @Environment(\.modelContext) private var modelContext
     
     // The media being edited
-    private let media: Media?
-    @Bindable private var draft: MediaDraft
+    @Binding private var draft: MediaDraft
     
     // View state
-    @Binding var mediaAdded: Bool
     @State private var presentCamera = false
     @State private var presentPhotosPicker = false
     @FocusState private var focusInTrackField: Bool
@@ -29,30 +28,18 @@ struct MediaDetailsEntryView: View {
     @State private var newImage: UIImage? = nil
     @State private var trackTitleText: String = ""
     @State private var mediaColor: Color
+    @State private var coverColor: Color
     
     private var completion: () -> Void
     
     init(
-        draft: Bindable<MediaDraft>,
-        mediaAdded: Binding<Bool> = .constant(false),
+        draft: Binding<MediaDraft>,
         _ completion: @escaping () -> Void
     ) {
-        self.media = nil
         self._draft = draft
-        self._mediaAdded = mediaAdded
         self.completion = completion
-        self.mediaColor = Color(draft.color.wrappedValue)
-    }
-    
-    init(
-        media: Media,
-         _ completion: @escaping () -> Void
-    ) {
-        self.media = media
-        self.draft = MediaDraft(from: media)
-        self._mediaAdded = .constant(false)
-        self.completion = completion
-        self.mediaColor = Color(media.color)
+        self.mediaColor = Color(draft.mediaColor.wrappedValue)
+        self.coverColor = Color(draft.coverColor.wrappedValue)
     }
     
     var body: some View {
@@ -72,7 +59,11 @@ struct MediaDetailsEntryView: View {
         .navigationTitle("Details")
         .toolbar(.hidden, for: .tabBar)
         .environment(\.editMode, $editMode)
-        .croppedImagePicker(pickerIsPresented: $presentPhotosPicker, cameraIsPresented: $presentCamera, croppedImage: $newImage)
+        .croppedImagePicker(
+            pickerIsPresented: $presentPhotosPicker,
+            cameraIsPresented: $presentCamera,
+            croppedImage: $newImage
+        )
         .onChange(of: draft.type) { _, newValue in
             // Change icon based upon the chosen physical media type
             switch newValue {
@@ -108,15 +99,9 @@ struct MediaDetailsEntryView: View {
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Done", systemImage: "checkmark") {
-                    save()
-                    completion()
-                    withAnimation {
-                        mediaAdded = true
-                    }
-                }
-                .prominentButtonStyle()
-                .tint(.physicalGreen)
+                Button("Done", systemImage: "checkmark") { completion() }
+                    .prominentButtonStyle()
+                    .tint(.physicalGreen)
             }
         }
     }
@@ -163,14 +148,16 @@ struct MediaDetailsEntryView: View {
                 do {
                     try ImageManager.shared.removeImage(withKey: keyToRemove)
                 } catch {
-                    Log.general.error("Unable to remove image: \(error.localizedDescription).")
+                    Logger.Standard.general.error(
+                        """
+                        Unable to remove image: \(error.localizedDescription).
+                        """
+                    )
                 }
                 // Enforce no placeholder
                 if draft.imageKeys.isEmpty {
                     withAnimation { draft.displaysOfficialArtwork = true }
                 }
-                // Save changes
-                save()
             }
         }
     }
@@ -191,21 +178,26 @@ struct MediaDetailsEntryView: View {
             
             // Condition
             Picker(selection: $draft.condition) {
-                ForEach(Media.MediaCondition.allCases) {
+                ForEach(Media.Condition.allCases) {
                     Text($0.rawValue)
                 }
             } label: {
                 ListItemLabel(color: .purple, symbolName: "sparkles", labelText: "Media condition")
             }
             
-            //Color
+            // Media Color
             if draft.type != .compactDisc {
-                ColorPicker(selection: $mediaColor, supportsOpacity: true) {
+                ColorPicker(selection: $mediaColor, supportsOpacity: false) {
                     ListItemLabel(color: .indigo, symbolName: "paintpalette.fill", labelText: "Media color")
                 }
-                .onChange(of: mediaColor) { _, newColor in
-                    draft.color = UIColor(newColor)
+                .onChange(of: mediaColor) { draft.mediaColor = UIColor(mediaColor) }
+            }
+            
+            if draft.albumArtworkURL == nil {
+                ColorPicker(selection: $coverColor, supportsOpacity: false) {
+                    ListItemLabel(color: .green, symbolName: "paintpalette.fill", labelText: "Cover color")
                 }
+                .onChange(of: coverColor) { draft.coverColor = UIColor(coverColor) }
             }
         } header: {
             Text("Physical media")
@@ -257,30 +249,6 @@ struct MediaDetailsEntryView: View {
             MediaNotesEntryView(notes: $draft.notes)
         } label: {
             ListItemLabel(color: .yellow, symbolName: "note.text", labelText: "Notes")
-        }
-    }
-    
-    
-    private func save() {
-        if let media {
-            media.rawType = draft.rawType
-            media.rawCondition = draft.rawCondition
-            media.dateAdded = draft.dateAdded
-            media.releaseDate = draft.releaseDate
-            media.title = draft.title
-            media.artist = draft.artist
-            media.tracks = draft.tracks
-            media.displaysOfficialArtwork = draft.displaysOfficialArtwork
-            media.albumArtworkURL = draft.albumArtworkURL
-            media.imageKeys = draft.imageKeys
-            media.color = draft.color
-            media.notes = draft.notes
-            media.genre = draft.genre
-            media.isFavorite = draft.isFavorite
-            media.isOwned = draft.isOwned
-        } else {
-            let newMedia = Media(from: draft)
-            modelContext.insert(newMedia)
         }
     }
 }

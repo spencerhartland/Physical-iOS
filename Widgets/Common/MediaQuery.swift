@@ -15,73 +15,29 @@ struct MediaQuery: EntityQuery {
     @MainActor
     func entities(for identifiers: [MediaEntity.ID]) async throws -> [MediaEntity] {
         let descriptor = FetchDescriptor<Media>(
-            predicate: #Predicate { identifiers.contains($0.id) },
-            sortBy: [.init(\.dateAdded)],
+            predicate: #Predicate { identifiers.contains($0.id) && $0.isFavorite },
+            sortBy: [.init(\.dateAdded, order: .reverse)]
         )
-        let media = try modelContainer.mainContext.fetch(descriptor)
-        
-        return media.map { item in
-            return MediaEntity(
-                id: item.id,
-                type: item.type,
-                title: item.title,
-                artist: item.artist,
-                albumArtworkURL: item.albumArtworkURL,
-                color: item.color
-            )
-        }
+        return try modelContainer.mainContext.fetch(descriptor).map(MediaEntity.init(from:))
     }
     
     @MainActor
     func suggestedEntities() async throws -> [MediaEntity] {
-        let favorites = FetchDescriptor<Media>(
-            predicate: #Predicate { $0.isFavorite == true },
-            sortBy: [.init(\.dateAdded)]
-        )
-        let allMedia = FetchDescriptor<Media>(
-            sortBy: [.init(\.dateAdded)]
-        )
-        
-        var media = try modelContainer.mainContext.fetch(favorites)
-        if media.isEmpty,
-           let latestAddition = try modelContainer.mainContext.fetch(allMedia).first {
-            media = [latestAddition]
-        }
-        
-        return media.map { item in
-            return MediaEntity(
-                id: item.id,
-                type: item.type,
-                title: item.title,
-                artist: item.artist,
-                albumArtworkURL: item.albumArtworkURL,
-                color: item.color
-            )
-        }
+        try fetchFavorites()
     }
     
     @MainActor
     func defaultResult() async -> MediaEntity? {
-        let descriptor = FetchDescriptor<Media>(
-            sortBy: [.init(\.dateAdded)]
+        try? fetchFavorites(limit: 1).first
+    }
+    
+    @MainActor
+    private func fetchFavorites(limit: Int? = nil) throws -> [MediaEntity] {
+        var descriptor = FetchDescriptor<Media>(
+            predicate: #Predicate { $0.isFavorite },
+            sortBy: [.init(\.dateAdded, order: .reverse)]
         )
-        do {
-            let media = try modelContainer.mainContext.fetch(descriptor)
-            
-            if let latestAddition = media.first {
-                return MediaEntity(
-                    id: latestAddition.id,
-                    type: latestAddition.type,
-                    title: latestAddition.title,
-                    artist: latestAddition.artist,
-                    albumArtworkURL: latestAddition.albumArtworkURL,
-                    color: latestAddition.color
-                )
-            } else {
-                return nil
-            }
-        } catch {
-            return nil
-        }
+        descriptor.fetchLimit = limit
+        return try modelContainer.mainContext.fetch(descriptor).map(MediaEntity.init(from:))
     }
 }

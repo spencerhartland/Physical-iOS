@@ -13,17 +13,17 @@ import PhysicalMediaKit
 struct FavoritesDisplayEntry: TimelineEntry {
     let date: Date
     let favorites: [MediaEntity]
-    let thumbnailKeys: [String]
+    let thumbnails: [UIImage]
     
     init() {
         self.date = Date()
         self.favorites = []
-        self.thumbnailKeys = []
+        self.thumbnails = []
     }
     
-    init(date: Date, favorites: [MediaEntity], thumbnailKeys: [String]) {
+    init(date: Date, favorites: [MediaEntity], thumbnails: [UIImage]) {
         self.date = date
         self.favorites = favorites
-        self.thumbnailKeys = thumbnailKeys
+        self.thumbnails = thumbnails
     }
 }

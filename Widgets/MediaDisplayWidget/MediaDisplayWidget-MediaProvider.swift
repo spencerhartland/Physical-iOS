@@ -14,43 +14,35 @@ extension MediaDisplayWidget {
     struct MediaProvider: AppIntentTimelineProvider {
         typealias Entry = MediaDisplayEntry
         
-        private let emptyEntry = Entry(
-            date: Date(),
-            configuration: SelectMediaIntent(),
-            thumbnailKey: "",
-        )
-        
-        func placeholder(in context: Context) -> Entry { return emptyEntry }
+        func placeholder(in context: Context) -> Entry {
+            Entry(date: .now, content: .sample, thumbnail: nil)
+        }
         
         func snapshot(for configuration: SelectMediaIntent, in context: Context) async -> Entry {
-            guard let media = configuration.media else { return emptyEntry }
-            
-            let thumbnailKey = thumbnailKey(for: media)
-            return Entry(
-                date: Date(),
-                configuration: configuration,
-                thumbnailKey: thumbnailKey,
-            )
+            await entry(for: configuration, at: .now)
         }
         
         func timeline(for configuration: SelectMediaIntent, in context: Context) async -> Timeline<Entry> {
-            var entries: [Entry] = []
-            
-            if let media = configuration.media {
-                let currentDate = Date()
-                let thumbnailKey = thumbnailKey(for: media)
-                for hourOffset in 0 ..< 8 {
-                    let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-                    let entry = Entry(
-                        date: entryDate,
-                        configuration: configuration,
-                        thumbnailKey: thumbnailKey,
-                    )
-                    entries.append(entry)
-                }
+            let date = Date.now
+            let entry = await entry(for: configuration, at: date)
+            let refreshDate = Calendar.current.date(byAdding: .hour, value: 8, to: date)!
+            return Timeline(entries: [entry], policy: .after(refreshDate))
+        }
+        
+        private func entry(for configuration: SelectMediaIntent, at date: Date) async -> Entry {
+            guard let media = await resolveMedia(for: configuration) else {
+                return Entry(date: date, content: .noFavorites, thumbnail: nil)
             }
-            
-            return Timeline(entries: entries, policy: .atEnd)
+            let thumbnail = PhysicalMedia.cachedThumbnail(for: thumbnailKey(for: media))
+            return Entry(date: date, content: .media(media), thumbnail: thumbnail)
+        }
+        
+        private func resolveMedia(for configuration: SelectMediaIntent) async -> MediaEntity? {
+            let query = MediaQuery()
+            guard let selected = configuration.media else {
+                return await query.defaultResult()
+            }
+            return try? await query.entities(for: [selected.id]).first
         }
         
         private func thumbnailKey(for media: MediaEntity) -> String {
@@ -59,7 +51,8 @@ extension MediaDisplayWidget {
                 return PhysicalMedia.cacheKey(
                     for: .vinylRecord,
                     artworkURL: media.albumArtworkURL,
-                    mediaColor: media.color,
+                    coverColor: media.coverColor,
+                    mediaColor: media.mediaColor,
                     scale: 0.150,
                     rotationXY: (0, 0),
                 )
@@ -67,6 +60,7 @@ extension MediaDisplayWidget {
                 return PhysicalMedia.cacheKey(
                     for: .compactDisc,
                     artworkURL: media.albumArtworkURL,
+                    coverColor: media.coverColor,
                     mediaColor: nil,
                     scale: 0.125,
                     rotationXY: nil,
@@ -75,7 +69,8 @@ extension MediaDisplayWidget {
                 return PhysicalMedia.cacheKey(
                     for: .compactCassette,
                     artworkURL: media.albumArtworkURL,
-                    mediaColor: media.color,
+                    coverColor: media.coverColor,
+                    mediaColor: media.mediaColor,
                     scale: 0.250,
                     rotationXY: nil,
                 )

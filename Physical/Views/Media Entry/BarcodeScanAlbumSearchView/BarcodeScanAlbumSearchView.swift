@@ -20,11 +20,11 @@ struct BarcodeScanAlbumSearchView: View {
     @State private var flashlightActive: Bool = false
     @State private var doneScanning: Bool = false
     
-    @Bindable var draft: MediaDraft
+    @Binding var draft: MediaDraft
     
     private var completion: (Bool) -> Void
     
-    init(draft: Bindable<MediaDraft>, _ completion: @escaping (Bool) -> Void) {
+    init(draft: Binding<MediaDraft>, _ completion: @escaping (Bool) -> Void) {
         self._draft = draft
         self.completion = completion
     }

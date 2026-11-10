@@ -8,26 +8,19 @@
 import SwiftUI
 import PhysicalMediaKit
 
-@MainActor struct Shareable {
+@MainActor
+struct Shareable {
     static func image(
         for media: Media,
         with label: String,
         rarity: Rarity
     ) async -> UIImage? {
-        var thumbnail: UIImage? = nil
-        
-        switch media.type {
-        case .vinylRecord:
-            thumbnail = await PhysicalMedia.vinylRecordThumbnailImage(
-                media.albumArtworkURL,
-                media.color)
-        case .compactDisc:
-            thumbnail = await PhysicalMedia.compactDiscThumbnailImage(media.albumArtworkURL)
-        case .compactCassette:
-            thumbnail = await PhysicalMedia.compactCassetteThumbnailImage(
-                media.albumArtworkURL,
-                media.color)
-        }
+        let thumbnail = await PhysicalMedia.thumbnailImage(
+            for: media.type,
+            artworkURL: media.albumArtworkURL,
+            coverColor: media.coverColor,
+            mediaColor: media.mediaColor
+        )
         
         let shareableView = ShareableView(
             for: media,
@@ -77,7 +70,7 @@ internal struct ShareableView: View {
         VStack(alignment: .center, spacing: 32) {
             if thumbnail == nil { rarityMenu }
             cardContent
-            shareButton
+            if thumbnail != nil { branding }
         }
         .padding(32)
         .background(Color(.systemBackground))
@@ -88,6 +81,9 @@ internal struct ShareableView: View {
             guard thumbnail == nil else { return }
             shareableImage = nil
             shareableImage = await Shareable.image(for: media, with: label, rarity: rarity)
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) { shareButton }
         }
     }
     
@@ -120,12 +116,21 @@ internal struct ShareableView: View {
                 case .vinylRecord:
                     PhysicalMedia.vinylRecordThumbnail(
                         media.albumArtworkURL,
-                        media.color,
-                        rotationXY: (0, -0.08))
+                        media.mediaColor,
+                        media.coverColor,
+                        rotationXY: (0, -0.08)
+                    )
                 case .compactDisc:
-                    PhysicalMedia.compactDiscThumbnail(media.albumArtworkURL)
+                    PhysicalMedia.compactDiscThumbnail(
+                        media.albumArtworkURL,
+                        media.coverColor
+                    )
                 case .compactCassette:
-                    PhysicalMedia.compactCassetteThumbnail(media.albumArtworkURL, media.color)
+                    PhysicalMedia.compactCassetteThumbnail(
+                        media.albumArtworkURL,
+                        media.mediaColor,
+                        media.coverColor
+                    )
                 }
             }
             Text(label)
@@ -148,37 +153,33 @@ internal struct ShareableView: View {
         .colorCode(for: rarity)
     }
     
-    private var shareButton: some View {
-        Group {
-            if thumbnail != nil {
-                Label {
-                    Text(ShareableView.appName)
-                        .font(.title2)
-                } icon: {
-                    Image(.physicalIcon)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: 32)
-                }
-            } else {
-                Group {
-                    if let shareableImage {
-                        let image = Image(uiImage: shareableImage)
-                        ShareLink(item: image, preview: SharePreview(media.title, image: image)) {
-                            Label("Share", systemImage: "square.and.arrow.up")
-                                .fontWeight(.semibold)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                        }
-                        .prominentButtonStyle()
-                        .tint(.physicalGreen)
-                    } else {
-                        ProgressView()
-                    }
-                }
-            }
+    private var branding: some View {
+        Label {
+            Text(ShareableView.appName)
+                .font(.title2)
+        } icon: {
+            Image(.physicalIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxWidth: 32)
         }
         .fontWeight(.medium)
+    }
+    
+    @ViewBuilder private var shareButton: some View {
+        if let shareableImage {
+            let image = Image(uiImage: shareableImage)
+            ShareLink(item: image, preview: SharePreview(media.title, image: image)) {
+                Label("Share", systemImage: "square.and.arrow.up")
+                    .fontWeight(.semibold)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+            }
+            .prominentButtonStyle()
+            .tint(.physicalGreen)
+        } else {
+            ProgressView()
+        }
     }
     
     private func menuButton(for rarity: Rarity) -> some View {

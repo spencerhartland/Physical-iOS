@@ -10,68 +10,69 @@ import WidgetKit
 import PhysicalMediaKit
 
 struct MediaDisplayWidgetView: View {
-    @State private var thumbnail: UIImage?
-    
-    var entry: MediaDisplayEntry
-    let widgetURL: URL?
-    
-    init(entry: MediaDisplayEntry) {
-        self.entry = entry
-        if let media = entry.configuration.media {
-            let mediaID = media.id.uuidString
-            self.widgetURL = URL(string: "Physical://Media/\(mediaID)")
-        } else {
-            self.widgetURL = nil
-        }
-    }
+    let entry: MediaDisplayEntry
     
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
-                mediaThumbnail
-                albumInfo
+                switch entry.content {
+                case .sample:
+                    placeholderArtwork
+                    albumInfo(title: "Album Title", artist: "Artist")
+                        .redacted(reason: .placeholder)
+                case .media(let media):
+                    mediaThumbnail
+                    albumInfo(title: media.title, artist: media.artist)
+                case .noFavorites:
+                    PlaceholderView()
+                }
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
+            .foregroundStyle(foregroundStyle)
         }
-        .containerBackground(
-            backgroundStyle,
-            for: .widget
-        )
+        .containerBackground(backgroundStyle, for: .widget)
         .widgetURL(widgetURL)
+    }
+    
+    private var media: MediaEntity? {
+        switch entry.content {
+        case .media(let media): media
+        case .sample, .noFavorites: nil
+        }
+    }
+    
+    private var widgetURL: URL? {
+        media.flatMap { URL(string: "Physical://Media/\($0.id.uuidString)") }
     }
     
     private var mediaThumbnail: some View {
         Group {
-            if let thumbnail = PhysicalMedia.cachedThumbnail(for: entry.thumbnailKey) {
+            if let thumbnail = entry.thumbnail {
                 Image(uiImage: thumbnail)
                     .resizable()
                     .widgetAccentedRenderingMode(.fullColor)
                     .aspectRatio(contentMode: .fit)
             } else {
-                placeholder
+                placeholderArtwork
             }
         }
     }
     
-    private var albumInfo: some View {
+    private func albumInfo(title: String, artist: String) -> some View {
         VStack(alignment: .leading) {
-            if let media = entry.configuration.media {
-                Text(media.title)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-                Text(media.artist)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            } else {
-                EmptyView()
-            }
+            Text(title)
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+            Text(artist)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
         }
     }
     
-    private var placeholder: some View {
+    private var placeholderArtwork: some View {
         GeometryReader { geometry in
             Rectangle()
                 .foregroundStyle(.clear)
@@ -87,7 +88,19 @@ struct MediaDisplayWidgetView: View {
         .aspectRatio(1, contentMode: .fit)
     }
     
+    private var foregroundStyle: some ShapeStyle {
+        if let bgColor = media?.dominantColor {
+            ContrastingStyle(background: bgColor)
+        } else {
+            ContrastingStyle(background: Color(uiColor: .systemBackground))
+        }
+    }
+    
     private var backgroundStyle: some ShapeStyle {
-        Color(uiColor: .systemBackground).gradient
+        if let bgColor = media?.dominantColor {
+            bgColor.gradient
+        } else {
+            Color(uiColor: .systemBackground).gradient
+        }
     }
 }

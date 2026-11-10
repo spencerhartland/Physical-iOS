@@ -10,7 +10,13 @@ import WidgetKit
 import SwiftUI
 
 struct MediaDisplayEntry: TimelineEntry {
+    enum Content {
+        case sample
+        case media(MediaEntity)
+        case noFavorites
+    }
+    
     let date: Date
-    let configuration: SelectMediaIntent
-    let thumbnailKey: String
+    let content: Content
+    let thumbnail: UIImage?
 }

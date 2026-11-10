@@ -5,7 +5,6 @@
 //  Created by Spencer Hartland on 7/5/23.
 //
 
-import MusicKit
 import PhysicalMediaKit
 import SwiftData
 import SwiftUI
@@ -18,16 +17,13 @@ struct MediaCollectionView: View {
     private let deleteMenuItemText = "Delete"
     private let deleteMenuItemSymbol = "trash"
     
-    @AppStorage(StorageKeys.shouldAskForAppleMusicAuthorization) var shouldAskForAppleMusicAuthorization: Bool = true
-    @AppStorage(StorageKeys.preferredCollectionSortOption) var preferredCollectionSortOption: String = CollectionSorting.recentlyAdded.rawValue
+    @AppStorage(StorageKeys.preferredCollectionSortOption)
+    private var preferredCollectionSortOption: String = CollectionSorting.recentlyAdded.rawValue
     
-    @Environment(\.openURL) private var openURL
     @Environment(\.modelContext) private var context
     @Environment(NavigationManager.self) private var navigationManager
     
     // View State
-    @State private var musicAuthorizationStatus = MusicAuthorization.currentStatus
-    @State private var musicAuthorizationDenied = false
     @State private var collectionSortOption: CollectionSorting = .recentlyAdded
     @State private var collectionFilterOption: CollectionFilter = .allMedia
     @State private var currentSearch: String = ""
@@ -79,25 +75,9 @@ struct MediaCollectionView: View {
                 }
             }
         }
-        .alert("Apple Music access is disabled!", isPresented: $musicAuthorizationDenied) {
-            Button("Enable in Settings") {
-                if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                    openURL(settingsURL)
-                }
-            }
-            Button("Don't ask again") {
-                shouldAskForAppleMusicAuthorization = false
-            }
-            Button("Not now", role: .cancel) {
-                return
-            }
-        } message: {
-            Text("Physical uses Apple Music to automatically populate information about new additions to your collection.")
-        }
         .searchable(text: $currentSearch, prompt: "Search collection")
         .onAppear {
             rememberSortOption()
-            checkForMusicAuthorization()
             selectLatestItemIfNeeded()
         }
         .onChange(of: collectionSortOption) { oldValue, newValue in
@@ -132,6 +112,7 @@ struct MediaCollectionView: View {
                                 }
                             }
                         }
+                        .foregroundStyle(.primary)
                     } header: {
                         // Do not display category title if only
                         // a single category is being displayed.
@@ -320,26 +301,5 @@ struct MediaCollectionView: View {
         if newValue != oldValue {
             preferredCollectionSortOption = newValue.rawValue
         }
-    }
-    
-    private func checkForMusicAuthorization() {
-        switch MusicAuthorization.currentStatus {
-        case .notDetermined:
-            musicAuthorizationDenied = false
-            Task.detached {
-                let authorizationStatus = await MusicAuthorization.request()
-                await self.update(with: authorizationStatus)
-            }
-        case .denied:
-            musicAuthorizationDenied = true
-        default:
-            musicAuthorizationDenied = false
-            print("Apple Music access authorized.")
-        }
-    }
-    
-    @MainActor
-    private func update(with musicAuthorizationStatus: MusicAuthorization.Status) {
-        self.musicAuthorizationStatus = musicAuthorizationStatus
     }
 }

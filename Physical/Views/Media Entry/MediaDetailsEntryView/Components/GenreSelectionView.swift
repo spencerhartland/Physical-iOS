@@ -24,10 +24,11 @@ struct GenreSelectionView: View {
     var body: some View {
         List(genres.all) { genre in
             HStack {
-                Button(genre.name) {
-                    selectedGenre = genre.name
-                }
+                Button(genre.name) { selectedGenre = genre.name }
+                    .foregroundStyle(.primary)
+                
                 Spacer()
+                
                 if genre.name == selectedGenre {
                     Image(systemName: selectionIndicatorSymbol)
                         .fontWeight(.bold)

@@ -113,10 +113,10 @@ struct MediaConditionSelectionListItemView: View {
     let prompt: String
     let footer: String?
     
-    @Binding var input: Media.MediaCondition
+    @Binding var input: Media.Condition
     @State private var userHasSelected = false
     
-    init(header: String, prompt: String, footer: String? = nil, input: Binding<Media.MediaCondition>) {
+    init(header: String, prompt: String, footer: String? = nil, input: Binding<Media.Condition>) {
         self.header = header
         self.prompt = prompt
         self.footer = footer
@@ -141,7 +141,7 @@ struct MediaConditionSelectionListItemView: View {
     }
     
     private var multichoice: some View {
-        List(Media.MediaCondition.allCases) { condition in
+        List(Media.Condition.allCases) { condition in
             Button {
                 input = condition
             } label: {
