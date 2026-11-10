@@ -24,7 +24,7 @@ extension FavoritesDisplayWidget {
                     var allFavorites = try fetchFavorites()
                     
                     var entries: [Entry] = []
-                    let currentDate = Date()
+                    let currentDate: Date = .now
                     
                     for entry in 0..<48 {
                         guard !allFavorites.isEmpty else { break }
@@ -51,12 +51,13 @@ extension FavoritesDisplayWidget {
                             }
                         }
                         
-                        let thumbnailKeys = retrieveThumbnailKeys(for: favorites)
+                        let keys = retrieveThumbnailKeys(for: favorites)
+                        let thumbnails = retrieveThumbnails(for: keys)
                         
                         let entry = Entry(
                             date: entryDate,
                             favorites: favorites,
-                            thumbnailKeys: thumbnailKeys
+                            thumbnails: thumbnails
                         )
                         entries.append(entry)
                     }
@@ -73,34 +74,34 @@ extension FavoritesDisplayWidget {
                 do {
                     // Fetch media, render thumbnails
                     let allFavorites = try fetchFavorites()
-                    var favorites: [MediaEntity] = []
-                    for (index, favorite) in allFavorites.enumerated() {
-                        guard index < 3 else { break } // Snapshot only the first 3 favorites
-                        favorites.append(favorite)
-                    }
-                    let thumbnailKeys = retrieveThumbnailKeys(for: favorites)
+                    let favorites = [MediaEntity](allFavorites.prefix(3))
+                    
+                    let keys = retrieveThumbnailKeys(for: favorites)
+                    let thumbnails = retrieveThumbnails(for: keys)
                     
                     let entry = Entry(
                         date: .now,
                         favorites: favorites,
-                        thumbnailKeys: thumbnailKeys
+                        thumbnails: thumbnails
                     )
                     
                     completion(entry)
                 } catch {
-                    completion(Entry(date: .now, favorites: [], thumbnailKeys: []))
+                    completion(Entry())
                 }
             }
         }
         
         private func fetchFavorites() throws -> [MediaEntity] {
             let context = modelContext()
-            let favoriteMedia = FetchDescriptor<Media>(
-                predicate: #Predicate { $0.isFavorite == true },
-                sortBy: [.init(\.dateAdded)]
-            )
-            let favorites = try context.fetch(favoriteMedia)
             
+            let vinylRecordType = MediaType.vinylRecord.rawValue
+            let favoriteMedia = FetchDescriptor<Media>(
+                predicate: #Predicate { $0.rawType == vinylRecordType && $0.isFavorite },
+                sortBy: [.init(\.dateAdded, order: .reverse)]
+            )
+            
+            let favorites = try context.fetch(favoriteMedia)
             return favorites.map { favorite in
                 return MediaEntity(from: favorite)
             }
@@ -121,7 +122,8 @@ extension FavoritesDisplayWidget {
                         PhysicalMedia.cacheKey(
                             for: .vinylRecord,
                             artworkURL: favorite.albumArtworkURL,
-                            mediaColor: favorite.color,
+                            coverColor: favorite.coverColor,
+                            mediaColor: favorite.mediaColor,
                             scale: scale,
                             rotationXY: (0, rotationY),
                         )
@@ -137,6 +139,7 @@ extension FavoritesDisplayWidget {
                         PhysicalMedia.cacheKey(
                             for: .compactDisc,
                             artworkURL: favorite.albumArtworkURL,
+                            coverColor: favorite.coverColor,
                             mediaColor: nil,
                             scale: scale,
                             rotationXY: (0, (rotationY + rotationYOffset)),
@@ -149,7 +152,8 @@ extension FavoritesDisplayWidget {
                         PhysicalMedia.cacheKey(
                             for: .compactCassette,
                             artworkURL: favorite.albumArtworkURL,
-                            mediaColor: favorite.color,
+                            coverColor: favorite.coverColor,
+                            mediaColor: favorite.mediaColor,
                             scale: scale,
                             rotationXY: (0, rotationY),
                         )
@@ -158,6 +162,10 @@ extension FavoritesDisplayWidget {
             }
             
             return keys
+        }
+        
+        private func retrieveThumbnails(for keys: [String]) -> [UIImage] {
+            return keys.compactMap { PhysicalMedia.cachedThumbnail(for: $0) }
         }
         
         private func modelContext() -> ModelContext {

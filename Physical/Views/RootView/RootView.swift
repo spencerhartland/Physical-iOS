@@ -5,6 +5,7 @@
 //  Created by Spencer Hartland on 8/24/23.
 //
 
+import PhysicalMediaKit
 import SwiftUI
 import SwiftData
 
@@ -50,8 +51,6 @@ struct RootView: View {
                 if let requestedMedia { MediaDetailView(for: requestedMedia) }
             }
             .navigationDestination(for: MediaEntryStep.self) { step in
-                @Bindable var draft = self.draft
-                
                 Group {
                     switch step {
                     case .albumSearch(.manual):
@@ -69,15 +68,40 @@ struct RootView: View {
                         .onAppear { shouldHideStatusBar = true }
                         .onDisappear { shouldHideStatusBar = false }
                     case .detailEdit:
-                        MediaDetailsEntryView(draft: $draft, mediaAdded: $mediaAdded) {
-                            let steps = navigationManager.path.count - 1
-                            if steps > 1 {
-                                navigationManager.path.removeLast()
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        MediaDetailsEntryView(draft: $draft) {
+                            Task {
+                                // Save media
+                                let newMedia = Media(from: draft)
+                                
+                                let thumbnail = await PhysicalMedia.thumbnailImage(
+                                    for: newMedia.type,
+                                    artworkURL: newMedia.albumArtworkURL,
+                                    coverColor: newMedia.coverColor,
+                                    mediaColor: newMedia.mediaColor,
+                                )
+                                
+                                if let cgImage = thumbnail?.cgImage {
+                                    let colors = await DominantColorsCalculator.dominantColors(
+                                        in: cgImage
+                                    )
+                                    newMedia.dominantColors = colors
+                                }
+                                
+                                modelContext.insert(newMedia)
+                                
+                                // Dismiss
+                                let steps = navigationManager.path.count - 1
+                                if steps > 1 {
+                                    navigationManager.path.removeLast()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        navigationManager.path.removeLast()
+                                    }
+                                } else {
                                     navigationManager.path.removeLast()
                                 }
-                            } else {
-                                navigationManager.path.removeLast()
+                                
+                                // Indicate success
+                                withAnimation { mediaAdded = true }
                             }
                         }
                     }

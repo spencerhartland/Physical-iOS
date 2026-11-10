@@ -20,7 +20,7 @@ struct MediaDisplayWidget: Widget {
             MediaDisplayWidgetView(entry: entry)
         }
         .configurationDisplayName("Media Display")
-        .description("Displays an item from your favorites.")
+        .description("Displays a single item from your favorites.")
         .supportedFamilies([.systemSmall])
     }
 }

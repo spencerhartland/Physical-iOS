@@ -74,6 +74,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		002918B1309BB8F100847070 /* Support */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Support; sourceTree = "<group>"; };
 		00415D142FBA13AF0042672B /* Physical */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (00415D572FBA144D0042672B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 00415D522FBA13B00042672B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Physical; sourceTree = "<group>"; };
 		00DB1CE22E0691F40068E76F /* Screenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Screenshots; sourceTree = "<group>"; };
 		00EA65D62FB2B9DE00046549 /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (00EA65E32FB2B9DF00046549 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Widgets; sourceTree = "<group>"; };
@@ -108,6 +109,7 @@
 				00DB1CE22E0691F40068E76F /* Screenshots */,
 				00415D142FBA13AF0042672B /* Physical */,
 				00EA65D62FB2B9DE00046549 /* Widgets */,
+				002918B1309BB8F100847070 /* Support */,
 				00EA65D12FB2B9DE00046549 /* Frameworks */,
 				003661FD2A56374E009FCEA8 /* Products */,
 			);
@@ -149,6 +151,7 @@
 				00EA65E12FB2B9DF00046549 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				002918B1309BB8F100847070 /* Support */,
 				00415D142FBA13AF0042672B /* Physical */,
 			);
 			name = Physical;
@@ -169,6 +172,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				002918B1309BB8F100847070 /* Support */,
 				00EA65D62FB2B9DE00046549 /* Widgets */,
 			);
 			name = PhysicalMediaWidgetExtension;

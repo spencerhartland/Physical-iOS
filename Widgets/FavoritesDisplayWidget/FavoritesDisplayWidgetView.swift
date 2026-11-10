@@ -27,10 +27,10 @@ struct FavoritesDisplayWidgetView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            if !entry.thumbnailKeys.isEmpty {
-                CoverFlowView(thumbnailKeys: entry.thumbnailKeys)
+            if entry.thumbnails.isEmpty {
+                PlaceholderView()
             } else {
-                placeholder
+                CoverFlowView(thumbnails: entry.thumbnails)
             }
             albumInfo
         }
@@ -56,22 +56,6 @@ struct FavoritesDisplayWidgetView: View {
         }
     }
     
-    private var placeholder: some View {
-        GeometryReader { geometry in
-            Rectangle()
-                .foregroundStyle(.clear)
-                .overlay {
-                    Image(systemName: "music.note")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding(geometry.size.width / 6)
-                        .foregroundStyle(.secondary)
-                        .symbolEffect(.pulse)
-                }
-        }
-        .aspectRatio(1, contentMode: .fit)
-    }
-    
     private var backgroundStyle: some ShapeStyle {
         Color(uiColor: .systemBackground).gradient
     }
@@ -79,10 +63,10 @@ struct FavoritesDisplayWidgetView: View {
 
 extension FavoritesDisplayWidgetView {
     struct CoverFlowView: View {
-        let thumbnailKeys: [String]
+        let thumbnails: [UIImage]
         
         var body: some View {
-            let enumeratedThumbnailKeys = Array(thumbnailKeys.enumerated())
+            let enumeratedThumbnails = Array(thumbnails.enumerated())
             
             GeometryReader { proxy in
                 let width: CGFloat = proxy.size.width
@@ -90,12 +74,20 @@ extension FavoritesDisplayWidgetView {
                 let remainingWidth: CGFloat = width - itemWidth
                 
                 ZStack(alignment: .leading) {
-                    ForEach(enumeratedThumbnailKeys, id: \.offset) { index, key in
+                    ForEach(enumeratedThumbnails, id: \.offset) { index, thumbnail in
+                        let brightness: CGFloat = -(CGFloat(index) * 0.025)
                         let offset: CGFloat = {
-                            (remainingWidth / CGFloat(thumbnailKeys.count - 1)) * CGFloat(index)
+                            thumbnails.count < 2
+                            ? 0
+                            : (remainingWidth / CGFloat(thumbnails.count - 1)) * CGFloat(index)
                         }()
                         
-                        coverFlowItem(for: key, at: index)
+                        Image(uiImage: thumbnail)
+                            .resizable()
+                            .widgetAccentedRenderingMode(.fullColor)
+                            .aspectRatio(contentMode: .fit)
+                            .brightness(brightness)
+                            .shadow(radius: 1)
                             .frame(maxWidth: itemWidth)
                             .offset(x: offset)
                             .zIndex(Double(-index))
@@ -103,39 +95,6 @@ extension FavoritesDisplayWidgetView {
                 }
                 .frame(width: proxy.size.width, height: proxy.size.height, alignment: .leading)
             }
-        }
-        
-        private func coverFlowItem(for key: String, at index: Int) -> some View {
-            let brightness: CGFloat = -(CGFloat(index) * 0.025)
-            
-            return Group {
-                if let image = PhysicalMedia.cachedThumbnail(for: key) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .widgetAccentedRenderingMode(.fullColor)
-                        .aspectRatio(contentMode: .fit)
-                        .brightness(brightness)
-                        .shadow(radius: 1)
-                } else {
-                    placeholder
-                }
-            }
-        }
-        
-        private var placeholder: some View {
-            GeometryReader { geometry in
-                Rectangle()
-                    .foregroundStyle(.clear)
-                    .overlay {
-                        Image(systemName: "music.note")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding(geometry.size.width / 6)
-                            .foregroundStyle(.secondary)
-                            .symbolEffect(.pulse)
-                    }
-            }
-            .aspectRatio(1, contentMode: .fit)
         }
     }
 }

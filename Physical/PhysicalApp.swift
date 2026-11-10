@@ -5,14 +5,16 @@
 //  Created by Spencer Hartland on 7/5/23.
 //
 
+import AppIntents
+import OSLog
+import PhysicalMediaKit
 import SwiftUI
 import SwiftData
-import AppIntents
-import PhysicalMediaKit
 
 @main
 struct PhysicalApp: App {
     private static let appGroupID = "group.physical"
+    private static let favoritesPreparedKey = "preexistingFavoritesPreparedForWidgets"
     
     @State private var navigationManager: NavigationManager = NavigationManager()
     
@@ -53,7 +55,7 @@ struct PhysicalApp: App {
         do {
             sharedModelContainer = try ModelContainer(for: schema, configurations: modelConfig)
             Self.createUniqueMediaIDs(in: sharedModelContainer.mainContext)
-            Self.renderFavoritesThumbnailsIfNeeded(in: sharedModelContainer.mainContext)
+            Self.prepareFavoritesForWidgetsIfNeeded(in: sharedModelContainer.mainContext)
         } catch {
             fatalError("Could not create model container: \(error)")
         }
@@ -82,9 +84,9 @@ struct PhysicalApp: App {
     }
     
     @MainActor
-    private static func renderFavoritesThumbnailsIfNeeded(in context: ModelContext) {
+    private static func prepareFavoritesForWidgetsIfNeeded(in context: ModelContext) {
         // One-time render of favorites existing before widgets were introduced.
-        guard !UserDefaults.standard.bool(forKey: "preexistingFavoritesThumbnailsRendered") else {
+        guard !UserDefaults.standard.bool(forKey: Self.favoritesPreparedKey) else {
             return
         }
         
@@ -92,16 +94,18 @@ struct PhysicalApp: App {
             predicate: #Predicate { $0.isFavorite }
         )
         guard let favoriteMedia = try? context.fetch(fetchDesc) else {
-            Log.general.debug("Couldn't get favorites.")
+            Logger.Standard.general.debug("Couldn't get favorites.")
             return
         }
         
         Task {
-            Log.general.debug("Rendering thumbnails for favorites...")
-            await WidgetRenderer.renderThumbnailsForFavorites(favoriteMedia)
+            Logger.Standard.general.debug("Preparing favorites for widgets...")
+            await WidgetHelper.prepareFavoritesForWidget(favoriteMedia)
+            try? context.save()
+            WidgetHelper.reloadTimelines()
         }
         
-        UserDefaults.standard.set(true, forKey: "preexistingFavoritesThumbnailsRendered")
+        UserDefaults.standard.set(true, forKey: Self.favoritesPreparedKey)
     }
 
     private static func migrateStoreIfNeeded(to newStoreURL: URL) {
@@ -128,7 +132,7 @@ struct PhysicalApp: App {
                 try? fileManager.removeItem(at: destination)
                 try fileManager.copyItem(at: source, to: destination)
             } catch {
-                Log.general.error("Failed to migrate store file '\(suffix)': \(error)")
+                Logger.Standard.general.error("Failed to migrate store file '\(suffix)': \(error)")
             }
         }
         

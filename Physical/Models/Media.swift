@@ -6,192 +6,308 @@
 //
 
 import Foundation
-import SwiftData
 import MusicKit
+import PhysicalMediaKit
+import SwiftData
+import SwiftUI
 import UIKit
 import WidgetKit
-import PhysicalMediaKit
 
-@Model
-final class Media {
-    var rawType: String
-    var rawCondition: String
+typealias Media = MediaSchemaV2.Media
 
-    var id: UUID = UUID()
-    var type: MediaType {
-        get {
-            return MediaType(rawValue: self.rawType)!
+struct MediaMigrationPlan: SchemaMigrationPlan {
+    static let schemas: [any VersionedSchema.Type] = [MediaSchemaV1.self, MediaSchemaV2.self]
+    static let stages: [MigrationStage] = [v1ToV2]
+    
+    static let v1ToV2 = MigrationStage.lightweight(
+        fromVersion: MediaSchemaV1.self,
+        toVersion: MediaSchemaV2.self
+    )
+}
+
+// TODO: Add dominant colors
+enum MediaSchemaV2: VersionedSchema {
+    static let versionIdentifier = Schema.Version(2, 0, 0)
+    static let models: [any PersistentModel.Type] = [Media.self]
+    
+    @Model
+    final class Media {
+        enum Condition: String, Codable, CaseIterable, Identifiable, Equatable {
+            var id: Self {
+                return self
+            }
+            case mint = "Mint"
+            case nearMint = "Near Mint"
+            case excellent = "Excellent"
+            case veryGood = "Very Good"
+            case good = "Good"
+            case fair = "Fair"
+            case poor = "Poor"
         }
-        set {
-            self.rawType = newValue.rawValue
-        }
-    }
-    var condition: MediaCondition {
-        get {
-            return MediaCondition(rawValue: self.rawCondition)!
-        }
-        set {
-            self.rawCondition = newValue.rawValue
-        }
-    }
-    var dateAdded: Date
-    var releaseDate: Date
-    var title: String
-    var artist: String
-    var tracks: [String]
-    var displaysOfficialArtwork: Bool
-    /// The URL for the official album artwork provided by Apple Music.
-    var albumArtworkURL: URL?
-    /// A collection of keys associated with user-generated images.
-    var imageKeys: [String]
-    @Attribute(.transformable(by: UIColorValueTransformer.self))
-    var color: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
-    var notes: String
-    var genre: String
-    var isFavorite: Bool
-    var isOwned: Bool
-
-    init() {
-        self.rawType = MediaType.vinylRecord.rawValue
-        self.rawCondition = MediaCondition.nearMint.rawValue
-        self.dateAdded = .now
-        self.releaseDate = .now
-        self.title = ""
-        self.artist = ""
-        self.tracks = []
-        self.displaysOfficialArtwork = true
-        self.albumArtworkURL = nil
-        self.imageKeys = []
-        self.notes = ""
-        self.genre = ""
-        self.isFavorite = false
-        self.isOwned = true
-    }
-
-    init(
-        artworkURL: URL? = nil,
-        color: UIColor = .black,
-        title: String,
-        artist: String,
-        type: MediaType,
-        tracks: [String],
-        genre: String,
-        releaseDate: Date,
-        isFavorite: Bool,
-        isOwned: Bool
-    ) {
-        self.rawType = type.rawValue
-        self.rawCondition = MediaCondition.nearMint.rawValue
-        self.dateAdded = .now
-        self.displaysOfficialArtwork = true
-        self.imageKeys = []
-        self.notes = ""
-
-        self.albumArtworkURL = artworkURL
-        self.color = color
-        self.title = title
-        self.artist = artist
-        self.tracks = tracks
-        self.genre = genre
-        self.releaseDate = releaseDate
-        self.isFavorite = isFavorite
-        self.isOwned = isOwned
-    }
-
-    init(from draft: MediaDraft) {
-        self.rawType = draft.rawType
-        self.rawCondition = draft.rawCondition
-        self.dateAdded = draft.dateAdded
-        self.releaseDate = draft.releaseDate
-        self.title = draft.title
-        self.artist = draft.artist
-        self.tracks = draft.tracks
-        self.displaysOfficialArtwork = draft.displaysOfficialArtwork
-        self.albumArtworkURL = draft.albumArtworkURL
-        self.imageKeys = draft.imageKeys
-        self.color = draft.color
-        self.notes = draft.notes
-        self.genre = draft.genre
-        self.isFavorite = draft.isFavorite
-        self.isOwned = draft.isOwned
-    }
-
-    enum MediaCondition: String, Codable, CaseIterable, Identifiable, Equatable {
-        var id: Self {
-            return self
-        }
-        case mint = "Mint"
-        case nearMint = "Near Mint"
-        case excellent = "Excellent"
-        case veryGood = "Very Good"
-        case good = "Good"
-        case fair = "Fair"
-        case poor = "Poor"
-    }
-
-    @MainActor
-    public func resetInfo() {
-        self.rawType = MediaType.vinylRecord.rawValue
-        self.rawCondition = MediaCondition.nearMint.rawValue
-        self.dateAdded = .now
-        self.releaseDate = .now
-        self.title = ""
-        self.artist = ""
-        self.tracks = []
-        self.displaysOfficialArtwork = true
-        self.albumArtworkURL = nil
-        self.imageKeys = []
-        self.notes = ""
-        self.genre = ""
-        self.isFavorite = false
-        self.isOwned = true
-    }
-
-    @MainActor
-    public func updateWithInfo(from album: Album) {
-        Task {
-            let albumRelatedData = await fetchRelatedData(from: album)
-            if let data = albumRelatedData {
-                self.updateWithDetailedInfo(genre: data.0, tracks: data.1)
+        
+        var rawType: String
+        var rawCondition: String
+        
+        var id: UUID = UUID()
+        var type: MediaType {
+            get {
+                return MediaType(rawValue: self.rawType)!
+            }
+            set {
+                self.rawType = newValue.rawValue
             }
         }
-        self.title = album.title
-        self.artist = album.artistName
-        self.releaseDate = album.releaseDate ?? .now
-        self.albumArtworkURL = getArtworkURL(from: album.artwork)
-    }
-
-    @MainActor
-    private func updateWithDetailedInfo(genre: String, tracks: [String]) {
-        self.genre = genre
-        self.tracks = tracks
-    }
-
-    private func fetchRelatedData(from album: Album) async -> (String, [String])? {
-        do {
-            let detailedAlbum = try await album.with([.tracks, .genres])
-            guard let tracks = detailedAlbum.tracks,
-                  let genres = detailedAlbum.genres,
-                  let primaryGenre = genres.first else {
-                print("Error fetching detailed album.")
-                return nil
+        var condition: Condition {
+            get {
+                return Condition(rawValue: self.rawCondition)!
             }
-            var tracksArray = [String]()
-            for track in tracks {
-                tracksArray.append(track.title)
+            set {
+                self.rawCondition = newValue.rawValue
             }
-            return (primaryGenre.name, tracksArray)
-        } catch {
-            print("Error fetching detailed album: \(error.localizedDescription)")
-            return nil
+        }
+        var dateAdded: Date
+        var releaseDate: Date
+        var title: String
+        var artist: String
+        var tracks: [String]
+        var displaysOfficialArtwork: Bool
+        /// The URL for the official album artwork provided by Apple Music.
+        var albumArtworkURL: URL?
+        var dominantColors: [DominantColor] = []
+        var dominantColor: Color? { dominantColors.sorted(by: >).first?.color }
+        /// A collection of keys associated with user-generated images.
+        var imageKeys: [String]
+        @Attribute(.transformable(by: UIColorValueTransformer.self), originalName: "color")
+        var mediaColor: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
+        @Attribute(.transformable(by: UIColorValueTransformer.self))
+        var coverColor: UIColor = UIColor.physicalGreen
+        var notes: String
+        var genre: String
+        var isFavorite: Bool
+        var isOwned: Bool
+        
+        init() {
+            self.rawType = MediaType.vinylRecord.rawValue
+            self.rawCondition = Condition.nearMint.rawValue
+            self.dateAdded = .now
+            self.releaseDate = .now
+            self.title = ""
+            self.artist = ""
+            self.tracks = []
+            self.displaysOfficialArtwork = true
+            self.albumArtworkURL = nil
+            self.imageKeys = []
+            self.notes = ""
+            self.genre = ""
+            self.isFavorite = false
+            self.isOwned = true
+        }
+        
+        init(
+            artworkURL: URL? = nil,
+            color: UIColor = .black,
+            title: String,
+            artist: String,
+            type: MediaType,
+            tracks: [String],
+            genre: String,
+            releaseDate: Date,
+            isFavorite: Bool,
+            isOwned: Bool
+        ) {
+            self.rawType = type.rawValue
+            self.rawCondition = Condition.nearMint.rawValue
+            self.dateAdded = .now
+            self.displaysOfficialArtwork = true
+            self.imageKeys = []
+            self.notes = ""
+            
+            self.albumArtworkURL = artworkURL
+            self.mediaColor = color
+            self.title = title
+            self.artist = artist
+            self.tracks = tracks
+            self.genre = genre
+            self.releaseDate = releaseDate
+            self.isFavorite = isFavorite
+            self.isOwned = isOwned
+        }
+        
+        init(from draft: MediaDraft) {
+            self.rawType = draft.rawType
+            self.rawCondition = draft.rawCondition
+            self.dateAdded = draft.dateAdded
+            self.releaseDate = draft.releaseDate
+            self.title = draft.title
+            self.artist = draft.artist
+            self.tracks = draft.tracks
+            self.displaysOfficialArtwork = draft.displaysOfficialArtwork
+            self.albumArtworkURL = draft.albumArtworkURL
+            self.imageKeys = draft.imageKeys
+            self.mediaColor = draft.mediaColor
+            self.notes = draft.notes
+            self.genre = draft.genre
+            self.isFavorite = draft.isFavorite
+            self.isOwned = draft.isOwned
+        }
+        
+        func applyChanges(from draft: MediaDraft) {
+            self.rawType = draft.rawType
+            self.rawCondition = draft.rawCondition
+            self.dateAdded = draft.dateAdded
+            self.releaseDate = draft.releaseDate
+            self.title = draft.title
+            self.artist = draft.artist
+            self.tracks = draft.tracks
+            self.displaysOfficialArtwork = draft.displaysOfficialArtwork
+            self.albumArtworkURL = draft.albumArtworkURL
+            self.imageKeys = draft.imageKeys
+            self.mediaColor = draft.mediaColor
+            self.notes = draft.notes
+            self.genre = draft.genre
+            self.isFavorite = draft.isFavorite
+            self.isOwned = draft.isOwned
         }
     }
+}
 
-    private func getArtworkURL(from artwork: Artwork?) -> URL? {
-        guard let artwork = artwork,
-              let url = artwork.url(width: 1080, height: 1080) else {
-            return nil
+enum MediaSchemaV1: VersionedSchema {
+    static let versionIdentifier = Schema.Version(1, 0, 0)
+    static let models: [any PersistentModel.Type] = [Media.self]
+    
+    @Model
+    final class Media {
+        enum Condition: String, Codable, CaseIterable, Identifiable, Equatable {
+            var id: Self {
+                return self
+            }
+            case mint = "Mint"
+            case nearMint = "Near Mint"
+            case excellent = "Excellent"
+            case veryGood = "Very Good"
+            case good = "Good"
+            case fair = "Fair"
+            case poor = "Poor"
         }
-        return url
+        
+        var rawType: String
+        var rawCondition: String
+        
+        var id: UUID = UUID()
+        var type: MediaType {
+            get {
+                return MediaType(rawValue: self.rawType)!
+            }
+            set {
+                self.rawType = newValue.rawValue
+            }
+        }
+        var condition: Condition {
+            get {
+                return Condition(rawValue: self.rawCondition)!
+            }
+            set {
+                self.rawCondition = newValue.rawValue
+            }
+        }
+        var dateAdded: Date
+        var releaseDate: Date
+        var title: String
+        var artist: String
+        var tracks: [String]
+        var displaysOfficialArtwork: Bool
+        /// The URL for the official album artwork provided by Apple Music.
+        var albumArtworkURL: URL?
+        /// A collection of keys associated with user-generated images.
+        var imageKeys: [String]
+        @Attribute(.transformable(by: UIColorValueTransformer.self))
+        var color: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
+        var notes: String
+        var genre: String
+        var isFavorite: Bool
+        var isOwned: Bool
+        
+        init() {
+            self.rawType = MediaType.vinylRecord.rawValue
+            self.rawCondition = Condition.nearMint.rawValue
+            self.dateAdded = .now
+            self.releaseDate = .now
+            self.title = ""
+            self.artist = ""
+            self.tracks = []
+            self.displaysOfficialArtwork = true
+            self.albumArtworkURL = nil
+            self.imageKeys = []
+            self.notes = ""
+            self.genre = ""
+            self.isFavorite = false
+            self.isOwned = true
+        }
+        
+        init(
+            artworkURL: URL? = nil,
+            color: UIColor = .black,
+            title: String,
+            artist: String,
+            type: MediaType,
+            tracks: [String],
+            genre: String,
+            releaseDate: Date,
+            isFavorite: Bool,
+            isOwned: Bool
+        ) {
+            self.rawType = type.rawValue
+            self.rawCondition = Condition.nearMint.rawValue
+            self.dateAdded = .now
+            self.displaysOfficialArtwork = true
+            self.imageKeys = []
+            self.notes = ""
+            
+            self.albumArtworkURL = artworkURL
+            self.color = color
+            self.title = title
+            self.artist = artist
+            self.tracks = tracks
+            self.genre = genre
+            self.releaseDate = releaseDate
+            self.isFavorite = isFavorite
+            self.isOwned = isOwned
+        }
+        
+        init(from draft: MediaDraft) {
+            self.rawType = draft.rawType
+            self.rawCondition = draft.rawCondition
+            self.dateAdded = draft.dateAdded
+            self.releaseDate = draft.releaseDate
+            self.title = draft.title
+            self.artist = draft.artist
+            self.tracks = draft.tracks
+            self.displaysOfficialArtwork = draft.displaysOfficialArtwork
+            self.albumArtworkURL = draft.albumArtworkURL
+            self.imageKeys = draft.imageKeys
+            self.color = draft.mediaColor
+            self.notes = draft.notes
+            self.genre = draft.genre
+            self.isFavorite = draft.isFavorite
+            self.isOwned = draft.isOwned
+        }
+        
+        func applyChanges(from draft: MediaDraft) {
+            self.rawType = draft.rawType
+            self.rawCondition = draft.rawCondition
+            self.dateAdded = draft.dateAdded
+            self.releaseDate = draft.releaseDate
+            self.title = draft.title
+            self.artist = draft.artist
+            self.tracks = draft.tracks
+            self.displaysOfficialArtwork = draft.displaysOfficialArtwork
+            self.albumArtworkURL = draft.albumArtworkURL
+            self.imageKeys = draft.imageKeys
+            self.color = draft.mediaColor
+            self.notes = draft.notes
+            self.genre = draft.genre
+            self.isFavorite = draft.isFavorite
+            self.isOwned = draft.isOwned
+        }
     }
 }

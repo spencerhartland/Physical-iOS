@@ -20,13 +20,13 @@ import PhysicalMediaKit
         case .vinylRecord:
             thumbnail = await PhysicalMedia.vinylRecordThumbnailImage(
                 media.albumArtworkURL,
-                media.color)
+                media.mediaColor)
         case .compactDisc:
             thumbnail = await PhysicalMedia.compactDiscThumbnailImage(media.albumArtworkURL)
         case .compactCassette:
             thumbnail = await PhysicalMedia.compactCassetteThumbnailImage(
                 media.albumArtworkURL,
-                media.color)
+                media.mediaColor)
         }
         
         let shareableView = ShareableView(
@@ -120,12 +120,21 @@ internal struct ShareableView: View {
                 case .vinylRecord:
                     PhysicalMedia.vinylRecordThumbnail(
                         media.albumArtworkURL,
-                        media.color,
-                        rotationXY: (0, -0.08))
+                        media.mediaColor,
+                        media.coverColor,
+                        rotationXY: (0, -0.08)
+                    )
                 case .compactDisc:
-                    PhysicalMedia.compactDiscThumbnail(media.albumArtworkURL)
+                    PhysicalMedia.compactDiscThumbnail(
+                        media.albumArtworkURL,
+                        media.coverColor
+                    )
                 case .compactCassette:
-                    PhysicalMedia.compactCassetteThumbnail(media.albumArtworkURL, media.color)
+                    PhysicalMedia.compactCassetteThumbnail(
+                        media.albumArtworkURL,
+                        media.mediaColor,
+                        media.coverColor
+                    )
                 }
             }
             Text(label)

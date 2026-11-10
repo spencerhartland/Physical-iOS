@@ -19,7 +19,7 @@ struct FavoritesDisplayWidget: Widget {
             FavoritesDisplayWidgetView(entry: entry)
         }
         .configurationDisplayName("Favorites Display")
-        .description("Displays your favorite media.")
+        .description("Displays your favorite vinyl records.")
         .supportedFamilies([.systemSmall])
     }
 }

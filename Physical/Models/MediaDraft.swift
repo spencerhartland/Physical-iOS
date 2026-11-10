@@ -23,9 +23,9 @@ final class MediaDraft {
             self.rawType = newValue.rawValue
         }
     }
-    var condition: Media.MediaCondition {
+    var condition: Media.Condition {
         get {
-            return Media.MediaCondition(rawValue: self.rawCondition)!
+            return Media.Condition(rawValue: self.rawCondition)!
         }
         set {
             self.rawCondition = newValue.rawValue
@@ -41,7 +41,8 @@ final class MediaDraft {
     var albumArtworkURL: URL?
     /// A collection of keys associated with user-generated images.
     var imageKeys: [String]
-    var color: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
+    var mediaColor: UIColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1.0)
+    var coverColor: UIColor = UIColor.physicalGreen
     var notes: String
     var genre: String
     var isFavorite: Bool
@@ -49,7 +50,7 @@ final class MediaDraft {
     
     init() {
         self.rawType = MediaType.vinylRecord.rawValue
-        self.rawCondition = Media.MediaCondition.nearMint.rawValue
+        self.rawCondition = Media.Condition.nearMint.rawValue
         self.dateAdded = .now
         self.releaseDate = .now
         self.title = ""
@@ -74,7 +75,8 @@ final class MediaDraft {
         self.tracks = media.tracks
         self.displaysOfficialArtwork = media.displaysOfficialArtwork
         self.albumArtworkURL = media.albumArtworkURL
-        self.color = media.color
+        self.mediaColor = media.mediaColor
+        self.coverColor = media.coverColor
         self.imageKeys = media.imageKeys
         self.notes = media.notes
         self.genre = media.genre

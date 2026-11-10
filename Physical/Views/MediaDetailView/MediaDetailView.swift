@@ -5,6 +5,7 @@
 //  Created by Spencer Hartland on 7/19/23.
 //
 
+import PhysicalMediaKit
 import SwiftUI
 import SwiftData
 
@@ -13,8 +14,11 @@ struct MediaDetailView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Bindable var media: Media
+    @State private var draft: MediaDraft
     @State private var isEditing: Bool = false
     @State private var isSharing: Bool = false
+    
+    private var bgColor: Color { media.dominantColor ?? Color(uiColor: .systemBackground) }
     
     let allowsNavigationBackwards: Bool
     let onDismiss: (() -> Void)?
@@ -25,29 +29,33 @@ struct MediaDetailView: View {
         _ onDismiss: (() -> Void)? = nil
     ) {
         self.media = media
+        self.draft = MediaDraft(from: media)
         self.allowsNavigationBackwards = allowsNavigationBackwards
         self.onDismiss = onDismiss
     }
     
     var body: some View {
         List {
-            // Album details
-            Section {
-                tracklist
-                    .listRowBackground(EmptyView())
-            } header: {
-                albumArtWithDetails
-            } footer: {
-                tracklistFooter
-                    .foregroundStyle(.primary)
+            Group {
+                // Album details
+                Section {
+                    tracklist
+                        .listRowBackground(EmptyView())
+                } header: {
+                    albumArtWithDetails
+                } footer: {
+                    tracklistFooter
+                        .foregroundStyle(.primary)
+                }
+                .listRowSeparator(.hidden)
+                
+                // Notes
+                if !media.notes.isEmpty {
+                    notes
+                        .listRowBackground(EmptyView())
+                }
             }
-            .listRowSeparator(.hidden)
-            
-            // Notes
-            if !media.notes.isEmpty {
-                notes
-                    .listRowBackground(EmptyView())
-            }
+            .padding(allowsNavigationBackwards ? [] : [.horizontal])
         }
         .listStyle(.grouped)
         .scrollContentBackground(.hidden)
@@ -82,16 +90,51 @@ struct MediaDetailView: View {
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $isEditing) {
-            MediaDetailsEntryView(media: media) { isEditing = false }
+            MediaDetailsEntryView(draft: $draft) {
+                Task {
+                    media.applyChanges(from: draft)
+                    
+                    if let artworkURL = media.albumArtworkURL,
+                       let artwork = await PhysicalMedia.albumArtwork(from: artworkURL) {
+                        let colors = await DominantColorsCalculator.dominantColors(in: artwork)
+                        media.dominantColors = colors
+                    }
+                    
+                    isEditing = false
+                }
+            }
         }
         .navigationDestination(isPresented: $isSharing) { ShareableView(for: media) }
         .onHingeOpen { if allowsNavigationBackwards { dismiss() } }
+        .task(id: media) {
+            guard media.dominantColors.isEmpty else { return }
+            
+            if let artworkURL = media.albumArtworkURL,
+               let artwork = await PhysicalMedia.albumArtwork(from: artworkURL) {
+                let colors = await DominantColorsCalculator.dominantColors(in: artwork)
+                media.dominantColors = colors
+                try? modelContext.save()
+            }
+        }
+        .background {
+            Rectangle()
+                .fill(bgColor.gradient)
+                .ignoresSafeArea()
+        }
+        .foregroundStyle(.contrasting(with: bgColor))
     }
     
     private var moreMenu: some View {
         Menu {
             Button {
                 media.isFavorite.toggle()
+                
+                if media.isFavorite {
+                    Task { await WidgetHelper.prepareFavoritesForWidget([media]) }
+                }
+                
+                try? modelContext.save()
+                WidgetHelper.reloadTimelines()
             } label: {
                 Label(
                     media.isFavorite ? "Undo favorite" : "Favorite",
@@ -112,6 +155,8 @@ struct MediaDetailView: View {
             Divider()
             Button(role: .destructive) {
                 modelContext.delete(media)
+                try? modelContext.save()
+                WidgetHelper.reloadTimelines()
                 dismiss()
             } label: {
                 Label("Remove from Collection", systemImage: "trash")
@@ -183,24 +228,31 @@ struct MediaDetailView: View {
     
     private var tracklist: some View {
         Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
-            Divider()
+            TrackSeparator(.contrasting(with: bgColor))
             
-            ForEach(Array(media.tracks.enumerated()), id: \.element) { trackIndex, trackTitle in
+            ForEach(Array(media.tracks.enumerated()), id: \.offset) { trackIndex, trackTitle in
                 GridRow {
                     Text("\(trackIndex + 1)")
                         .foregroundStyle(.secondary)
                         .gridColumnAlignment(.trailing)
+                    
                     HStack {
                         Text(trackTitle)
-                            .foregroundStyle(.primary)
-                            .gridColumnAlignment(.leading)
                         Spacer()
                     }
+                    .foregroundStyle(.primary)
+                    .gridColumnAlignment(.leading)
                 }
                 
-                Divider()
-                    .gridColumnAlignment(.listRowSeparatorLeading)
+                if media.tracks.index(after: trackIndex) != media.tracks.endIndex {
+                    GridRow {
+                        Color.clear.frame(width: 0, height: 0)
+                        TrackSeparator(.contrasting(with: bgColor))
+                    }
+                }
             }
+            
+            TrackSeparator(.contrasting(with: bgColor))
         }
     }
     
@@ -223,6 +275,36 @@ struct MediaDetailView: View {
         .background {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(UIColor.secondarySystemBackground))
+        }
+    }
+    
+    private struct TrackSeparator<Style: ShapeStyle>: View {
+        @Environment(\.displayScale) private var displayScale
+        @State private var pixelCorrection: CGFloat = 0
+        private let style: Style
+        
+        init(_ style: Style) {
+            self.style = style
+        }
+        
+        var body: some View {
+            let scale = displayScale
+            let thickness = 1 / scale
+            Color.clear
+                .frame(height: thickness)
+                .overlay(alignment: .top) {
+                    Rectangle()
+                        .fill(style)
+                        .opacity(0.5)
+                        .frame(height: thickness)
+                        .offset(y: pixelCorrection)
+                }
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    let minY = proxy.frame(in: .global).minY * scale
+                    return (minY.rounded() - minY) / scale
+                } action: { correction in
+                    pixelCorrection = correction
+                }
         }
     }
 }
