@@ -1,6 +1,8 @@
 # Xcode
 build/
 DerivedData/
+xcuserdata/
+*.xcuserstate
 *.xcuserdata
 *.xcworkspace
 *.plist
